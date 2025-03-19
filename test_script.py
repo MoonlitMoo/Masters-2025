@@ -8,19 +8,33 @@ msfile = sys.argv[1] if len(sys.argv) > 1 else ValueError("Missing msfile argume
 field_index = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 spw_index = int(sys.argv[3]) if len(sys.argv) > 3 else 0
 
-def select_lowest_variance_channels(msfile: str, field: int | str, spw: int):
+def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | str,
+                                    top_percent: float=0.001, trim_channels: int=5, debug_plot: bool=False):
     """
     Extracts visibility data for a given field and spectral window,
     computes statistics, and returns the indices of the three sequential
     channels with the lowest variance.
 
-    Parameters:
-    msfile (str): Path to the Measurement Set.
-    field (int or str): Field index or name.
-    spw (int or str): Spectral window index or range.
+    Parameters
+    ----------
+    msfile : str
+        Path to the Measurement Set.
+    field : int or str
+        Field index or name.
+    spw : int or str
+        Spectral window index or range.
+    top_percent : float, default=0.001
+        The percentage to use to calculate the variance, given as a decimal.
+    trim_channels : int, default=5
+        The number of channels to ignore at the edges, while finding the sequential min-var channels
+    debug_plot : bool, default=False
 
-    Returns:
-    tuple: Indices of the three sequential channels with the lowest variance.
+
+    Returns
+    -------
+    tuple
+        Indices of the three sequential channels with the lowest variance (indices are lowest to highest).
+
     """
 
     # Open the Measurement Set Metadata
@@ -60,22 +74,22 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int):
     data_amp = np.abs(data)
 
     # Reshape to only channels
-    data_amp = np.moveaxis(data_amp, 1, 0)
+    data_amp = np.moveaxis(data_amp, 1, 0)  # Move channel axis to first dimension
     data_reshaped = data_amp.reshape(num_channels, -1)
 
     # Compute the average of the top .1% of values per channel
-    num_top_values = max(1, int(0.001 * data_reshaped.shape[1]))  # Ensure at least 1 value
+    num_top_values = max(1, int(top_percent * data_reshaped.shape[1]))  # Ensure at least 1 value
     # Compute the variance per channel, filtering nan as we go
     channel_variances = [np.nanvar(np.partition(d[~np.isnan(d)], -num_top_values)[-num_top_values:]) for d in data_reshaped]
     channel_variances = np.nan_to_num(channel_variances, nan=np.inf)
 
     # Plot debug graphs
-    # plot_selected_points(data_reshaped, num_top_values)
-    # plot_channel_distribution(data_reshaped)
-    # plot_variances(channel_variances)
+    if debug_plot:
+        plot_selected_points(data_reshaped, num_top_values)
+        plot_channel_distribution(data_reshaped)
+        plot_variances(channel_variances)
 
     # Find the three sequential channels with the lowest combined variance, ignoring trim channels
-    trim_channels = 5
     min_var_idx = np.argmin([
         np.sum(channel_variances[i:i+3]) for i in range(trim_channels, len(channel_variances) - 2 - trim_channels)
     ])
@@ -138,13 +152,14 @@ def plot_variances(variance):
     plt.grid()
     plt.savefig("../variance.png", dpi=300)
 
+def get_initial_cal_spw_string(msname: str, field: int, spw: list):
+    select_strings = []
+    for i in spw:
+        result = select_lowest_variance_channels(msname, field, i)
+        select_strings.append(f"{i}:{result[0]}~{result[-1]}")
+    return ",".join(select_strings)
+
+
 if __name__ == "__main__":
     msname = "24A-411.sb45152540.eb45209965.60336.070794328705.ms"
-    # result = select_lowest_variance_channels(msname, 1, 20)
-    # print(result)
-    select_strings = []
-    for i in range(16, 48):
-        result = select_lowest_variance_channels(msname, 1, i)
-        select_strings.append(f"{i}:{result[0]}~{result[-1]}")
-    final_string = ",".join(select_strings)
-    print(final_string)
+    print(get_initial_cal_spw_string(msname, 1, [i for i in range(16, 48)]))
