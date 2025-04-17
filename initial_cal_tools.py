@@ -7,8 +7,9 @@ from casatools import ms, msmetadata
 msfile = sys.argv[1] if len(sys.argv) > 1 else ValueError("Missing msfile argument")
 field_index = int(sys.argv[2]) if len(sys.argv) > 2 else 0
 spw_index = int(sys.argv[3]) if len(sys.argv) > 3 else 0
+plot_dir = int(sys.argv[4]) if len(sys.argv) > 3 else "."
 
-def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | str,
+def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | str, plot_dir: str,
                                     top_percent: float=0.001, trim_channels: int=5, debug_plot: bool=False):
     """
     Extracts visibility data for a given field and spectral window,
@@ -23,6 +24,8 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | st
         Field index or name.
     spw : int or str
         Spectral window index or range.
+    plot_dir : str
+        Folder to output the check plots
     top_percent : float, default=0.001
         The percentage to use to calculate the variance, given as a decimal.
     trim_channels : int, default=5
@@ -67,8 +70,8 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | st
     # Remove flagged data by setting to nan
     data[flags] = np.nan + 1j*np.nan
 
-    if data.shape[0] < 4:
-        raise ValueError("Not enough polarizations in data; expected at least 4.")
+    # if data.shape[0] < 4:
+    #     raise ValueError("Not enough polarizations in data; expected at least 4.")
 
     # Convert complex values to amplitude
     data_amp = np.abs(data)
@@ -78,9 +81,9 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | st
     data_reshaped = data_amp.reshape(num_channels, -1)
 
     # Compute the average of the top .1% of values per channel
-    num_top_values = max(1, int(top_percent * data_reshaped.shape[1]))  # Ensure at least 1 value
+    num_top_values = [max(1, int(top_percent * len(d[~np.isnan(d)]))) for d in data_reshaped]  # Ensure at least 1 value
     # Compute the variance per channel, filtering nan as we go
-    channel_variances = [np.nanvar(np.partition(d[~np.isnan(d)], -num_top_values)[-num_top_values:]) for d in data_reshaped]
+    channel_variances = [np.nanvar(np.partition(d[~np.isnan(d)], -n)[-n:]) for d, n in zip(data_reshaped, num_top_values)]
     channel_variances = np.nan_to_num(channel_variances, nan=np.inf)
 
     # Plot debug graphs
@@ -90,18 +93,22 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | st
         plot_variances(channel_variances)
 
     # Find the three sequential channels with the lowest combined variance, ignoring trim channels
+    n_channels_select = 3
     min_var_idx = np.argmin([
-        np.sum(channel_variances[i:i+3]) for i in range(trim_channels, len(channel_variances) - 2 - trim_channels)
+        np.sum(channel_variances[i:i+n_channels_select]) for i in range(trim_channels, len(channel_variances) - n_channels_select - trim_channels + 1)
     ])
     min_var_idx += trim_channels  # Correct for the trim channels
+
+    plot_selected_points(data_reshaped, num_top_values, min_var_idx, f"{field}_{spw}", plot_dir)
+    plt.close()
     return min_var_idx, min_var_idx + 1, min_var_idx + 2
 
-def plot_selected_points(data, num_top_values):
+def plot_selected_points(data, len_top_vals, first_selected_col, title, output_dir):
     plt.figure(figsize=(10, 6))
     for i, d in enumerate(data):
         # Remove NaNs first
         clean_d = d[~np.isnan(d)]
-
+        num_top_values = len_top_vals[i]
         if len(clean_d) <= num_top_values:
             continue  # Skip if not enough values to partition
 
@@ -115,9 +122,14 @@ def plot_selected_points(data, num_top_values):
         x_vals_top = np.full(len(top), i)
 
         plt.scatter(x_vals_bottom, bottom, c='b', s=5)  # Smaller marker size
-        plt.scatter(x_vals_top, top, c='r', s=5)
-
-    plt.savefig('../selected_points.png', dpi=300)
+        # Colour selected column for double-checking
+        c = 'g' if i in [j for j in range(first_selected_col, first_selected_col + 3)] else 'r'
+        plt.scatter(x_vals_top, top, c=c, s=5)
+    plt.grid()
+    plt.xlabel("Channel")
+    plt.ylabel("Amplitude")
+    plt.title(f"Field_SPW: {title}")
+    plt.savefig(f"{output_dir}/lowest_variance_{title}.png", dpi=300)
 
 
 def plot_channel_distribution(data_arrays):
@@ -152,14 +164,14 @@ def plot_variances(variance):
     plt.grid()
     plt.savefig("../variance.png", dpi=300)
 
-def get_initial_cal_spw_string(msname: str, field: int, spw: list):
+def get_initial_cal_spw_string(msname: str, field: int, spw: list, plot_dir):
     select_strings = []
     for i in spw:
-        result = select_lowest_variance_channels(msname, field, i)
+        result = select_lowest_variance_channels(msname, field, i, plot_dir)
         select_strings.append(f"{i}:{result[0]}~{result[-1]}")
     return ",".join(select_strings)
 
 
 if __name__ == "__main__":
     msname = "24A-411.sb45152540.eb45209965.60336.070794328705.ms"
-    print(get_initial_cal_spw_string(msname, 1, [i for i in range(16, 48)]))
+    print(get_initial_cal_spw_string(msname, 0, [i for i in range(16, 48)], "plots"))

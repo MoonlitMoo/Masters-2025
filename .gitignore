@@ -1,0 +1,30 @@
+# Generic
+**/*.tar.gz
+**/*.tgz
+/.idea/*
+/__pycache__/*
+
+# Casa data
+**/*.ms
+**/*.ms.flagversions
+**/*.last
+**/*.log
+**/metadata
+**/fullms
+
+# Casa calibration
+**/*.antpos
+**/*.B0
+**/*.G0all
+**/*.G[0-9]
+**/*.K[0-9]
+**/*.fluxscale[0-9]
+**/*.initBP
+**/*.initBP.flagversions
+**/*.initPh
+
+# Casa imaging
+**/*-dirty*
+**/*.tt[0-9]
+**/*-p[0-9]*
+**/*.p[0-9]*
