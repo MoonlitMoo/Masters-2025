@@ -19,18 +19,18 @@ function execute(input)
   -- { 'I', 'Q' } to flag only on Stokes I and Q
   local flag_polarizations = input:get_polarizations()
 
-  local base_threshold = 0.75 -- lower means more sensitive detection
+  local base_threshold = 0.65 -- lower means more sensitive detection
   -- How to flag complex values, options are: phase, amplitude, real, imaginary, complex
   -- May have multiple values to perform detection multiple times
   local flag_representations = { "amplitude" }
   local iteration_count = 4 -- how many iterations to perform?
-  local threshold_factor_step = 1.5 -- How much to increase the sensitivity each iteration?
+  local threshold_factor_step = 1.75 -- How much to increase the sensitivity each iteration?
   -- If the following variable is true, the strategy will consider existing flags
   -- as bad data. It will exclude flagged data from detection, and make sure that any existing
   -- flags on input will be flagged on output. If set to false, existing flags are ignored.
   local exclude_original_flags = true
   local frequency_resize_factor = 1.0 -- Amount of "extra" smoothing in frequency direction
-  local transient_threshold_factor = 0.75 -- decreasing this value makes detection of transient RFI more aggressive
+  local transient_threshold_factor = 0.65 -- decreasing this value makes detection of transient RFI more aggressive
 
   --
   -- End of generic settings
@@ -73,8 +73,8 @@ function execute(input)
 
         -- Do timestep & channel flagging
         local chdata = converted_data:copy()
-        aoflagger.threshold_timestep_rms(converted_data, 3.5)
-        aoflagger.threshold_channel_rms(chdata, 3.0 * threshold_factor, true)
+        aoflagger.threshold_timestep_rms(converted_data, 2.0)
+        aoflagger.threshold_channel_rms(chdata, 1.5 * threshold_factor, true)
         converted_data:join_mask(chdata)
 
         -- High pass filtering steps
