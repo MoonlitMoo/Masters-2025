@@ -60,6 +60,7 @@ def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | st
     ms_tool.open(msfile)
     ms_tool.selectinit(datadescid=int(spw))
     ms_tool.select({'field_id': field_id})
+    ms_tool.selectpolarization(["LL", "RR"])
 
     # Get the data (complex values, take amplitude)
     raw = ms_tool.getdata(['data', 'flag'])  # Shape: (polarization, channels, time)
