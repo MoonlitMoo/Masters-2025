@@ -25,7 +25,7 @@ function options()
   return {
     ["1 - weather radars"] = opts1,
     ["2 - microwave link"] = opts2,
-    ["3 - final sweep"] = opts3,
+    ["3 - final sweep"] = opts3
   }
 end
 
@@ -41,8 +41,8 @@ function execute_microwave(input)
 end
 
 function execute_final(input)
-    -- Run over everything at the end as cleanup
-    trim_rfi(input, 0.8, 0.8)
+    -- Run over remaining at the end as cleanup
+    trim_rfi(input, 0.75, 0.75)
 end
 
 function trim_rfi(input, base_threshold, transient_threshold_factor)
