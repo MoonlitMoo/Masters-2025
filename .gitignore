@@ -31,3 +31,4 @@
 *.alpha.error/
 *.alpha/
 *.mask/
+/Programs/*
