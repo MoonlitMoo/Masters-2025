@@ -165,10 +165,10 @@ def plot_variances(variance):
     plt.grid()
     plt.savefig("../variance.png", dpi=300)
 
-def get_initial_cal_spw_string(msname: str, field: int, spw: list, plot_dir):
+def get_initial_cal_spw_string(msname: str, field: int, spw: list, plot_dir, trim_channels):
     select_strings = []
     for i in spw:
-        result = select_lowest_variance_channels(msname, field, i, plot_dir)
+        result = select_lowest_variance_channels(msname, field, i, plot_dir, trim_channels=trim_channels)
         select_strings.append(f"{i}:{result[0]}~{result[-1]}")
     return ",".join(select_strings)
 
