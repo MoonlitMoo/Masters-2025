@@ -2,5 +2,7 @@ msname="25A-157.sb47896587.eb48188930.60749.83678572917.ms"
 name="25A-157.sb47896587.eb48188930.60749.83678572917"
 
 p_calibrator="0137+331=3C48"
+s_calibrator="J0321+1221"
 
 execfile("../../initial_cal_tools.py")
+execfile("../../flagging_stats.py")
