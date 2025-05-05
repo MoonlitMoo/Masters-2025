@@ -23,8 +23,8 @@ function options()
   }
 
   return {
-    ["1 - weather radars"] = opts1,
-    ["2 - microwave link"] = opts2,
+--     ["1 - weather radars"] = opts1,
+--     ["2 - microwave link"] = opts2,
     ["3 - final sweep"] = opts3
   }
 end

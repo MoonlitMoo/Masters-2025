@@ -33,9 +33,9 @@ def get_flagging_summary(msname):
 
     return result
 
-def save_reference_flags(base_flag_file='base_flag_file'):
+def save_reference_flags(msname, base_flag_file='base_flag_file'):
     # Save current flags to file
-    base_stats = get_flagging_summary()
+    base_stats = get_flagging_summary(msname)
     with open(base_flag_file, 'w') as f:
         json.dump(base_stats, f, indent=2)
 
@@ -53,7 +53,7 @@ def check_flagging(msname, base_flag_file='base_flag.json', output_dir='plots'):
         flagmanager(vis=msname, mode='restore', versionname='base_flagging')
 
         # 1.3 Save current flags to file
-        save_reference_flags(base_flag_file)
+        save_reference_flags(msname, base_flag_file)
 
         # 1.4 Restore temporary flags
         flagmanager(vis=msname, mode='restore', versionname='tmp')
