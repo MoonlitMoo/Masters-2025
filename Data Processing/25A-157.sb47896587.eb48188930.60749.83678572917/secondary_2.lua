@@ -1,14 +1,51 @@
 --[[
- This is the default AOFlagger strategy, version 2021-03-30
- Author: André Offringa
-
- This strategy is made as generic / easy to tweak as possible, with the most important
-'tweaking' parameters available as variables at the beginning of function 'execute'.
+ Strategy adapted for 8-12 GHz VLA data.
+ Based on the default AOFlagger strategy, version 2021-03-30
+ Author: André Offringa, Ben Colquhoun
 ]]
 
 aoflagger.require_min_version("3.0")
 
-function execute(input)
+function options()
+  opts1 = {
+    ["bands"] = {10,11,12,13,14,15,16},
+    ["execute-function"] = "execute_awr",
+
+  }
+
+  opts2 = {
+    ["bands"] = {23,24,25,27,28,29,30,31},
+    ["execute-function"] = "execute_microwave"
+  }
+
+  opts3 = {
+    ["execute-function"] = "execute_final"
+  }
+
+  return {
+--     ["1 - weather radars"] = opts1,
+--     ["2 - microwave link"] = opts2,
+    ["3 - final sweep"] = opts3
+  }
+end
+
+
+function execute_awr(input)
+    -- 9.3-9.5 GHz (airborne weather radars)
+    trim_rfi(input, 0.75, 0.75)
+end
+
+function execute_microwave(input)
+    -- 10.7-12 GHz (Microwave link + geostationary satellite near 11.7-12 GHz)
+    trim_rfi(input, 0.75, 0.75)
+end
+
+function execute_final(input)
+    -- Run over remaining at the end as cleanup
+    trim_rfi(input, 0.75, 0.75)
+end
+
+function trim_rfi(input, base_threshold, transient_threshold_factor)
   --
   -- Generic settings
   --
@@ -19,7 +56,7 @@ function execute(input)
   -- { 'I', 'Q' } to flag only on Stokes I and Q
   local flag_polarizations = input:get_polarizations()
 
-  local base_threshold = 0.8 -- lower means more sensitive detection
+--   local base_threshold = 0.65 -- lower means more sensitive detection
   -- How to flag complex values, options are: phase, amplitude, real, imaginary, complex
   -- May have multiple values to perform detection multiple times
   local flag_representations = { "amplitude" }
@@ -30,7 +67,7 @@ function execute(input)
   -- flags on input will be flagged on output. If set to false, existing flags are ignored.
   local exclude_original_flags = true
   local frequency_resize_factor = 1.0 -- Amount of "extra" smoothing in frequency direction
-  local transient_threshold_factor = 0.8 -- decreasing this value makes detection of transient RFI more aggressive
+--   local transient_threshold_factor -- decreasing this value makes detection of transient RFI more aggressive
 
   --
   -- End of generic settings
@@ -73,8 +110,8 @@ function execute(input)
 
         -- Do timestep & channel flagging
         local chdata = converted_data:copy()
-        aoflagger.threshold_timestep_rms(converted_data, 3.5)
-        aoflagger.threshold_channel_rms(chdata, 3.0 * threshold_factor, true)
+        aoflagger.threshold_timestep_rms(converted_data, 2.0)
+        aoflagger.threshold_channel_rms(chdata, 1.5 * threshold_factor, true)
         converted_data:join_mask(chdata)
 
         -- High pass filtering steps
@@ -150,11 +187,5 @@ function execute(input)
 
   aoflagger.threshold_timestep_rms(input, 4.0)
 
-  if input:is_complex() and input:has_metadata() then
-    -- This command will calculate a few statistics like flag% and stddev over
-    -- time, frequency and baseline and write those to the MS. These can be
-    -- visualized with aoqplot.
-    aoflagger.collect_statistics(input, copy_of_input)
-  end
   input:flag_nans()
 end
