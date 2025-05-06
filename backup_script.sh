@@ -3,7 +3,7 @@ BACKUP_DIR="/media/benja/T7"
 
 DATA_DEST="$BACKUP_DIR/masters_backup/data"
 IMAGE_DEST="$BACKUP_DIR/masters_backup/image"
-TIMESTAMP_FILE="$BACKUP_DIR/.last_backup"
+TIMESTAMP_FILE=".last_backup"
 
 DRY_RUN=false
 
@@ -23,15 +23,6 @@ echo "✅ Backup destination found: $BACKUP_DIR"
 # Make directories
 mkdir -p "$DATA_DEST" "$IMAGE_DEST"
 
-
-# If no timestamp file, assume this is the first backup and create one
-if [ ! -f "$TIMESTAMP_FILE" ]; then
-    echo "First backup – backing up everything"
-    echo 0 > "$TIMESTAMP_FILE"
-fi
-
-LAST_BACKUP_TIME=$(cat "$TIMESTAMP_FILE")
-
 # Backup Data processing
 for group_path in "$SRC/Data Processing"/*; do
     [ -d "$group_path" ] || continue
@@ -39,6 +30,15 @@ for group_path in "$SRC/Data Processing"/*; do
     echo "Processing group: $group_name"
 
     mkdir -p "$DATA_DEST/$group_name"
+
+    # If no timestamp file, assume this is the first backup and create one
+    TIMESTAMP_PATH="$DATA_DEST/$group_name/$TIMESTAMP_FILE"
+    if [ ! -f "$TIMESTAMP_PATH" ]; then
+        echo "First backup – backing up everything"
+        echo 0 > "$TIMESTAMP_PATH"
+    fi
+    # Set the backup time
+    LAST_BACKUP_TIME=$(cat "$TIMESTAMP_PATH")
 
     for target in "$group_path"/*.ms "$group_path"/*.ms.flagversions; do
         [ -d "$target" ] || continue
@@ -51,6 +51,8 @@ for group_path in "$SRC/Data Processing"/*; do
         if (( MOD_TIME > LAST_BACKUP_TIME )); then
             echo "  Copying modified $target_name -> $dest/$target_name"
             if [ "$DRY_RUN" = false ]; then
+                # Copy the file and set new modified time
+                echo "$MOD_TIME" > "$TIMESTAMP_PATH"
                 rm -rf "$dest/$target_name"
                 cp -a "$target" "$dest/$target_name"
             fi
@@ -100,29 +102,7 @@ done
 
 # Finish up
 if [ "$DRY_RUN" = false ]; then
-    date +%s > "$TIMESTAMP_FILE"
     echo "✅ Incremental backup complete."
 else
     echo "ℹ️ Dry-run complete — no files changed, timestamp not updated."
 fi
-
-#
-# # Backup Image processing
-# echo "Archiving modified files in Image processing..."
-# for cluster_path in "Image Processing"/*/; do
-#     cluster_name=$(basename "$cluster_path")
-#     tar_path="$IMAGE_DEST/${cluster_name}.tar.gz"
-#
-#     echo "=== $(basename "$cluster_path") ==="
-#     find "$cluster_path" -mindepth 1 -type d \( -name "*.ms" -o -name "*.ms.flagversions" \) -newermt "$LAST_BACKUP" \
-#         -exec du -sb {} + | awk '{total += $1} END {printf "Total: %.2f GB\n", total / (1024^3)}'
-#
-#     find "$cluster_path" -mindepth 1 -type d -name \( -name "*.ms" -o -name "*.ms.flagversions" \) -newermt "$LAST_BACKUP" \
-#       | tar -czf "$tar_path" --files-from=- --transform="s|^|./|" --no-recursion
-# done
-#
-# # Update timestamp
-# date -Iseconds > "$TIMESTAMP_FILE"
-# echo "Backup complete. Tarballs saved to $DEST"
-#
-#
