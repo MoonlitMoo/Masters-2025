@@ -33,3 +33,6 @@
 *.mask/
 /Programs/*
 /Data Processing/25A-tab9-pipeline/
+**/*.gc/
+**/*.opac/
+**/*.rq/

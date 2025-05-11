@@ -4,7 +4,7 @@ name=msname[:-3]
 p_calibrator="0137+331=3C48"
 s_calibrator = "J0321+1221"
 
-execfile("../../initial_cal_tools.py")
+execfile("../../cal_tools.py")
 execfile("../../flagging_stats.py")
 
 plotms()
