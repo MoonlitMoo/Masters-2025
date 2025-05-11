@@ -1,14 +1,18 @@
 import os
 import shutil
 
-from casatasks import flagmanager, gencal, plotweather, clearcal, applycal, gaincal, fluxscale, setjy, bandpass
+import matplotlib.pyplot as plt
+import numpy as np
+from casatasks import flagmanager
+from casatools import ms, msmetadata
 
 FLAGGING_STEPS = [
     'base_flagging',
     'primary',
     'primary_2',
     'secondary',
-    'secondary_2'
+    'secondary_2',
+    '2A0335+096'
 ]
 
 def flag_versions(msname):
@@ -44,181 +48,167 @@ def remove_calibration(name, target: str, dry_run=False):
             if not dry_run:
                 shutil.rmtree(full_path)
 
-def apriori_tables(name):
-    """ Returns the apriori gaintables as a list. """
-    cals = [f'{name}.gc', f'{name}.opac', f'{name}.rq']
-    if f'{name}.antpos' in os.listdir(os.getcwd()):
-        cals.append(f'{name}.antpos')
-    return cals
 
-def interp_modes(tables, nearest=None):
-    """ Returns the interp modes for the corresponding gain tables.
-    By default, it uses nearest for bandpass and delay, else linear
+
+def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | str, plot_dir: str,
+                                    top_percent: float=0.001, trim_channels: int=5, debug_plot: bool=False):
     """
-    if nearest is None:
-        nearest = ["B0", "K0"]
-    return ["linear" for t in tables if t.split(".")[-1] not in nearest]
+    Extracts visibility data for a given field and spectral window,
+    computes statistics, and returns the indices of the three sequential
+    channels with the lowest variance.
 
-def secondary_gainfields(tables, name, p_calibrator, s_calibrator):
-    """ Returns the gain fields for the secondary calibration to use. """
-    res = []
-    for t in tables:
-        if t in apriori_tables(name):
-            # If aprior, no field
-            res.append('')
-        else:
-            # Otherwise gain calibrations are secondary
-            ext = t.split('.')[-1]
-            if ext in ['K0', 'B0']:
-                res.append(p_calibrator)
-            else:
-                res.append(s_calibrator)
-    return res
+    Parameters
+    ----------
+    msfile : str
+        Path to the Measurement Set.
+    field : int or str
+        Field index or name.
+    spw : int or str
+        Spectral window index or range.
+    plot_dir : str
+        Folder to output the check plots
+    top_percent : float, default=0.001
+        The percentage to use to calculate the variance, given as a decimal.
+    trim_channels : int, default=5
+        The number of channels to ignore at the edges, while finding the sequential min-var channels
+    debug_plot : bool, default=False
 
 
-def apriori_calibration(msname, name):
-    """ Get the basic calibrations that aren't data-dependent.
-    Removes existing ones before rerunning calibration steps.
+    Returns
+    -------
+    tuple
+        Indices of the three sequential channels with the lowest variance (indices are lowest to highest).
+
     """
-    # Get the gain curve calibration
-    remove_calibration(name, 'gc')
-    gencal(vis=msname, caltable=f'{name}.gc', caltype='gc')
-    # Get the opacity calibration. We specify the spw string because the documentation said it was non-trivial :)
-    remove_calibration(name, 'opac')
-    tau = plotweather(vis=msname, doPlot=True, plotName='plots/weather.png')
-    spw_list = ','.join([str(i) for i in range(32)])
-    gencal(vis=msname, caltable=f'{name}.opac', caltype='opac', spw=spw_list, parameter=tau)
-    # Get the requantisation calibration
-    remove_calibration(name, 'rq')
-    gencal(vis=msname, caltable=f'{name}.rq', caltype='rq')
-    # Get the antenna position calibrations
-    remove_calibration(name, 'antpos')
-    gencal(vis=msname, caltable=f'{name}.antpos', caltype='antpos')
-    print("Finished apriori calibration")
 
-def primary_pre_calibration(msname, name, p_calibrator, refant, spw_string, flag_version=FLAGGING_STEPS[1]):
-    """ Runs all initial calibration steps on the first pass calibrated primary data.
-    Resets to flag version before running.
+    # Open the Measurement Set Metadata
+    msmd_tool = msmetadata()
+    msmd_tool.open(msfile)
+
+    # Get the actual field ID if a name is provided
+    if isinstance(field, str):
+        field_id = msmd_tool.fieldsforname(field)[0]
+    else:
+        field_id = field
+
+    # Get the number of channels for the given spectral window
+    num_channels = msmd_tool.nchan(spw)
+
+    msmd_tool.close()
+
+    # Open the MS tool and select the data
+    ms_tool = ms()
+    ms_tool.open(msfile)
+    ms_tool.selectinit(datadescid=int(spw))
+    ms_tool.select({'field_id': field_id})
+    ms_tool.selectpolarization(["LL", "RR"])
+
+    # Get the data (complex values, take amplitude)
+    raw = ms_tool.getdata(['data', 'flag'])  # Shape: (polarization, channels, time)
+    data = raw['data']
+    flags = raw['flag']
+    ms_tool.close()
+
+    # Remove flagged data by setting to nan
+    data[flags] = np.nan + 1j*np.nan
+
+    # if data.shape[0] < 4:
+    #     raise ValueError("Not enough polarizations in data; expected at least 4.")
+
+    # Convert complex values to amplitude
+    data_amp = np.abs(data)
+
+    # Reshape to only channels
+    data_amp = np.moveaxis(data_amp, 1, 0)  # Move channel axis to first dimension
+    data_reshaped = data_amp.reshape(num_channels, -1)
+
+    # Compute the average of the top .1% of values per channel
+    num_top_values = [max(1, int(top_percent * len(d[~np.isnan(d)]))) for d in data_reshaped]  # Ensure at least 1 value
+    # Compute the variance per channel, filtering nan as we go
+    channel_variances = [np.nanvar(np.partition(d[~np.isnan(d)], -n)[-n:]) for d, n in zip(data_reshaped, num_top_values)]
+    channel_variances = np.nan_to_num(channel_variances, nan=np.inf)
+
+    # Plot debug graphs
+    if debug_plot:
+        plot_selected_points(data_reshaped, num_top_values)
+        plot_channel_distribution(data_reshaped)
+        plot_variances(channel_variances)
+
+    # Find the three sequential channels with the lowest combined variance, ignoring trim channels
+    n_channels_select = 3
+    min_var_idx = np.argmin([
+        np.sum(channel_variances[i:i+n_channels_select]) for i in range(trim_channels, len(channel_variances) - n_channels_select - trim_channels + 1)
+    ])
+    min_var_idx += trim_channels  # Correct for the trim channels
+
+    plot_selected_points(data_reshaped, num_top_values, min_var_idx, f"{field}_{spw}", plot_dir)
+    plt.close()
+    return min_var_idx, min_var_idx + 1, min_var_idx + 2
+
+def plot_selected_points(data, len_top_vals, first_selected_col, title, output_dir):
+    plt.figure(figsize=(10, 6))
+    for i, d in enumerate(data):
+        # Remove NaNs first
+        clean_d = d[~np.isnan(d)]
+        num_top_values = len_top_vals[i]
+        if len(clean_d) <= num_top_values:
+            continue  # Skip if not enough values to partition
+
+        # Use np.partition once and directly slice
+        partitioned = np.partition(clean_d, [-num_top_values, len(clean_d) - num_top_values])
+
+        bottom, top = partitioned[:-num_top_values], partitioned[-num_top_values:]
+
+        # Use NumPy for efficient indexing and avoid redundant list comprehensions
+        x_vals_bottom = np.full(len(bottom), i)
+        x_vals_top = np.full(len(top), i)
+
+        plt.scatter(x_vals_bottom, bottom, c='b', s=5)  # Smaller marker size
+        # Colour selected column for double-checking
+        c = 'g' if i in [j for j in range(first_selected_col, first_selected_col + 3)] else 'r'
+        plt.scatter(x_vals_top, top, c=c, s=5)
+    plt.grid()
+    plt.xlabel("Channel")
+    plt.ylabel("Amplitude")
+    plt.title(f"Field_SPW: {title}")
+    plt.savefig(f"{output_dir}/lowest_variance_{title}.png", dpi=300)
+
+
+def plot_channel_distribution(data_arrays):
     """
-    # Reset flags to 'primary'
-    if flag_version in flag_versions(msname):
-        flagmanager(vis=msname, mode='restore', versionname=flag_version)
-    else:
-        raise ValueError(f"Flagging version '{flag_version}' not found in flagmanager.")
-    # Set the flux model for the primary calibrator
-    setjy(vis=msname, field=p_calibrator, standard='Perley-Butler 2017', model='3C48_X.im',
-          usescratch=True, scalebychan=True)
-    # Get inital phase calibration
-    remove_calibration(name, 'G0')
-    gaincal(vis=msname, caltable=f'{name}.G0', field=p_calibrator, refant=refant, spw=spw_string,
-            gaintype='G', calmode='p', solint='int', minsnr=5, gaintable=apriori_tables(name))
-    # Get the delay calibration
-    remove_calibration(name, 'K0')
-    gaintables = apriori_tables(name) + [f'{name}.G0']
-    gaincal(vis=msname, caltable=f'{name}.K0', field=p_calibrator, refant=refant,
-            spw='*:5~58', gaintype='K', solint='inf', combine='scan', minsnr=5,
-            gaintable=gaintables)
-    # Get the bandpass solution
-    remove_calibration(name, 'B0')
-    gaintables += [f'{name}.K0']
-    bandpass(vis=msname, caltable=f'{name}.B0', field=p_calibrator,
-        refant=refant, combine='scan', solint='inf', bandtype='B',
-        gaintable=gaintables)
-    # Get a better amp + phase solution
-    remove_calibration(name, 'G1')
-    gaintables = apriori_tables(name) + [f'{name}.B0', f'{name}.K0']
-    gaincal(vis=msname, caltable=f'{name}.G1', field=p_calibrator, spw='*:5~58',
-            solint='inf', refant=refant, gaintype='G', calmode='ap', solnorm=False,
-            gaintable=gaintables,
-            interp=interp_modes(gaintables))
+    Plots a violin plot for multiple data arrays.
+
+    Parameters:
+    data_arrays (list of np.ndarray): List of 1D NumPy arrays.
+    """
+    # Create x-axis labels based on array index
+    x_labels = np.arange(len(data_arrays))
+
+    # Create the violin plot
+    plt.figure(figsize=(10, 6))
+    plt.violinplot([d[~np.isnan(d)] for d in data_arrays], positions=x_labels, showmeans=True, showmedians=True)
+
+    # Label the axes
+    plt.xlabel("Channel")
+    plt.ylabel("Amplitude")
+    plt.title("Violin Plot of Multiple Data Arrays")
+
+    # Show the plot
+    plt.grid(True)
+    plt.savefig("../channeldist.png", dpi=300)
 
 
-def primary_post_calibration(msname, name, p_calibrator, refant, flag_version=FLAGGING_STEPS[2]):
-    """ Runs the gain calibration on the final primary calibration. Resets to the given flag version before running. """
-    # Reset flags to 'primary'
-    if flag_version in flag_versions(msname):
-        flagmanager(vis=msname, mode='restore', versionname=flag_version)
-    else:
-        raise ValueError(f"Flagging version '{flag_version}' not found in flagmanager.")
-    # Run the phase only calibration
-    remove_calibration(name, "G1")
-    gaintables = apriori_tables(name) + [f'{name}.B0', f'{name}.K0']
-    gaincal(vis=msname, caltable=f'{name}.G1', field=p_calibrator, spw='*:5~58',
-            solint='inf', refant=refant, gaintype='G', calmode='p', solnorm=False,
-            gaintable=gaintables,
-            interp=interp_modes(gaintables))
-    # Run the phase + amp calibration
-    remove_calibration(name, "G2")
-    gaintables += [f'{name}.G1']
-    gaincal(vis=msname, caltable=f'{name}.G2', field=p_calibrator, spw='*:5~58',
-            solint='inf', refant=refant, gaintype='G', calmode='ap', solnorm=False,
-            gaintable=gaintables,
-            interp=interp_modes(gaintables))
-    # Run the final gain calibration
-    gaincal(vis=msname, caltable=f'{name}.G3', field=p_calibrator, spw='*:5~58',
-            solint='inf', refant=refant, gaintype='G', calmode='ap', solnorm=False,
-            gaintable=gaintables,
-            interp=interp_modes(gaintables))
+def plot_variances(variance):
+    plt.figure()
+    plt.plot([i for i, _ in enumerate(variance)], variance)
+    plt.xlabel("Channel")
+    plt.ylabel("Variance")
+    plt.grid()
+    plt.savefig("../variance.png", dpi=300)
 
-def secondary_pre_calibration(msname, name, p_calibrator, s_calibrator, refant,
-                              flag_version=FLAGGING_STEPS[3], primary_flag_version=FLAGGING_STEPS[2]):
-    primary_post_calibration(msname, name, p_calibrator, refant, primary_flag_version)
-    if flag_version in flag_versions(msname):
-        flagmanager(vis=msname, mode='restore', versionname=flag_version)
-    else:
-        raise ValueError(f"Flagging version '{flag_version}' not found in flagmanager.")
-    # Clear any calibration in s_calibrator for cleanup
-    clearcal(vis=msname, field=s_calibrator)
-    # Extend the phase calibration, use interp as the default linear
-    gaintables = apriori_tables(name) + [f'{name}.B0', f'{name}.K0']
-    gaincal(vis=msname, caltable=f'{name}.G1', field=s_calibrator,
-            spw='*:5~58', solint='int', refant=refant, gaintype='G', calmode='p',
-            gaintables=gaintables, append=True)
-    # Get the phase + amp calibration to create the flux model
-    gaintables += [f'{name}.G1']
-    gaincal(vis=msname, caltable=f'{name}.G2', field=s_calibrator,
-            spw='*:5~58', solint='inf', refant=refant, gaintype='G', calmode='ap',
-            gaintable=gaintables,
-            gainfield=secondary_gainfields(gaintables, name, p_calibrator, s_calibrator),
-            interp=interp_modes(gaintables),
-            append=True)
-    # Add the fluxmodel to secondary calibrator
-    remove_calibration(name, "fluxscale1")
-    myscale = fluxscale(vis=msname, caltable=f'{name}.G2', fluxtable=f'{name}.fluxscale1',
-                        reference=p_calibrator, transfer=[s_calibrator],
-                        incremental=False)
-    setjy(vis=msname, field=s_calibrator, standard='fluxscale', fluxdict=myscale)
-    # Create the final gain calibration
-    gaincal(vis=msname, caltable=f'{name}.G3', field=s_calibrator,
-            spw='*:5~58', solint='inf', refant=refant, gaintype='G', calmode='ap',
-            gaintable=gaintables,
-            gainfield=secondary_gainfields(gaintables, name, p_calibrator, s_calibrator),
-            interp=interp_modes(gaintables),
-            append=True)
-
-
-def secondary_post_calibration(msname, name, p_calibrator, s_calibrator, refant, flag_version=FLAGGING_STEPS[4], primary_flag_version=FLAGGING_STEPS[2]):
-    """ Re-runs the secondary calibration using the post flagged secondary version. """
-    secondary_pre_calibration(msname, name, p_calibrator, s_calibrator, refant, flag_version, primary_flag_version)
-
-def apply_initial_calibration(msname, name, p_calibrator):
-    """ Applies initial calibration to the primary calibrator. """
-    gaintables = apriori_tables(name) + [f'{name}.K0', f'{name}.B0', f'{name}.G1']
-    applycal(vis=msname, field=p_calibrator,
-             gaintable=gaintables,
-             interp=interp_modes(gaintables),
-             calwt=False, flagbackup=False)
-
-def apply_calibration(msname, name, field, p_calibrator, s_calibrator=None):
-    """ Applies full calibration to given field. """
-    gaintables = apriori_tables(name) + [f'{name}.G3', f'{name}.G1', f'{name}.K0', f'{name}.B0']
-    if s_calibrator is not None:
-        gainfield = secondary_gainfields(gaintables, name, p_calibrator, s_calibrator)
-    else:
-        gainfield = ['' for _ in gaintables]
-    interp = interp_modes(gaintables)
-    applycal(vis=msname, field=field,
-             gaintable=gaintables,
-             gainfield=gainfield,
-             interp=interp,
-             calwt=False, flagbackup=False)
+def get_initial_cal_spw_string(msname: str, field: int, spw: list, plot_dir, trim_channels=5):
+    select_strings = []
+    for i in spw:
+        result = select_lowest_variance_channels(msname, field, i, plot_dir, trim_channels=trim_channels)
+        select_strings.append(f"{i}:{result[0]}~{result[-1]}")
+    return ",".join(select_strings)
