@@ -42,3 +42,8 @@
 *.g/
 *.g/
 *.g/
+**/pipeline-*
+**/pipeline_aquareport.xml
+**/flux.csv
+**/casa_piperestorescript.py
+**/products/

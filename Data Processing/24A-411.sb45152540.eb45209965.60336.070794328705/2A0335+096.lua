@@ -23,8 +23,8 @@ function options()
   }
 
   return {
---     ["1 - weather radars"] = opts1,
---     ["2 - microwave link"] = opts2,
+    ["1 - weather radars"] = opts1,
+    ["2 - microwave link"] = opts2,
     ["3 - final sweep"] = opts3
   }
 end
@@ -32,17 +32,17 @@ end
 
 function execute_awr(input)
     -- 9.3-9.5 GHz (airborne weather radars)
-    trim_rfi(input, 1.0, 1.0)
+    trim_rfi(input, 0.8, 0.8)
 end
 
 function execute_microwave(input)
     -- 10.7-12 GHz (Microwave link + geostationary satellite near 11.7-12 GHz)
-    trim_rfi(input, 1.5, 1.5)
+    trim_rfi(input, 0.8, 0.8)
 end
 
 function execute_final(input)
     -- Run over remaining at the end as cleanup
-    trim_rfi(input, 3.0, 3.0)
+    trim_rfi(input, 2.0, 2.0)
 end
 
 function trim_rfi(input, base_threshold, transient_threshold_factor)
