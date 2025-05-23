@@ -50,7 +50,7 @@ def remove_calibration(name, target: str, dry_run=False):
 
 
 
-def select_lowest_variance_channels(msfile: str, field: int | str, spw: int | str, plot_dir: str,
+def select_lowest_variance_channels(msfile: str, field, spw, plot_dir: str,
                                     top_percent: float=0.001, trim_channels: int=5, debug_plot: bool=False):
     """
     Extracts visibility data for a given field and spectral window,
