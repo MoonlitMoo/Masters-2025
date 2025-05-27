@@ -1,5 +1,5 @@
-SRC="/home/benja/Desktop/Masters"
-BACKUP_DIR="/media/benja/T7"
+SRC="/home/benc/Desktop/Masters"
+BACKUP_DIR="/media/benc/T7"
 
 DATA_DEST="$BACKUP_DIR/masters_backup/data"
 IMAGE_DEST="$BACKUP_DIR/masters_backup/image"

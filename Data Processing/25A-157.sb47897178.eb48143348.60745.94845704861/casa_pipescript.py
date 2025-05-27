@@ -7,7 +7,7 @@ try:
     hifv_flagdata(hm_tbuff='1.5int', fracspw=0.01, intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
     hifv_vlasetjy()
     hifv_priorcals(show_tec_maps=False)
-    hifv_aoflagger(flag_target='0137+331=3C48', aoflagger_file='0137+331=3C48.lua')
+    hifv_aoflagger(flag_target='2', aoflagger_file='0137+331=3C48.lua')
     hifv_testBPdcals()
     hifv_semiFinalBPdcals()
     hifv_aoflagger(flag_target='0', aoflagger_file='J0424+0204.lua')
