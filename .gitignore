@@ -47,3 +47,4 @@
 **/flux.csv
 **/casa_piperestorescript.py
 **/products/
+**/*.flagcmds.txt
