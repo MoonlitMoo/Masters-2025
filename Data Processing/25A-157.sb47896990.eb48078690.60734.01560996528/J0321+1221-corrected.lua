@@ -32,7 +32,7 @@ end
 
 function execute_awr(input)
     -- 9.3-9.5 GHz (airborne weather radars)
-    trim_rfi(input, 0.8, 0.8)
+    trim_rfi(input, 1.0, 1.0)
 end
 
 function execute_microwave(input)

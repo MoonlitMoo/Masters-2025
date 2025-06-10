@@ -1,0 +1,26 @@
+# This CASA pipescript is meant for use with CASA 6.6.1 and pipeline 2024.1.0.8
+context = h_init()
+context.set_state('ProjectSummary', 'observatory', 'Karl G. Jansky Very Large Array')
+context.set_state('ProjectSummary', 'telescope', 'EVLA')
+try:
+    hifv_importdata(vis=['25A-157.sb47896990.eb48078690.60734.01560996528.ms'])
+    hifv_flagdata(hm_tbuff='1.5int', fracspw=0.01, intents='*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
+    hifv_vlasetjy()
+    hifv_priorcals(show_tec_maps=False)
+    hifv_aoflagger(flag_target='"0137+331=3C48"', aoflagger_file='0137+331=3C48.lua')
+    hifv_testBPdcals()
+    hifv_semiFinalBPdcals()
+    hifv_aoflagger(flag_target='J0321+1221', aoflagger_file='J0321+1221.lua')
+    hifv_solint()
+    hifv_fluxboot()
+#    hifv_aoflagger(flag_target='"0137+331=3C48"', aoflagger_file='0137+331=3C48-corrected.lua', use_corrected=True)
+#    hifv_aoflagger(flag_target='J0321+1221', aoflagger_file='J0321+1221-corrected.lua', use_corrected=True)
+#    hifv_finalcals()
+#    hifv_applycals()
+#    hifv_aoflagger(flag_target='2A0335+096', aoflagger_file='2A0335+096.lua', use_corrected=True)
+#    hifv_statwt()
+#    hifv_plotsummary()
+#    hifv_exportdata()
+finally:
+    h_save()
+
