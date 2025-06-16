@@ -92,6 +92,9 @@ def check_flagging(msname, base_flag_file='base_flag.json', output_dir='plots'):
     # Step 3: Per-field comparisons
     base_fields = [k.split("_")[1] for k in base_stats.keys()]
     for field_id in sorted(base_fields):
+        if f"field_{field_id}" not in current_stats:
+            print(f"WARNING: ''{field_id}' not found in current dataset")
+            continue
         plot_comparison(base_stats[f"field_{field_id}"]['spw'],
                         current_stats[f"field_{field_id}"]['spw'],
                         f'Field {field_id} - Flagging by SPW',
@@ -106,8 +109,8 @@ def check_flagging(msname, base_flag_file='base_flag.json', output_dir='plots'):
 
 
     # Step 4: All-field comparison
-    base_field_flags = {field_id: base_stats[f'field_{field_id}']['total'] for field_id in base_fields}
-    cur_field_flags = {field_id: current_stats[f'field_{field_id}']['total'] for field_id in base_fields}
+    base_field_flags = {field_id: base_stats[f'field_{field_id}']['total'] for field_id in base_fields if f"field_{field_id}" in current_stats}
+    cur_field_flags = {field_id: current_stats[f'field_{field_id}']['total'] for field_id in base_fields if f"field_{field_id}" in current_stats}
 
     plot_comparison(base_field_flags,
                     cur_field_flags,
