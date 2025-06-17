@@ -37,7 +37,7 @@ end
 
 function execute_microwave(input)
     -- 10.7-12 GHz (Microwave link + geostationary satellite near 11.7-12 GHz)
-    trim_rfi(input, 0.9, 0.9)
+    trim_rfi(input, 0.8, 0.8)
 end
 
 function execute_final(input)
