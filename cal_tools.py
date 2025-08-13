@@ -49,6 +49,44 @@ def remove_calibration(name, target: str, dry_run=False):
                 shutil.rmtree(full_path)
 
 
+def self_calibrate(iteration: int, antenna: str, source: str = None, dest: str = None):
+    """  Runs self calibration for an image.
+    Uses iteration to define what previous dataset to read from. Can alter source + dest if necessary.
+
+    Parameters
+    ----------
+    iteration : int
+        What iteration of self calibration this is
+    antenna : str
+        The refant to use
+    source : str, default=None
+        The source suffix to use, default interprets from iteration.
+    dest : str, default=None
+        The dest suffix to use, default interprets from iteration.
+    """
+    prefixes = ["cconfig", "dconfig1", "dconfig2"]
+    # Set up inputs and outputs
+    if iteration == 0:
+        data_in = ["cconfig.ms", "dconfig_1.ms", "dconfig_2.ms"]
+    elif source is None:
+        last_iter = iteration - 1
+        data_in = [f"{p}-p{last_iter}.ms" for p in prefixes]
+    else:
+        data_in = [f"{p}{source}.ms" for p in prefixes]
+    if dest is None:
+        data_out = [f"{p}-p{iteration}" for p in prefixes]
+    else:
+        data_out = [f"{p}{dest}" for p in prefixes]
+
+    # Run gaincals
+    for v, o in zip(data_in, data_out):
+        gaincal(vis=v, caltable=o,
+            solint='inf', refant=antenna, gaintype='G', calmode='p', solnorm=False)
+    # Run apply and split
+    for v, o in zip(data_in, data_out):
+        applycal(vis=v, gaintable=[o])
+        split(vis=v, outputvis=f'{o}.ms', datacolumn='corrected')
+
 
 def select_lowest_variance_channels(msfile: str, field, spw, plot_dir: str,
                                     top_percent: float=0.001, trim_channels: int=5, debug_plot: bool=False):
