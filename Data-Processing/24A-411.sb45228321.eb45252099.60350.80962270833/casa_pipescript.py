@@ -17,7 +17,7 @@ try:
     hifv_fluxboot()
     hifv_finalcals()
     hifv_applycals()
-    hifv_aoflagger(flag_target='RXJ2129+005', aoflagger_file='light.lua')
+    hifv_aoflagger(flag_target='RXJ2129+0005', aoflagger_file='light.lua')
     hifv_aoflagger(flag_target='A2626', aoflagger_file='light.lua')
     hifv_aoflagger(flag_target='ACTJ0022-0036', aoflagger_file='light.lua')
     hifv_statwt()
