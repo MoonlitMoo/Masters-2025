@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 from casatasks import tclean, imfit, impbcor, imhead
 
@@ -30,7 +31,7 @@ def run_clean(dataset: str, imagename: str, uvrange: str):
 
 # In klambda
 # uv_cutoffs = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36]
-uv_cutoffs = [0, 5, 10, 15, 20, 25, 30]
+uv_cutoffs = [0, 5, 10, 12, 14, 15, 16, 18, 20, 25, 30]
 logs = []
 for data in DATASETS:
     logset = []
@@ -57,20 +58,26 @@ for data in DATASETS:
 
 
 def read_log_value(l):
-    values = l.split(":")[-1].split("mJy")[0].split("+/-")
-    values = [float(v.strip()) for v in values]
-    return values
+    """ Returns the flux in mJy. """
+    pattern = ".*:\s*([\d.]+)\s*\+/-\s*([\d.]+)\s*(?:[um]Jy(?:/beam)?)?"
+    if "mJy" not in l and "uJy" not in l:
+        print(f"Unknown flux scale in {l}")
+        return np.nan, np.nan
+    scale = 1 if "mJy" in l else 1/1000
+
+    match = re.match(pattern, l)
+    return [float(v) * scale for v in match.groups()]
 
 
 # Plot the results
-plt.figure()
+all_flux = {}
+fig, (ax1, ax2) = plt.subplots(1, 2)
 for data_logset, data_name, c in zip(logs, DATASETS, ['C0', 'C1', 'C2']):
     # Pull the results for each configuration.
     peak_fluxes = []
     peak_flux_errors = []
     integrated_fluxes = []
     integrated_flux_errors = []
-
     for log in data_logset:
         with open(log, "r") as f:
             for l in f.readlines():
@@ -82,12 +89,27 @@ for data_logset, data_name, c in zip(logs, DATASETS, ['C0', 'C1', 'C2']):
                     f, e = read_log_value(l)
                     integrated_fluxes.append(f)
                     integrated_flux_errors.append(e)
+                elif "*** FIT FAILED ***" in l:
+                    peak_fluxes.append(np.nan)
+                    peak_flux_errors.append(np.nan)
+                    integrated_fluxes.append(np.nan)
+                    integrated_flux_errors.append(np.nan)
+    all_flux[f"{data_name}_peak"] = np.array(peak_fluxes)
+    all_flux[f"{data_name}_peak_err"] = np.array(peak_flux_errors)
+    all_flux[f"{data_name}_integrated"] = np.array(integrated_fluxes)
+    all_flux[f"{data_name}_integrated_err"] = np.array(integrated_flux_errors)
 
-    plt.errorbar(uv_cutoffs, peak_fluxes, yerr=peak_flux_errors, fmt='o-', color=c, label=f"{data_name} Peak (mJy/beam)")
-    plt.errorbar(uv_cutoffs, integrated_fluxes, yerr=integrated_flux_errors, fmt='s--', color=c, label=f"{data_name} Integrated (mJy)")
+    # Plot absolute values
+    ax1.errorbar(uv_cutoffs, peak_fluxes, yerr=peak_flux_errors, fmt='o-', color=c, label=f"{data_name} Peak (mJy/beam)")
+    ax1.errorbar(uv_cutoffs, integrated_fluxes, yerr=integrated_flux_errors, fmt='s--', color=c, label=f"{data_name} Integrated (mJy)")
 
-plt.xlabel("uv min cut (kλ)")
-plt.ylabel("Flux density")
+# Plot vs cconfig
+ax2.plot(uv_cutoffs, all_flux["dconfig1-p5.ms_peak"]/all_flux["cconfig-p5.ms_peak"] - 1, label="dconfig1")
+ax2.plot(uv_cutoffs, all_flux["dconfig2-p5.ms_peak"]/all_flux["cconfig-p5.ms_peak"] - 1, label="dconfig2")
+
+fig.supxlabel("uv min cut (kλ)")
+ax2.set_ylabel("Flux density (mJy)")
+ax2.set_ylabel("Relative flux density to C config")
 plt.title("RXJ1720+2638 AGN fit vs uv-range cut")
 plt.grid(True, which='both', alpha=0.25)
 plt.legend()
