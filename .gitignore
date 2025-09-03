@@ -51,3 +51,5 @@
 **/final_field1_gain_good_spw_avged/
 **/bptable_fitted.b/
 **/testphase_inf_b_allspw.b/
+**/*.cl
+**/*rtf
