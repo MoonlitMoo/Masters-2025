@@ -1,145 +1,72 @@
-import numpy as np
-from scipy import ndimage as ndi
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
 
-img_name = "minihalo_r=1.5_ssb=0.image.tt0"
 OUTPUT_DIR = "flux_images"
-
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def contour_sum(data, level, *, seed=None, pick='largest',
-                     connectivity=1, fill_holes=True, valid_mask=None):
-    """
-    Sum pixels/voxels inside thresholded connected regions.
-    Created via ChatGPT.
+images = sorted([f for f in os.listdir() if ".image.tt0" in f])
+flux = []
+sigma = []
 
-    Parameters
-    ----------
-    data : ndarray
-        From ia.getchunk() or a numpy array. Can be (ny, nx) or (nz, ny, nx),
-        or with extra singleton axes (they'll be squeezed).
-    level : float
-        Threshold.
-    seed : tuple | None
-        Index inside the desired region. (y,x) for 2D or (z,y,x) for 3D when pick='seed'.
-    pick : {'largest', 'seed', 'all'}
-        Selection strategy for components.
-    connectivity : {1, 2} for 2D, {1, 2, 3} for 3D
-        Neighborhood definition; higher = more connected.
-    fill_holes : bool
-        Fill internal holes in the binary mask.
-    valid_mask : ndarray[bool] | None
-        Optional mask (same shape as data before squeeze or broadcastable).
-
-    Returns
-    -------
-    total : float
-        Sum of data inside the selected region(s).
-    mask_sel : ndarray[bool]
-        Boolean mask (same shape as squeezed data) of selected pixels/voxels.
-    info : dict
-        {'ndim': 2 or 3, 'n_components': int, 'component_size': int or array, 'level': float}
-    """
-    a = np.asarray(data)
-    a = np.squeeze(a)  # drop Stokes=1, Freq=1 if present
-    if valid_mask is None:
-        valid_mask = np.isfinite(a)
-    else:
-        valid_mask = np.squeeze(valid_mask) & np.isfinite(a)
-
-    if a.ndim not in (2, 3):
-        raise ValueError(f"Expected 2D or 3D after squeeze, got shape {a.shape} (ndim={a.ndim}).")
-
-    # Threshold
-    thr = (a >= level) & valid_mask
-
-    # Optional hole fill
-    if fill_holes:
-        thr = ndi.binary_fill_holes(thr)
-
-    # Build structure matching array rank
-    structure = ndi.generate_binary_structure(a.ndim, connectivity)
-
-    # Label connected components
-    labels, nlab = ndi.label(thr, structure=structure)
-
-    # No labels means we return empty
-    if nlab == 0:
-        z = np.zeros_like(thr, bool)
-        return 0.0, z, {'ndim': int(a.ndim), 'n_components': 0, 'component_size': 0, 'level': float(level)}
-
-    # Select components
-    if pick == 'all':
-        mask_sel = thr
-        comp_sizes = np.bincount(labels.ravel())[1:]  # exclude background
-    elif pick == 'largest':
-        counts = np.bincount(labels.ravel())
-        counts[0] = 0  # Ignore background
-        lab_id = counts.argmax()
-        mask_sel = (labels == lab_id)
-        comp_sizes = int(mask_sel.sum())
-    elif pick == 'seed':
-        if seed is None:
-            raise ValueError("pick='seed' requires a seed index: (y,x)")
-        lab_id = labels[seed]
-        if lab_id == 0:
-            z = np.zeros_like(thr, bool)
-            return 0.0, z, {'ndim': int(a.ndim), 'n_components': int(nlab), 'component_size': 0, 'level': float(level)}
-        mask_sel = (labels == lab_id)
-        comp_sizes = int(mask_sel.sum())
-    else:
-        raise ValueError("pick must be 'largest', 'seed', or 'all'.")
-
-    total = float(a[mask_sel].sum())
-    return total, mask_sel, {'ndim': int(a.ndim), 'n_components': int(nlab), 'component_size': comp_sizes, 'level': float(level)}
+for im in images:
+    out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked.image.tt0'
+    f, s = get_minihalo_flux_density(im, out_img)
+    flux.append(f)
+    sigma.append(s)
 
 
+# Plotting via ChatGPT
+pat = re.compile(r"r=([\-0-9.]+)_ssb=([\-0-9.]+)")
+rows = []
+for fname, flux_jy, rms in zip(images, flux, sigma):
+    m = pat.search(fname)
+    if not m:
+        raise ValueError(f"Could not parse r/ssb from: {fname}")
+    r = float(m.group(1).rstrip("."))
+    ssb = float(m.group(2).rstrip("."))
+    rows.append({"file": fname, "robust": r, "ssb": ssb,
+                 "flux_jy": float(flux_jy), "rms_jyb": float(rms)})
 
+df = pd.DataFrame(rows)
 
-def get_minihalo_flux_density(image: str):
-    """ Gets the minihalo flux density from an image.
+# Ensure we have the 3×3 grid (sorted for nice axes)
+robust_vals = sorted(df["robust"].unique())
+ssb_vals = sorted(df["ssb"].unique())
 
-    Parameters
-    ----------
-    image : str
-        The image to use
+def pivot_metric(metric_col):
+    p = df.pivot(index="ssb", columns="robust", values=metric_col)
+    # Reindex to guarantee consistent order on axes
+    p = p.reindex(index=ssb_vals, columns=robust_vals)
+    return p
 
-    Returns
-    -------
-    flux : float
-        The flux density of the minihalo
-    sigma : float
-        The sigma used for the thresholding of the minihalo
-    """
-    # Load the image
-    ia.open(img_name)
-    pix = ia.getchunk()
-    ia.close()
+flux_grid = pivot_metric("flux_jy")
+rms_grid  = pivot_metric("rms_jyb")
+score_grid = flux_grid / rms_grid  # heuristic only; label clearly as unitless
 
-    # Get sigma and flux
-    res = imstat(img_name)
-    sigma = res["sigma"][0]
+# ---------- PLOTTING ----------
+def annotate_cells(ax, grid, fmt="{:.3g}"):
+    for (i, j), val in np.ndenumerate(grid.values):
+        ax.text(j, i, fmt.format(val), ha="center", va="center", fontsize=10)
 
-    # Get minihalo flux
-    _, mask, _ = contour_sum(pix, 3*sigma, pick='largest')
+def heatmap(ax, grid, title, cbar_label, fmt="{:.3g}"):
+    im = ax.imshow(grid.values, origin="upper", aspect="equal")
+    cbar = plt.colorbar(im, ax=ax, shrink=0.85)
+    cbar.set_label(cbar_label)
+    ax.set_title(title)
+    ax.set_xlabel("Robust")
+    ax.set_ylabel("Small-scale bias")
+    ax.set_xticks(range(len(grid.columns)))
+    ax.set_xticklabels([f"{c:g}" for c in grid.columns])
+    ax.set_yticks(range(len(grid.index)))
+    ax.set_yticklabels([f"{r:g}" for r in grid.index])
+    annotate_cells(ax, grid, fmt=fmt)
 
-    # Save minihalo flux image
-    output_image = f'{OUTPUT_DIR}/{image.split(".image.")[0]}_masked.image.tt0'
-    if os.path.exists(output_image):
-        os.system(f'rm -r {output_image}')
-    os.system(f'cp -r {image} {output_image}')
+fig, axes = plt.subplots(1, 2, figsize=(8, 4), constrained_layout=True)
 
-    # Save minihalo flux
-    pix[~mask] = 0.
-    ia.open(output_image)
-    ia.putchunk(pix)
-    ia.close()
+heatmap(axes[0], flux_grid,  "Integrated Flux",        "Jy",        fmt="{:.3g}")
+heatmap(axes[1], rms_grid,   "Image RMS",              "Jy/beam",   fmt="{:.2e}")
 
-    # Get the flux density
-    res = imstat(output_image)
-
-    return res["flux"][0], sigma
-
-
-t, s = get_minihalo_flux_density(img_name)
-print(f"Image std: {s:.3e} Jy/beam")
-print(f"Minihalo flux: {t:.3e} Jy")
+plt.tight_layout()
+plt.show()
+plt.savefig("flux_comparison.png", dpi=300)
