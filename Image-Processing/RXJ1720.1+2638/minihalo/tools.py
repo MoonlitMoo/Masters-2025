@@ -97,9 +97,9 @@ def get_minihalo_flux_density(image: str, output_image: str, cleanup=False):
     Parameters
     ----------
     image : str
-        The image to use
+        The image to use (without .image.tt0 suffix)
     output_image : str
-        The path to use for the masked image.
+        The path to use for the masked image (without .image.tt0 suffix).
     cleanup : bool, default=False
         Whether to remove the masked image at the end.
 
@@ -110,33 +110,37 @@ def get_minihalo_flux_density(image: str, output_image: str, cleanup=False):
     sigma : float
         The sigma used for the thresholding of the minihalo
     """
+    image_file = f"{image}.image.tt0"
+    residual_file = f"{image}.residual.tt0"
+    output_file = f"{output_image}.image.tt0"
+
     # Load the image
-    ia.open(image)
+    ia.open(image_file)
     pix = ia.getchunk()
     ia.close()
 
     # Get sigma and flux
-    res = imstat(image)
+    res = imstat(residual_file)
     sigma = res["sigma"][0]
 
     # Get minihalo flux
     _, mask, _ = contour_sum(pix, 3*sigma, pick='largest')
 
     # Save minihalo flux image
-    if os.path.exists(output_image):
-        os.system(f'rm -r {output_image}')
-    os.system(f'cp -r {image} {output_image}')
+    if os.path.exists(output_file):
+        os.system(f'rm -r {output_file}')
+    os.system(f'cp -r {image_file} {output_file}')
 
     # Save minihalo flux
     pix[~mask] = 0.
-    ia.open(output_image)
+    ia.open(output_file)
     ia.putchunk(pix)
     ia.close()
 
     # Get the flux density
-    res = imstat(output_image)
+    res = imstat(output_file)
 
     if cleanup:
-        os.system(f'rm -r {output_image}')
+        os.system(f'rm -r {output_file}')
 
     return res["flux"][0], sigma

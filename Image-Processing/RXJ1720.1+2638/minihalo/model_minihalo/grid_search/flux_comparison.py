@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 OUTPUT_DIR = "flux_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-images = sorted([f for f in os.listdir() if ".image.tt0" in f])
+images = sorted([f.split(".image.tt0")[0] for f in os.listdir() if ".image.tt0" in f])
 flux = []
 sigma = []
 
 for im in images:
-    out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked.image.tt0'
+    out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked'
     f, s = get_minihalo_flux_density(im, out_img)
     flux.append(f)
     sigma.append(s)
@@ -64,9 +64,8 @@ def heatmap(ax, grid, title, cbar_label, fmt="{:.3g}"):
 
 fig, axes = plt.subplots(1, 2, figsize=(8, 4), constrained_layout=True)
 
-heatmap(axes[0], flux_grid,  "Integrated Flux",        "Jy",        fmt="{:.3g}")
-heatmap(axes[1], rms_grid,   "Image RMS",              "Jy/beam",   fmt="{:.2e}")
+heatmap(axes[0], flux_grid*1e3, "Integrated Flux", "mJy", fmt="{:1.2f}")
+heatmap(axes[1], rms_grid*1e6, "Image RMS", "uJy/beam", fmt="{:1.2f}")
 
-plt.tight_layout()
-plt.show()
 plt.savefig("flux_comparison.png", dpi=300)
+plt.show()
