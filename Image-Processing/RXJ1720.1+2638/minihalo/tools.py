@@ -91,7 +91,7 @@ def contour_sum(data, level, *, seed=None, pick='largest',
 
 
 
-def get_minihalo_flux_density(image: str, output_image: str, cleanup=False):
+def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup=False):
     """ Gets the minihalo flux density from an image.
 
     Parameters
@@ -100,6 +100,8 @@ def get_minihalo_flux_density(image: str, output_image: str, cleanup=False):
         The image to use (without .image.tt0 suffix)
     output_image : str
         The path to use for the masked image (without .image.tt0 suffix).
+    mask : ndarray, default = None
+        An optional mask to use instead of calculating the contour.
     cleanup : bool, default=False
         Whether to remove the masked image at the end.
 
@@ -124,7 +126,8 @@ def get_minihalo_flux_density(image: str, output_image: str, cleanup=False):
     sigma = res["sigma"][0]
 
     # Get minihalo flux
-    _, mask, _ = contour_sum(pix, 3*sigma, pick='largest')
+    if mask is None:
+        _, mask, _ = contour_sum(pix, 3*sigma, pick='largest')
 
     # Save minihalo flux image
     if os.path.exists(output_file):
