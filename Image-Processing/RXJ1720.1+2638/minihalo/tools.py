@@ -108,42 +108,62 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup
     Returns
     -------
     flux : float
-        The flux density of the minihalo
+        The flux density of the minihalo in Jy
+    error : float
+        The approximated error of the flux density in Jy
     sigma : float
-        The sigma used for the thresholding of the minihalo
+        The sigma used for the thresholding of the minihalo in Jy
     """
     image_file = f"{image}.image.tt0"
     residual_file = f"{image}.residual.tt0"
     output_file = f"{output_image}.image.tt0"
 
-    # Load the image
+    # Get data from the image file. We need the raw data, beam area (in arcsec2), and the intensity around the agn.
     ia.open(image_file)
+    beam_area = ia.beamarea()['arcsec2']
     pix = ia.getchunk()
+    # Estimate the agn region as a square the same area as the beam.
+    agn_region = f"centerbox [[17:20:09.99310, +026.37.29.7263], [{np.sqrt(beam_area)}arcsec, {np.sqrt(beam_area)}arcsec]]"
+    minihalo_agn_flux = np.average(ia.getregion(region=agn_region))
     ia.close()
 
-    # Get sigma and flux
+    # Get the RMS using the residuals.
     res = imstat(residual_file)
     sigma = res["sigma"][0]
 
-    # Get minihalo flux
+    # Get a 3sigma mask to use for the flux calculation if not given.
     if mask is None:
         _, mask, _ = contour_sum(pix, 3*sigma, pick='largest')
 
-    # Save minihalo flux image
+    # Save minihalo flux image for the flux calculation.
     if os.path.exists(output_file):
         os.system(f'rm -r {output_file}')
     os.system(f'cp -r {image_file} {output_file}')
-
-    # Save minihalo flux
     pix[~mask] = 0.
     ia.open(output_file)
     ia.putchunk(pix)
     ia.close()
 
-    # Get the flux density
+    # Get the flux density from the masked image.
     res = imstat(output_file)
+    flux = res["flux"][0]
+
+    # Calculate the error following G14.
+    # Calibration error is ~5%, multiply that to result to get effect on the flux
+    cal_error = 0.05 * flux
+    # Noise per beam weighted by number of beams. Pixel size is constant, but we need to calculate the area of the mask.
+    pixel_area = 0.5 ** 2
+    n_beams = (np.sum(mask) * pixel_area) / beam_area
+    noise_error = sigma * np.sqrt(n_beams)
+    # AGN subtraction error using the average intensity in the region and the approximate area.
+    # Using the G14 agn size as <1.4 kpc this is ~0.5", amusing same as pixel. Maybe use beam size instead?
+    agn_area = 0.5 ** 2
+    sub_error = minihalo_agn_flux * agn_area
+    error = np.sqrt(cal_error ** 2 + noise_error ** 2 + sub_error ** 2)
+    # print(f"Flux {flux:1.2e} +/- {error:1.2e}")
+    # print(f"cal error: {cal_error}, noise error: {noise_error}, sub_error: {sub_error}")
 
     if cleanup:
         os.system(f'rm -r {output_file}')
 
-    return res["flux"][0], sigma
+    return flux, error, sigma
