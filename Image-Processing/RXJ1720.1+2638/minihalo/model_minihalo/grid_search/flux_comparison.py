@@ -38,24 +38,26 @@ print(f"Using mask from image {images[sel_index]}")
 
 # Get the now comparable fluxes.
 flux = []
+error = []
 sigma = []
 for im in images:
     out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked'
-    f, s = get_minihalo_flux_density(im, out_img, mask=base_mask)
+    f, e, s = get_minihalo_flux_density(im, out_img, mask=base_mask)
     flux.append(f)
+    error.append(e)
     sigma.append(s)
 
 # Plotting via ChatGPT
 pat = re.compile(r"r=([\-0-9.]+)_ssb=([\-0-9.]+)")
 rows = []
-for fname, flux_jy, rms in zip(images, flux, sigma):
+for fname, flux_jy, error_jy, rms in zip(images, flux, error, sigma):
     m = pat.search(fname)
     if not m:
         raise ValueError(f"Could not parse r/ssb from: {fname}")
     r = float(m.group(1).rstrip("."))
     ssb = float(m.group(2).rstrip("."))
     rows.append({"file": fname, "robust": r, "ssb": ssb,
-                 "flux_jy": float(flux_jy), "rms_jyb": float(rms)})
+                 "flux_jy": float(flux_jy), "error_jy": float(error_jy), "rms_jyb": float(rms)})
 
 df = pd.DataFrame(rows)
 
@@ -70,6 +72,7 @@ def pivot_metric(metric_col):
     return p
 
 flux_grid = pivot_metric("flux_jy")
+err_grid = pivot_metric("error_jy")
 rms_grid  = pivot_metric("rms_jyb")
 score_grid = flux_grid / rms_grid  # heuristic only; label clearly as unitless
 
@@ -78,10 +81,30 @@ def annotate_cells(ax, grid, fmt="{:.3g}"):
     for (i, j), val in np.ndenumerate(grid.values):
         ax.text(j, i, fmt.format(val), ha="center", va="center", fontsize=10)
 
-def heatmap(ax, grid, title, cbar_label, fmt="{:.3g}"):
+def heatmap(ax, grid, title, cbar_label, fmt="{:.3g}", err=None, err_fmt="{:.2g}", split_lines=False):
+    """
+    Plot a heatmap of `grid` and annotate each cell with its value (and ±error if provided).
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+    grid : pandas.DataFrame
+        2D table of values (rows = 'Small-scale bias', cols = 'Robust').
+    title : str
+    cbar_label : str
+    fmt : str
+        Format string for values, e.g. "{:.3g}".
+    err : pandas.DataFrame or None
+        Optional errors with identical shape and index/columns to `grid`.
+    err_fmt : str
+        Format string for errors, e.g. "{:.2g}".
+    split_lines : bool
+        If True, write value and error on separate lines.
+    """
     im = ax.imshow(grid.values, origin="upper", aspect="equal")
     cbar = plt.colorbar(im, ax=ax, shrink=0.85)
     cbar.set_label(cbar_label)
+
     ax.set_title(title)
     ax.set_xlabel("Robust")
     ax.set_ylabel("Small-scale bias")
@@ -89,7 +112,34 @@ def heatmap(ax, grid, title, cbar_label, fmt="{:.3g}"):
     ax.set_xticklabels([f"{c:g}" for c in grid.columns])
     ax.set_yticks(range(len(grid.index)))
     ax.set_yticklabels([f"{r:g}" for r in grid.index])
-    annotate_cells(ax, grid, fmt=fmt)
+
+    # --- Annotations (value ± error) ---
+    if err is not None:
+        # Basic shape/index/column check
+        if not (list(err.index) == list(grid.index) and list(err.columns) == list(grid.columns)):
+            raise ValueError("`err` must have the same index/columns as `grid`.")
+
+    def _is_dark(rgba):
+        r, g, b, _ = rgba
+        # Perceptual luminance
+        return (0.2126*r + 0.7152*g + 0.0722*b) < 0.45
+
+    vals = grid.values
+    errs = err.values if err is not None else None
+    for i in range(vals.shape[0]):
+        for j in range(vals.shape[1]):
+            v = vals[i, j]
+            if np.isnan(v):
+                continue
+            text = fmt.format(v)
+            if errs is not None:
+                e = errs[i, j]
+                if np.isfinite(e):
+                    text = (text + ("\n±" if split_lines else " ± ") + err_fmt.format(e))
+            # Choose contrasting text colour based on cell colour
+            rgba = im.cmap(im.norm(v))
+            color = "white" if _is_dark(rgba) else "black"
+            ax.text(j, i, text, ha="center", va="center", fontsize=9, color=color)
 
 
 def plot_masks_by_df(masks, df, cmap_name="viridis", alpha=0.35, trim_fn=None):
@@ -183,7 +233,7 @@ def plot_masks_by_df(masks, df, cmap_name="viridis", alpha=0.35, trim_fn=None):
 
 
 fig, axes = plt.subplots(1, 2, figsize=(8, 4), constrained_layout=True)
-heatmap(axes[0], flux_grid*1e3, "Integrated Flux", "mJy", fmt="{:1.2f}")
+heatmap(axes[0], flux_grid*1e3, "Integrated Flux", "mJy", fmt="{:1.2f}", err=err_grid*1e3)
 heatmap(axes[1], rms_grid*1e6, "Image RMS", "uJy/beam", fmt="{:1.2f}")
 plt.savefig("flux_comparison.png", dpi=300)
 
