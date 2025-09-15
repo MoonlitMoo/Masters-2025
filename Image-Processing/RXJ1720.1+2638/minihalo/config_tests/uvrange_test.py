@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from casatasks import tclean, imfit, impbcor, imhead
 
 OUTPUT_DIR = "uvrange_tests"
-PLOT_PATH = f"{OUTPUT_DIR}/uvcutoff_vs_flux.png"
+PLOT_PATH = f"uvcutoff_vs_flux.png"
 
 def run_clean(imagename: str, uvrange: str):
     """ Run tclean to fit the AGN model.
@@ -16,7 +16,7 @@ def run_clean(imagename: str, uvrange: str):
     uvrange : str
         The string version for the uvrange to use for the cleaning.
     """
-    tclean(vis=["cconfig-p5.ms", "dconfig1-p5.ms", "dconfig2-p5.ms"],
+    tclean(vis=["../cconfig-p5.ms", "../dconfig1-p5.ms", "../dconfig2-p5.ms"],
         imagename=imagename,
         imsize=[2304, 2304], cell=['0.5arcsec','0.5arcsec'],
         specmode='mfs', niter=10000, gain=0.1, threshold='0.018mJy',
