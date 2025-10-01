@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from casatasks import tclean, imfit, impbcor, imhead
@@ -5,6 +6,8 @@ from casatasks import tclean, imfit, impbcor, imhead
 OUTPUT_DIR = "uvrange_config_tests"
 PLOT_PATH = f"uvcutoff_vs_flux.png"
 DATASETS = ["../cconfig-p5.ms", "../dconfig1-p5.ms", "../dconfig2-p5.ms"]
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def run_clean(dataset: str, imagename: str, uvrange: str):
     """ Run tclean to fit the AGN model.
@@ -37,7 +40,7 @@ for data in DATASETS:
     logset = []
     for u in uv_cutoffs:
         uvrange = f">{u}klambda"
-        test_str = f"{data.split('.')[0]}_range_{uvrange}"
+        test_str = f"{os.path.splitext(os.path.basename(data))[0]}_range_{uvrange}"
         img_prefix = f"{OUTPUT_DIR}/{test_str}"
         log_path = f"{img_prefix}.log"
 
@@ -71,7 +74,7 @@ def read_log_value(l):
 
 # Plot the results
 all_flux = {}
-fig, (ax1, ax2) = plt.subplots(1, 2)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 for data_logset, data_name, c in zip(logs, DATASETS, ['C0', 'C1', 'C2']):
     # Pull the results for each configuration.
     peak_fluxes = []
@@ -100,18 +103,21 @@ for data_logset, data_name, c in zip(logs, DATASETS, ['C0', 'C1', 'C2']):
     all_flux[f"{data_name}_integrated_err"] = np.array(integrated_flux_errors)
 
     # Plot absolute values
-    ax1.errorbar(uv_cutoffs, peak_fluxes, yerr=peak_flux_errors, fmt='o-', color=c, label=f"{data_name} Peak (mJy/beam)")
-    ax1.errorbar(uv_cutoffs, integrated_fluxes, yerr=integrated_flux_errors, fmt='s--', color=c, label=f"{data_name} Integrated (mJy)")
+    label = f"{os.path.splitext(os.path.basename(data_name))[0].split('-')[0]}"
+    ax1.errorbar(uv_cutoffs, peak_fluxes, yerr=peak_flux_errors, fmt='o-', color=c, label=f"{label} Peak (mJy/beam)")
+    ax1.errorbar(uv_cutoffs, integrated_fluxes, yerr=integrated_flux_errors, fmt='s--', color=c, label=f"{label} Integrated (mJy)")
 
 # Plot vs cconfig
-ax2.plot(uv_cutoffs, all_flux["dconfig1-p5.ms_peak"]/all_flux["cconfig-p5.ms_peak"] - 1, label="dconfig1")
-ax2.plot(uv_cutoffs, all_flux["dconfig2-p5.ms_peak"]/all_flux["cconfig-p5.ms_peak"] - 1, label="dconfig2")
+ax2.plot(uv_cutoffs, all_flux[f"{DATASETS[1]}_peak"]/all_flux[f"{DATASETS[0]}_peak"]*100 - 100, label="dconfig1")
+ax2.plot(uv_cutoffs, all_flux[f"{DATASETS[2]}_peak"]/all_flux[f"{DATASETS[0]}_peak"]*100 - 100, label="dconfig2")
 
 fig.supxlabel("uv min cut (kλ)")
-ax2.set_ylabel("Flux density (mJy)")
-ax2.set_ylabel("Relative flux density to C config")
-plt.title("RXJ1720+2638 AGN fit vs uv-range cut")
-plt.grid(True, which='both', alpha=0.25)
-plt.legend()
+ax1.set_ylabel("Flux density (mJy)")
+ax2.set_ylabel("Relative flux density to C config [%]")
+fig.suptitle("RXJ1720+2638 AGN fit vs uv-range cut")
+ax1.grid(True, which='both', alpha=0.25)
+ax2.grid(True, which='both', alpha=0.25)
+ax1.legend()
+ax2.legend()
 plt.tight_layout()
 plt.savefig(PLOT_PATH, dpi=300)

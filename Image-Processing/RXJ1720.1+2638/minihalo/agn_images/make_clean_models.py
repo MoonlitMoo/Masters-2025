@@ -1,24 +1,20 @@
 mynterms = 2
-backup_dir = 'unmasked_models'
-os.makedirs(backup_dir, exist_ok=True)
+OUTPUT_DIR = 'masked_models'
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 model_list = ["cconfig-p5_agn", "dconfig1-p5_agn", "dconfig2-p5_agn"]
-mask_list = ['agn2.mask', 'agn.mask', 'agn.mask']
 
-for model, mask in zip(model_list, mask_list):
-    ia.open(mask)
-    mpix=ia.getchunk().astype(bool)
-    ia.done()
+crtf = "circle[[17h20m10.03s, 26d37m31.9s], 15arcsec]"
 
-    new_model=[f'{model}.model.tt{i}' for i in range(mynterms)]
-    for i in range(mynterms):
-        if os.path.exists(f'{backup_dir}/{new_model[i]}'):
-            print(f"Warning: Backup file exists for {new_model[i]}, skipping.")
-            continue
-        os.system(f'cp -r {new_model[i]} {backup_dir}/')
-        ia.open(new_model[i])
-        pix=ia.getchunk()
-        pix[~mpix] = 0.
-        ia.putchunk(pix)
-        ia.done()
-        print(f"Done {new_model[i]}")
+for model in model_list:
+    full_models = [f'{model}.model.tt{i}' for i in range(mynterms)]
+    new_models = [f'{OUTPUT_DIR}/{m}' for m in full_models]
+    for o, m in zip(full_models, new_models):
+        os.system(f'cp -r {o} {m}')
+        ia.open(m)
+        reg = rg.fromtext(crtf, shape=ia.shape(), csys=ia.coordsys().torecord())
+        inv_reg = rg.complement(reg)
+        ia.set(0.0, region=inv_reg)
+        # ia.set(1.0, region=reg)
+        ia.close()
+        print(f"Done {m}")
