@@ -119,3 +119,94 @@ def check_flagging(msname, base_flag_file='base_flag.json', output_dir='plots'):
 
     print(f"Flagging comparisons saved to {output_dir}/")
 
+
+def assess_spws(msname, *, edge_spws=(0, -1), statwt_mode="if_missing", statwt_kwargs=None,
+                abs_floor=0.35, rel_drop_mult=0.55, rel_review_mult=0.70, low_weight_guard=0.50, print_output=True):
+    """
+    Prints per-SPW: f(unflag), wrel, feff, decision, reason(s).
+    Returns dict with arrays.
+    """
+    # Get unflagged fraction per SPW
+    fs = flagdata(vis=msname, mode="summary")
+    sorted_fs = sorted([(int(i), s) for i, s in fs["spw"].items()], key=lambda x: x[0])
+    unflagged = [s["total"] - s["flagged"] for _, s in sorted_fs]
+    totals    = [s["total"] for _, s in sorted_fs]
+    u = np.asarray(unflagged, float)
+    t = np.asarray(totals, float)
+    f = np.divide(u, t, out=np.zeros_like(u, dtype=float), where=t > 0)
+    nspw = len(f)
+
+    # --- Stand in for the failure to get the weights per spw.
+    wrel = np.ones_like(f)
+
+    # --- Effective fraction & thresholds
+    feff = f * wrel
+    med_feff = np.median(feff[feff > 0]) if np.any(feff > 0) else 0.0
+    rel_drop   = rel_drop_mult   * med_feff
+    rel_review = rel_review_mult * med_feff
+
+    rel_drop_adj = np.full_like(feff, rel_drop, dtype=float)
+    for j in [j if j >= 0 else nspw + j for j in edge_spws]:
+        if 0 <= j < nspw:
+            rel_drop_adj[j] = (rel_drop_mult - 0.05) * med_feff  # e.g., 0.50× if base is 0.55×
+
+    # --- Decisions + appended reasons
+    decision = np.array(["keep"] * nspw, dtype=object)
+    reason   = [""] * nspw
+    for i in range(nspw):
+        reasons = []
+        # Priority: weight guard → abs floor → relative drop → review band
+        if wrel[i] <= low_weight_guard:
+            decision[i] = "drop"
+            reasons.append(f"low relative weight (wrel={wrel[i]:.2f} ≤ {low_weight_guard:.2f})")
+
+        if f[i] < abs_floor:
+            decision[i] = "drop"
+            reasons.append(f"below absolute floor (f={f[i]:.2f} < {abs_floor:.2f})")
+
+        if feff[i] < max(abs_floor, rel_drop_adj[i]):
+            decision[i] = "drop"
+            reasons.append(
+                f"below relative drop (feff={feff[i]:.2f} < "
+                f"{max(abs_floor, rel_drop_adj[i]):.2f}; median feff={med_feff:.2f})"
+            )
+
+        if (decision[i] != "drop") and (feff[i] < rel_review):
+            decision[i] = "review"
+            reasons.append(
+                f"in review band ({rel_drop_mult:.2f}–{rel_review_mult:.2f}×median feff: "
+                f"{rel_drop:.2f}–{rel_review:.2f})"
+            )
+
+        if not reasons:
+            decision[i] = "keep"
+            reasons.append("healthy fraction and weights")
+
+        reason[i] = "; ".join(reasons)
+
+    # --- Calculate how much unflagged data is being removed
+    keep_mask = decision != "drop"
+    lost_fraction  = 1 - (u[keep_mask].sum() / u.sum())
+
+    # --- Print
+    if print_output:
+        header = (
+            f"# assess_spws on {msname}\n"
+            f"# abs_floor={abs_floor:.2f} | drop<{rel_drop_mult:.2f}×med | "
+            f"review<{rel_review_mult:.2f}×med | low_weight_guard≤{low_weight_guard:.2f}\n"
+            f"# median feff={med_feff:.3f}\n"
+            f"# dropping {np.count_nonzero(~keep_mask)} SPWs loses {lost_fraction:.1%} of unflagged data\n"
+            f"SPW  f(unflag)  wrel   feff   decision   reason(s)"
+        )
+        print(header)
+        for i in range(nspw):
+            print(f"{i:>3}  {f[i]:7.3f}  {wrel[i]:5.2f}  {feff[i]:6.3f}  "
+                  f"{decision[i]:>6}   {reason[i]}")
+    return {
+        "frac": f,
+        "wrel": wrel,
+        "feff": feff,
+        "lost_frac": lost_fraction,
+        "decision": decision,
+        "reason": reason,
+    }
