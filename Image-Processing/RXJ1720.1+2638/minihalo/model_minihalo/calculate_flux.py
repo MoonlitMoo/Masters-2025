@@ -44,12 +44,14 @@ tail_region = "poly[[17:20:10.50000, +026.38.02.0000], [17:20:11.40000, +026.38.
     "[17:20:09.70000, +026.36.56.0000]]"
 centre_region = rg.fromtext(centre_region, shape=shape, csys=coords)
 tail_region = rg.fromtext(tail_region, shape=shape, csys=coords)
+tail_region = rg.difference(tail_region, centre_region)  # Remove centre
 full_region = rg.makeunion(regions={"c": centre_region, "t": tail_region})
 
+sel_region = centre_region
 os.system(f"cp -r {images[0]}.mask g14_mask.mask")
 ia.open("g14_mask.mask")
-ia.set(0.0, region=rg.complement(full_region))
-ia.set(1.0, region=full_region)
+ia.set(0.0, region=rg.complement(sel_region))
+ia.set(1.0, region=sel_region)
 g14_mask = np.squeeze(np.array(ia.getchunk(), dtype=bool))
 ia.close()
 
@@ -284,4 +286,3 @@ plt.savefig("flux_comparison.png", dpi=300)
 trim_border = 900
 plot_masks_by_df(masks, df, trim_fn=lambda x: np.flip(x.T, 0)[trim_border:-trim_border, trim_border:-trim_border])
 plt.savefig("mask_comparison.png", dpi=300)
-plt.show()

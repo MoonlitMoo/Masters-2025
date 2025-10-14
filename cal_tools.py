@@ -66,7 +66,7 @@ def self_calibrate(iteration: int, antenna: str, source: str = None, dest: str =
     """
     prefixes = ["cconfig", "dconfig1", "dconfig2"]
     # Set up inputs and outputs
-    if iteration == 0:
+    if iteration == 1:
         data_in = ["cconfig.ms", "dconfig_1.ms", "dconfig_2.ms"]
     elif source is None:
         last_iter = iteration - 1
