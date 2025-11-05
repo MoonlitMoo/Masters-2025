@@ -47,7 +47,7 @@ tail_region = rg.fromtext(tail_region, shape=shape, csys=coords)
 tail_region = rg.difference(tail_region, centre_region)  # Remove centre
 full_region = rg.makeunion(regions={"c": centre_region, "t": tail_region})
 
-sel_region = centre_region
+sel_region = full_region
 os.system(f"cp -r {images[0]}.mask g14_mask.mask")
 ia.open("g14_mask.mask")
 ia.set(0.0, region=rg.complement(sel_region))
@@ -66,7 +66,7 @@ error = []
 sigma = []
 for im in images:
     out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked'
-    f, e, s = get_minihalo_flux_density(f"{im}", out_img, mask=base_mask)
+    f, e, s = get_minihalo_flux_density(f"{im}", out_img, mask=base_mask, agn_err=1.56e-5, verbose=True)
     flux.append(f)
     error.append(e)
     sigma.append(s)

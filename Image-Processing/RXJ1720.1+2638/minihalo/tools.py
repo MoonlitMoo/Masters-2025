@@ -91,7 +91,7 @@ def contour_sum(data, level, *, seed=None, pick='largest',
 
 
 
-def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup=False):
+def get_minihalo_flux_density(image: str, output_image: str, mask: None, agn_err: int = None, cleanup: bool = False, verbose: bool = False):
     """ Gets the minihalo flux density from an image.
 
     Parameters
@@ -102,8 +102,12 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup
         The path to use for the masked image (without .image.tt0 suffix).
     mask : ndarray, default = None
         An optional mask to use instead of calculating the contour.
+    agn_err : int, default = None
+        The error per beam of the agn subtraction.
     cleanup : bool, default=False
         Whether to remove the masked image at the end.
+    verbose : bool, default=False
+        Whether to print error breakdown.
 
     Returns
     -------
@@ -122,9 +126,11 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup
     ia.open(image_file)
     beam_area = ia.beamarea()['arcsec2']
     pix = ia.getchunk()
-    # Estimate the agn region as a square the same area as the beam.
-    agn_region = f"centerbox [[17:20:09.99310, +026.37.29.7263], [{np.sqrt(beam_area)}arcsec, {np.sqrt(beam_area)}arcsec]]"
-    minihalo_agn_flux = np.average(ia.getregion(region=agn_region))
+    if agn_err is None:
+        # Get the average value from the image of the minihalo and assume it's all bad
+        # Estimate the region as a square the same area as the beam.
+        agn_region = f"centerbox [[17:20:09.99310, +026.37.29.7263], [{np.sqrt(beam_area)}arcsec, {np.sqrt(beam_area)}arcsec]]"
+        agn_err = np.average(ia.getregion(region=agn_region))
     ia.close()
 
     # Get the RMS using the residuals.
@@ -155,13 +161,14 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, cleanup
     pixel_area = 0.5 ** 2
     n_beams = (np.sum(mask) * pixel_area) / beam_area
     noise_error = sigma * np.sqrt(n_beams)
-    # AGN subtraction error using the average intensity in the region and the approximate area.
+    # AGN subtraction error and the approximate area.
     # Using the G14 agn size as <1.4 kpc this is ~0.5", amusing same as pixel. Maybe use beam size instead?
-    agn_area = 0.5 ** 2
-    sub_error = minihalo_agn_flux * agn_area
+    n_beams_agn = (0.5 ** 2) / beam_area
+    sub_error = agn_err * np.sqrt(n_beams_agn)
     error = np.sqrt(cal_error ** 2 + noise_error ** 2 + sub_error ** 2)
-    # print(f"Flux {flux:1.2e} +/- {error:1.2e}")
-    # print(f"cal error: {cal_error}, noise error: {noise_error}, sub_error: {sub_error}")
+    if verbose:
+        print(f"Flux {flux:1.2e} +/- {error:1.2e}")
+        print(f"cal error: {cal_error:1.2e}, noise error: {noise_error:1.2e}, sub_error: {sub_error:1.2e}")
 
     if cleanup:
         os.system(f'rm -r {output_file}')
