@@ -1,0 +1,148 @@
+% pasguide.tex
+% v1.0, released 24 Mar 2021
+% Copyright 2021 Cambridge University Press
+
+\documentclass{pas}
+
+
+\usepackage{multirow}
+
+\begin{document}
+
+\lefttitle{Publications of the Astronomical Society of Australia}
+\righttitle{Cambridge Author}
+
+\jnlPage{1}{4}
+\jnlDoiYr{2021}
+\doival{10.1017/pasa.xxxx.xx}
+
+\articletitt{Research Paper}
+
+\title{A Great and Engaging Title about RXJ1720+2638}
+
+\author{\sn{Wellington} \gn{Author1}$^{1}$ and \sn{Wellington} \gn{Author2}$^{2}$}
+
+\affil{$^1$School of Chemical and Physical Sciences, Victoria University of Wellington, PO Box 600, Wellington 6140, New Zealand}
+
+\corresp{A. Cambridge, Email: ACambridge@student.unimelb.edu.au}
+
+\citeauth{Author1 C and Author2 C, an open-source python tool for simulations of source recovery and completeness in galaxy surveys. {\it Publications of the Astronomical Society of Australia} {\bf 00}, 1--12. https://doi.org/10.1017/pasa.xxxx.xx}
+
+\history{(Received xx xx xxxx; revised xx xx xxxx; accepted xx xx xxxx)}
+
+\begin{abstract}
+An abstract written to inspire interest and unbroken hope for the future.
+\end{abstract}
+
+\begin{keywords}
+Key1, Key2, Key3, Key4
+\end{keywords}
+
+\maketitle
+
+\section{Introduction}
+
+\begin{itemize}
+  \item Introduction to the galaxy cluster RXJ1720+2638 and its general properties, ala Yvette's paper
+  \item Introduction to the minihalo, what is a minihalo.
+  \item What are the proposed methods to cause said emission, with references to the simulations.
+  \item What is this paper focussed on: 8-12 GHz observation of the minihalo. What parts of the paper correspond to what thing.
+  \item Mention G14 so that we can mention non-weirdly? during analysis.
+  \item Coordinates + cosmological settings assumed etc
+\end{itemize}
+
+\section{Observations}
+
+\begin{itemize}
+  \item The primary 8-12 GHz dataset info (VLA, configuration, dates, observation proposals, etc)
+  \item What primary and secondary calibrators were used.
+  \item The L-band observation
+\end{itemize}
+
+\section{Data reduction}
+
+\begin{itemize}
+  \item Description of the data reduction steps.
+  \item Using CASA pipeline to calibrate the data, with a modified flagging step using AOFLAGGER instead of the CASA version.
+  \item Mention broadly the steps taken in the pipeline.
+  \item Reasoning for above is better quality flagging for the microwave emission in bands, due to Elon Musk or something.
+  \item Note where interference takes place, alongside how much data was removed from each observation. 
+  \item Imaging done via tclean with broad nterms / weighting parameter. Leave the subtraction and stuff for analysis. 
+  \item Separate items for L-band and X-band
+\end{itemize}
+
+\section{Analysis}
+
+\subsection{Subtraction of AGN}
+\begin{itemize}
+  \item Checking the difference in measured flux for the point sources since measurements C \& D are a year apart.
+  \item Some statistics on variablity
+  \item Uvrange for cutting out diffuse emission + point source modelling.
+  \item Show results, compare results of secondary calibrator. 
+  \item Conclude its probably fine.
+  \item Since variablity exists, each dataset AGN was modelled independently then subtracted.
+\end{itemize}
+\textbf{Image of point sources, labelled AGN, head-tail, right (better name)}
+
+\subsection{Subtracting the right galaxy thingy}
+\begin{itemize}
+  \item Difficulty in getting a clean image due to a noisy point source to the right of the minihalo $\sim$ beam size
+  \item Also subtracted this using the same process above.
+  \item Little information about the source, just mention brightness, size, location.
+\end{itemize}
+
+\subsection{Calculating minihalo flux}
+
+\begin{itemize}
+  \item With clean image can now calculate the minihalo flux.
+  \item In order for comparable results, estimated mask from G14 to use for analysis.
+  \item Computed total flux within the regions, then the error. 
+  \item Show derivation of the error, justify differences in error calc to G14.
+  \item Might as well show stability to robust settings [1, 2] if we have space.
+  \item Show possible re-energisation, but below 3x sigma. 
+\end{itemize}
+\textbf{Image of minihalo with mask contours overlaid}
+
+\subsection{Comparison to other frequencies}
+\begin{itemize}
+  \item Compare the points above to the G14 data collected + things from Y21.
+  \item Show agreement in the full, centre, tail, AGN. Plus comparisons between them.
+  \item Lack of steepening.
+\end{itemize}
+\textbf{Recreation of plot from G14, with additional information}
+
+\subsection{SZ effects}
+\begin{itemize}
+  \item Look the contribution is negligible.
+  \item This is how we worked it out: Little thing is littler than the little thing we are measuring.
+\end{itemize}
+
+\subsection{L-band data}
+\begin{itemize}
+  \item Not entirely sure what to do here.
+  \item Also don't have a perfect image yet.
+  \item Point at the possible gentle re-energisation also present here.
+\end{itemize}
+\textbf{Image of L-band minihalo}
+
+\section{Discussion}
+\begin{itemize}
+  \item Discuss in detail the difference between the hadronic and re-acceleration scenarios.
+  \item Talk about the conclusions taken from G14, plus the new data collected since then, in particular the presence of sub-kpc jets Y22 and Y21 results.
+  \item More discussion about differences between the tail and centre. 
+  \item Actually do some reading.
+\end{itemize}
+
+\section{Conclusion}
+I like the bullet point style of the main points of the paper, so might as well do that.
+\begin{itemize}
+  \item Clean imaging of 8-12 GHz VLA observation for RXJ1720+2638 minihalo to measure minihalo flux.
+  \item Calculated flux density of the minihalo, tail, centre.
+  \item More things from the discussion
+\end{itemize}
+
+\begin{thebibliography}{}
+\end{thebibliography}
+
+\end{document}
+
