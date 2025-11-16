@@ -53,3 +53,10 @@
 **/testphase_inf_b_allspw.b/
 **/*.cl
 **/*rtf
+/Image-Processing/RXJ1720.1+2638/Lband/full_image/outlier1_sc2_ms_am_br0start.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/full_image/image.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/full_image/outlier2_sc2_ms_am_br0start.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/minihalo/image_subtracted.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/minihalo/new_sub.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/minihalo/outlier1_sc2_ms_am_br0start.beta/
+/Image-Processing/RXJ1720.1+2638/Lband/minihalo/outlier2_sc2_ms_am_br0start.beta/

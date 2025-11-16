@@ -1,0 +1,11 @@
+#outlier field1
+imagename=outlier1_sc2_ms_am_br0start
+imsize=[720,720]
+phasecenter = J2000 17:21:20 +25.50.02.0
+mask=
+
+#outlier field2
+imagename=outlier2_sc2_ms_am_br0start
+imsize=[720,720]
+phasecenter = J2000 17:17:03 +26.18.56.9
+mask=
