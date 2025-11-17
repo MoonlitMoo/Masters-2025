@@ -60,3 +60,11 @@
 /Image-Processing/RXJ1720.1+2638/Lband/minihalo/new_sub.beta/
 /Image-Processing/RXJ1720.1+2638/Lband/minihalo/outlier1_sc2_ms_am_br0start.beta/
 /Image-Processing/RXJ1720.1+2638/Lband/minihalo/outlier2_sc2_ms_am_br0start.beta/
+**/*.aux
+**/*.blg
+**/*.fdb_latexmk
+**/*.bbl
+**/*.fls
+**/*.out
+**/*.synctex.gz
+**/*.toc

@@ -1,0 +1,71 @@
+%*************************************
+% UQ Thesis Title Page Formatting Package
+%*************************************
+\ProvidesPackage{uqtitle}[2018/03/19 v.01 UQ thesis title template]
+\RequirePackage{graphicx}
+%This package formats the front matter for theses at
+%The University of Queensland.
+%Based on https://en.wikibooks.org/wiki/LaTeX/Title_Creation
+
+%*************************************
+% Define new 'storing' commands and set defaults.
+%*************************************
+%Current degree.
+\newcommand*{\currentdegrees}[1]{\gdef\@currentdegrees{#1}}
+\newcommand*{\@currentdegrees}{Specify your current degrees}
+
+%Degree you are submitting for.
+\newcommand*{\submittedfor}[1]{\gdef\@submittedfor{#1}}
+\newcommand*{\@submittedfor}{Specify degree you are submitting for}
+
+%School you are submitting under.
+\newcommand*{\school}[1]{\gdef\@school{#1}}
+\newcommand*{\@school}{School of Hard Knocks}
+
+
+%Renew the maketitle command.
+\renewcommand*{\maketitle}{%
+
+%*************************************
+% Title Page layout
+%*************************************
+\pagestyle{empty}	
+%Suppress the header.
+\rmfamily					
+%Make sure we have Roman font family.
+
+%Include the university shield.
+%CHANGE TO EPS IF REQUIRED.
+\noindent
+\vfill
+\begin{center}
+	\includegraphics[width=.65\textwidth]{VUWLogo}
+\end{center}
+
+\vspace{24 pt}
+
+\begin{center}
+    \Huge\bfseries
+	\thetitle
+ \\
+\end{center}
+
+\begin{center}
+    by \\
+	\Large
+    \theauthor \\
+\end{center}
+
+\vspace{90 pt}
+
+\begin{center}
+    \Large
+\textit{A thesis submitted to the Victoria University of Wellington in fulfillment of the requirements for the degree of Master of Science in Physics.} \\ 
+
+\vspace{50 pt}
+
+\Large
+	\@school{} \\
+    \thedate{}
+\end{center}
+}
