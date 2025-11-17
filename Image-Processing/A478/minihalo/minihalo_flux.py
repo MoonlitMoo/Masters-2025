@@ -229,9 +229,9 @@ mh_freq = np.array([1.40, 10])
 mh_flux = np.array([16.6, 0.31])
 mh_err  = np.array([3, 0.018])
 
-bcg_freq = np.array([1.4, 4.9])
-bcg_flux = np.array([31, 9.6])
-bcg_err  = np.array([1.6, 0.5])
+bcg_freq = np.array([1.4, 4.9, 10])
+bcg_flux = np.array([31, 9.6, 5.41])
+bcg_err  = np.array([1.6, 0.5, 0.13])
 
 # --- Recreate G14 plot with our points ---
 plot_seds(
