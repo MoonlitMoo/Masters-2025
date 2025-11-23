@@ -31,7 +31,9 @@
 \RequirePackage{url} 									
 %Typeset urls properly.
 
-\RequirePackage{hyperref}							
+\PassOptionsToPackage{colorlinks=true,linkcolor=red,citecolor=blue,urlcolor=blue,pdfborder={0 0 0}}{hyperref}
+\RequirePackage{hyperref}
+
 %Hyperlink your pdf output.
 
 \RequirePackage{geometry}								
@@ -74,8 +76,8 @@
 % Set page and heading styles
 %*************************************
 % ********* Set page layout **********
-\setlrmarginsandblock{20mm}{20mm}{*}
-\setulmarginsandblock{20mm}{20mm}{*}
+\setlrmarginsandblock{25mm}{25mm}{*}
+\setulmarginsandblock{25mm}{25mm}{*}
 
 \setheadfoot{15mm}{\baselineskip}
 \setheaderspaces{*}{\baselineskip}{*}

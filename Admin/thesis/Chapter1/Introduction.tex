@@ -5,11 +5,155 @@
 % Introduction
 % ***************************************************
 
-\section{Your thesis topic}
-%Replace "Your thesis topic" with what will become the \label{} for this section.
+\section{Galaxy Clusters}
+\begin{itemize}
+    \item What is a Galaxy Cluster (grav bound galaxies, in a bunch of hot gas)
+    \item Generic information about galaxy clusters (yay statistics)
+    \item Fun facts about galaxy clusters
+\end{itemize}
 
-% ********* Enter your text below this line: ********
-Introduce your topic.
+\section{Observational work with Galaxy Clusters}
+\begin{itemize}
+    \item Well, we can't just go there so we get to look at them really closely.
+    \item How do we get data about clusters
+    \item In increasing wave length, Optical, X-ray, Radio, Gamma. 
+    \item Some telescope + research that we can do with each of these.
+\end{itemize}
 
-A random reference to let it compile \cite{Adachi2007}.
-% ***************************************************
+\section{Radio Emission}
+\begin{itemize}
+    \item This is what we are interested in, can gain information about clusters from this.
+    \item Link synchrotron emission to the electron / gas properies of the cluster and how radio emission can inform us of what the cluster is doing.
+    \item Common sources of relativistic electrons are the AGNs, lose energy over time. 
+    \item Structures larger than the lifetime of these jets, more diffuse (Halos).
+\end{itemize}
+
+\subsection{Giant Radio Halos}
+\begin{itemize}
+    \item These are of similar extent to the cluster gas. 
+    \item They 
+\end{itemize}
+
+\subsection{Minihalos}
+'\begin{itemize}
+    \item What is a minihalo (diffuse radio emission in the core of a cluster.)
+    \item Actually they are somewhat common. 
+    \item Talk about some previous works on minihalos
+    \item Difficulty in distinguishing between production mechanisms.
+\end{itemize}
+
+\section{Our goals}
+\begin{itemize}
+    \item We want to be able to measure minihalo flux for this subset of minihalos at high radio frequencies so that we can investigate if steepening is occuring.
+\end{itemize}
+
+\chapter[Observations]{Observations}
+This chapter would be about radio interferometry, how it works to some extent and the data that is retrieved from it. How to calibrate the data etc.
+
+\section{What is an interferometer}
+\begin{itemize}
+    \item Limits of dish size in resolution, causes us to explore different ideas.
+    \item How does an interferometer work.
+    \item Bunch of dishes being interfered, delay to tune positioning, uv plane to determine coverage.
+    \item From all of this we retrieve amp + phase measurements.
+\end{itemize}
+
+\section{Our observations}
+\begin{itemize}
+    \item We are using VLA data in X-band, what does this mean and what are the specs for the VLA.
+    \item These observations are of list minihalos and this setup, observation proposal.
+    \item Original source of these minihalos is the G14 paper (among others).
+    \item Table of minihalos + observing setup.
+\end{itemize}
+
+
+\chapter[Calibration]{Calibration}
+This would be how to calibrate and the calibration results for the datasets, plus any special considerations we took.
+
+\section{How to calibrate a dataset}
+\begin{itemize}
+    \item We have the VLA calibration pipeline to remove stress from our lives.
+    \item We have a non-neglible amount of RFI to add stress to our lives. 
+    \item A variety of steps but first pain, what is RFI and what does it cause.
+\end{itemize}
+
+\section{Flagging data}
+\begin{itemize}
+    \item Initial testing showed that the pipeline flagging steps didn't work well for our data.
+    \item AOFLAGGER worked much better and has a mostly out-of-box VLA script.
+    \item How does AOFLAGGER work
+    \item Integrating into a pipeline step to still use the pipeline
+\end{itemize}
+
+\section{Calibration pipeline}
+\begin{itemize}
+    \item Work through each calibration step explaining what it does and why it is important. 
+    \item Final preparation for imaging is averaging down to further reduce noise.
+    \item Notes about general trends from the calibration, with RFI in 10-12 GHz D config being bad, much of it being flagged.
+\end{itemize}
+
+\section{Special mentions}
+\begin{itemize}
+    \item Either here or during following imaging section talk about the 2-3 datasets we processed slightly differently due to bad fits.
+    \item Describe the fitting process for the custom bandpass.
+\end{itemize}
+
+\chapter[Analysis Tools]{Analysis Tools}
+This chapter starts with an overview on imaging and how that is performed. Then we talk a bit about how we actually want to measure the flux of the minihalos.
+Could combine with actual results.
+
+\section{Imaging}
+\begin{itemize}
+    \item When we make a raw image from the data, we still have a lot of artefacts from the point spread function, which comes from the beam.
+    \item This means we need a more advanced imaging process to remove this to get a clean image. Implemented in a few different ways, we choose tclean in CASA.
+    \item Tclean works by modelling the PSF, creating an empty model, find brightest point in residuals, model that as real, subtract model from residuals, repeat 20K times.
+    \item This works mostly well, but we can improve results using self calibration.
+\end{itemize}
+
+\subsection{Self calibration}
+\begin{itemize}
+    \item The phase calibration is the most iffy part for the main calibration, so we can make a test image and check the model seems reasonable.
+    \item Then use that model to make small phase corrections to our dataset. Then repeat that a few times and these corrections should converge since it is circular.
+    \item This is the final calibration steps that we do, phase corrections 20 degrees $\rightarrow$ 1 degree after a few rounds. 
+\end{itemize}
+
+\subsection{Final cleaning}
+\begin{itemize}
+    \item Between self calibrations this we also check the datasets and do some final manual cleaning.
+    \item Clipping the datasets to a sensible amp range, removing spikes, SPWs where there is small amounts of data left.
+    \item Overview of the \texttt{assess\_spw} function used for this.
+\end{itemize}
+
+\section{Final datasets}
+\begin{itemize}
+    \item Could have a table here talking about each minihalo, how much data is remaining, spws that are flagged out, some sort of visual. 
+    \item Maybe bar graph of spws, line or point graph for minihalo C/D (either total or differentiated by style) normalised to [0, 1]
+\end{itemize}
+
+\section{Calibration Error}
+\begin{itemize}
+    \item Calibration error exists, and sources can vary in their flux amount.
+    \item We can try and constrain the error and variance by comparing the secondary calibrator models for D config and the point source fluxes for the images.
+    \item Fluxes for secondaries can vary a lot over a year (100\%?) maybe, but lower per month. Can then compare to differences in sources in the image.
+    \item If a trend is observed, likely calibration error. If no trend or close models, constrain calibration error and can see the variance in AGN etc.
+    \item Can retrieve the point source flux by cutting out diffuse sources (uvrange) and by masking to a tight border.
+\end{itemize}
+
+\section{Calculating the minihalo flux}
+\begin{itemize}
+    \item We can do this in a variety of ways, but we don't want the AGN contamination so we should subtract this out.
+    \item Do this per dataset to account for variation over time, incorrect subtractions can result in negative bowls in emission, or remaining flux.
+    \item Other problematic sources are dealt with the same way.
+    \item Image the subtracted data and then we create a contour for significant emission (3 sigma) from the residual RMS.
+    \item Calculate total flux in the region.
+    \item Then we calculate the error using this formula from G14 modified for the AGN error since we think its lower.
+\end{itemize}
+
+\chapter[Results]{Results}
+\begin{itemize}
+    \item Sections for each minihalo with a brief explanation of imaging process, custom things we had to do to get results.
+    \item Number of self calibration, sources subtracted, difficulties in imaging certain aspects.
+    \item Discussion on the calibration error and variance in the observed point sources.
+    \item Includes an image of the uvrange data showing point sources, image of the minihalo with contours, and anything else we desire.
+    \item Includes discussion compared to previous results or measured values (likely G14) and any caveats or concerns.
+\end{itemize}
