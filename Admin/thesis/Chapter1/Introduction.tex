@@ -28,27 +28,22 @@
     \item Structures larger than the lifetime of these jets, more diffuse (Halos).
 \end{itemize}
 
-\subsection{Giant Radio Halos}
-\begin{itemize}
-    \item These are of similar extent to the cluster gas. 
-    \item They 
-\end{itemize}
-
-\subsection{Minihalos}
+\section{Minihalos}
 '\begin{itemize}
     \item What is a minihalo (diffuse radio emission in the core of a cluster.)
-    \item Actually they are somewhat common. 
-    \item Talk about some previous works on minihalos
+    \item They are somewhat common, things about detections.
     \item Difficulty in distinguishing between production mechanisms.
 \end{itemize}
 
 \section{Our goals}
 \begin{itemize}
     \item We want to be able to measure minihalo flux for this subset of minihalos at high radio frequencies so that we can investigate if steepening is occuring.
+    \item This is the layout of the paper and what each chapter will cover in pursuit of said goal.
 \end{itemize}
 
-\chapter[Observations]{Observations}
-This chapter would be about radio interferometry, how it works to some extent and the data that is retrieved from it. How to calibrate the data etc.
+\chapter[Background]{Background}
+This chapter would be about radio interferometry, how it works to some extent and the data that is retrieved from it. 
+Then we follow up with more specific data about radio emission.
 
 \section{What is an interferometer}
 \begin{itemize}
@@ -56,6 +51,42 @@ This chapter would be about radio interferometry, how it works to some extent an
     \item How does an interferometer work.
     \item Bunch of dishes being interfered, delay to tune positioning, uv plane to determine coverage.
     \item From all of this we retrieve amp + phase measurements.
+\end{itemize}
+
+\section{Radio emission in more detail}
+\subsection{Large Radio Halos}
+\begin{itemize}
+    \item Use similar physics but much larger scale. 
+    \item Some basics things about previous research in differentiating production. 
+    \item Gamma ray non-detection.
+    \item General consensus is that its re-acceleration.
+\end{itemize}
+
+\subsection{Minihalos}
+\begin{itemize}
+    \item These are much smaller, so therefore much harder to observe. Difference to large radio halos.
+    \item Similarities between host clusters (CC), general properties of spectral index etc.
+\end{itemize}
+
+\subsection{Hadronic Production}
+\begin{itemize}
+    \item What is the process for hadronic production
+    \item How does this manifest spectrally and evolve. What should we expect observationally here based on simulation work.
+    \item How does this manifest spatially and evolve, what should we see observationally.
+\end{itemize}
+
+\subsection{Turbulent re-acceleration}
+\begin{itemize}
+    \item What is the process here.
+    \item How manifest spectrally.
+    \item How manifest spatially.
+\end{itemize}
+
+\subsection{Previous minihalo studies}
+\begin{itemize}
+    \item Generally look at lower frequencies, or a singular study for a particular minihalo.
+    \item Want to look at more minihalos in a more holistic manner. 
+    \item Some findings from previous papers e.g. RXJ1720, MS1455+2232 in basic detail. (more detail on the per-halo discussion).
 \end{itemize}
 
 \section{Our observations}
@@ -67,7 +98,7 @@ This chapter would be about radio interferometry, how it works to some extent an
 \end{itemize}
 
 
-\chapter[Calibration]{Calibration}
+\chapter[Calibration]{Calibration and Imaging}
 This would be how to calibrate and the calibration results for the datasets, plus any special considerations we took.
 
 \section{How to calibrate a dataset}
@@ -98,10 +129,6 @@ This would be how to calibrate and the calibration results for the datasets, plu
     \item Describe the fitting process for the custom bandpass.
 \end{itemize}
 
-\chapter[Analysis Tools]{Analysis Tools}
-This chapter starts with an overview on imaging and how that is performed. Then we talk a bit about how we actually want to measure the flux of the minihalos.
-Could combine with actual results.
-
 \section{Imaging}
 \begin{itemize}
     \item When we make a raw image from the data, we still have a lot of artefacts from the point spread function, which comes from the beam.
@@ -123,6 +150,10 @@ Could combine with actual results.
     \item Clipping the datasets to a sensible amp range, removing spikes, SPWs where there is small amounts of data left.
     \item Overview of the \texttt{assess\_spw} function used for this.
 \end{itemize}
+
+\chapter[Analysis Tools]{How to Analysis}
+This chapter starts with an overview on imaging and how that is performed. Then we talk a bit about how we actually want to measure the flux of the minihalos.
+Could combine with actual results.
 
 \section{Final datasets}
 \begin{itemize}
@@ -156,4 +187,12 @@ Could combine with actual results.
     \item Discussion on the calibration error and variance in the observed point sources.
     \item Includes an image of the uvrange data showing point sources, image of the minihalo with contours, and anything else we desire.
     \item Includes discussion compared to previous results or measured values (likely G14) and any caveats or concerns.
+\end{itemize}
+
+\chapter[Discussion]{Discussion}
+
+\begin{itemize}
+    \item General findings from the above
+    \item Any downsides caveats for the whole dataset
+    \item Compare general results to things like G14 / G19 and how comparable these values are. Both literally and if valid comparison.
 \end{itemize}
