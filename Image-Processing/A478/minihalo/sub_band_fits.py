@@ -28,9 +28,9 @@ def create_subbands(dataset: str, n_subbands: int, output_dir: str):
     return band_dirs
 
 
-OUTPUT_DIR = "subband"
+OUTPUT_DIR = "subband_agn"
 IMAGE_DIR = f"{OUTPUT_DIR}/images"
-DATASETS = ["cconfig_uvsub2.ms", "dconfig1_uvsub2.ms", "dconfig2_uvsub2.ms"]
+DATASETS = ["cconfig.ms", "dconfig1.ms", "dconfig2.ms"]
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(IMAGE_DIR, exist_ok=True)
@@ -47,10 +47,11 @@ for bd in subbands:
     band_datasets = [f"{bd}/{d}" for d in DATASETS]
     imagename = f"{IMAGE_DIR}/image_{bd.split('/')[-1]}"
     tclean(vis=band_datasets,
-        imagename=imagename,
-        imsize=[2304, 2304], cell=['0.5arcsec','0.5arcsec'],
-        specmode='mfs', niter=20000, gain=0.1,
-        threshold='0.010mJy', scales=[0, 2, 4, 8, 16], smallscalebias=-0.5,
-        deconvolver='mtmfs', pblimit=-1.e-6,
-        stokes='I', weighting='briggs', robust=0.5, pbcor=False,
-        mask="minihalo.mask")
+            imagename=imagename,
+            imsize=[2304, 2304], cell=['0.5arcsec','0.5arcsec'],
+            specmode='mfs', niter=10000, gain=0.1, threshold='0.025mJy',
+            deconvolver='mtmfs', pblimit=-1.e-6, scales=[0, 2, 4],
+            stokes='I', weighting='briggs', robust=-2.0, pbcor=False,
+            usemask='auto-multithresh', noisethreshold=5, sidelobethreshold=1.25,
+            lownoisethreshold=2, minbeamfrac=0.1, negativethreshold=0.0, fastnoise=False,
+            uvrange=">12klambda")

@@ -309,7 +309,7 @@ def _get_flux_from_log(log):
     return np.nan, np.nan
 
 
-def check_point_flux(datasets, regions, labels,
+def check_point_flux(datasets, regions, labels, clean_params: dict = {},
                      redo_images: bool = False, output_dir: str = "check_flux"):
     image_dir = f"{output_dir}/images"
     log_dir = f"{output_dir}/log_dir"
@@ -326,15 +326,17 @@ def check_point_flux(datasets, regions, labels,
         images.append(imagename)
         if os.path.exists(f"{imagename}.image.tt0"):
             continue
-        tclean(vis=f"{d}.ms",
-            imagename=imagename,
-            imsize=[2304, 2304], cell=['0.5arcsec','0.5arcsec'],
-            specmode='mfs', niter=10000, gain=0.1, threshold='0.025mJy',
-            deconvolver='mtmfs', pblimit=-1.e-6, scales=[0, 2, 4],
-            stokes='I', weighting='briggs', robust=-2.0, pbcor=False,
-            usemask='auto-multithresh', noisethreshold=5, sidelobethreshold=1.25,
-            lownoisethreshold=2, minbeamfrac=0.1, negativethreshold=0.0, fastnoise=False,
-            uvrange=">12klambda")
+        params = {
+            "vis": f"{d}.ms", "imagename": imagename,
+            "imsize": [2304, 2304], "cell": ['0.5arcsec','0.5arcsec'],
+            "specmode": 'mfs', "niter": 10000, "gain": 0.1, "threshold": '0.025mJy',
+            "deconvolver": 'mtmfs', "pblimit": -1.e-6, "scales": [0, 2, 4],
+            "stokes": 'I', "weighting": 'briggs', "robust": -2.0, "pbcor": False,
+            "usemask": 'auto-multithresh', "noisethreshold": 5, "sidelobethreshold": 1.25,
+            "lownoisethreshold": 2, "minbeamfrac": 0.1, "negativethreshold": 0.0, "fastnoise": False,
+            "uvrange": ">12klambda"}
+        params.update(clean_params)
+        tclean(**params)
 
     # Fit the fluxes
     log_files = []
