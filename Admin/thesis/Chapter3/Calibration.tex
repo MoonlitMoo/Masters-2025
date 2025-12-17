@@ -1,0 +1,60 @@
+\chapter[Calibration]{Calibration and Imaging}
+This would be how to calibrate and the calibration results for the datasets, plus any special considerations we took.
+
+\section{Our observations}
+\begin{itemize}
+    \item We are using VLA data in X-band, what does this mean and what are the specs for the VLA.
+    \item These observations are of list minihalos and this setup, observation proposal.
+    \item Original source of these minihalos is the G14 paper (among others).
+    \item Table of minihalos + observing setup.
+\end{itemize}
+
+\section{How to calibrate a dataset}
+\begin{itemize}
+    \item We have the VLA calibration pipeline to remove stress from our lives.
+    \item We have a non-neglible amount of RFI to add stress to our lives. 
+    \item A variety of steps but first pain, what is RFI and what does it cause.
+\end{itemize}
+
+\section{Flagging data}
+\begin{itemize}
+    \item Initial testing showed that the pipeline flagging steps didn't work well for our data.
+    \item AOFLAGGER worked much better and has a mostly out-of-box VLA script.
+    \item How does AOFLAGGER work
+    \item Integrating into a pipeline step to still use the pipeline
+\end{itemize}
+
+\section{Calibration pipeline}
+\begin{itemize}
+    \item Work through each calibration step explaining what it does and why it is important. 
+    \item Final preparation for imaging is averaging down to further reduce noise.
+    \item Notes about general trends from the calibration, with RFI in 10-12 GHz D config being bad, much of it being flagged.
+\end{itemize}
+
+\section{Special mentions}
+\begin{itemize}
+    \item Either here or during following imaging section talk about the 2-3 datasets we processed slightly differently due to bad fits.
+    \item Describe the fitting process for the custom bandpass.
+\end{itemize}
+
+\section{Imaging}
+\begin{itemize}
+    \item When we make a raw image from the data, we still have a lot of artefacts from the point spread function, which comes from the beam.
+    \item This means we need a more advanced imaging process to remove this to get a clean image. Implemented in a few different ways, we choose tclean in CASA.
+    \item Tclean works by modelling the PSF, creating an empty model, find brightest point in residuals, model that as real, subtract model from residuals, repeat 20K times.
+    \item This works mostly well, but we can improve results using self calibration.
+\end{itemize}
+
+\subsection{Self calibration}
+\begin{itemize}
+    \item The phase calibration is the most iffy part for the main calibration, so we can make a test image and check the model seems reasonable.
+    \item Then use that model to make small phase corrections to our dataset. Then repeat that a few times and these corrections should converge since it is circular.
+    \item This is the final calibration steps that we do, phase corrections 20 degrees $\rightarrow$ 1 degree after a few rounds. 
+\end{itemize}
+
+\subsection{Final cleaning}
+\begin{itemize}
+    \item Between self calibrations this we also check the datasets and do some final manual cleaning.
+    \item Clipping the datasets to a sensible amp range, removing spikes, SPWs where there is small amounts of data left.
+    \item Overview of the \texttt{assess\_spw} function used for this.
+\end{itemize}

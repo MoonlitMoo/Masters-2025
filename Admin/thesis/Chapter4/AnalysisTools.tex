@@ -1,0 +1,29 @@
+\chapter[Analysis Tools]{How to Analysis}
+This chapter starts with an overview on imaging and how that is performed. Then we talk a bit about how we actually want to measure the flux of the minihalos.
+Could combine with actual results.
+
+\section{Final datasets}
+\begin{itemize}
+    \item Could have a table here talking about each minihalo, how much data is remaining, spws that are flagged out, some sort of visual. 
+    \item Maybe bar graph of spws, line or point graph for minihalo C/D (either total or differentiated by style) normalised to [0, 1]
+\end{itemize}
+
+\section{Calibration Error}
+\begin{itemize}
+    \item Calibration error exists, and sources can vary in their flux amount.
+    \item We can try and constrain the error and variance by comparing the secondary calibrator models for D config and the point source fluxes for the images.
+    \item Fluxes for secondaries can vary a lot over a year (100\%?) maybe, but lower per month. Can then compare to differences in sources in the image.
+    \item If a trend is observed, likely calibration error. If no trend or close models, constrain calibration error and can see the variance in AGN etc.
+    \item Can retrieve the point source flux by cutting out diffuse sources (uvrange) and by masking to a tight border.
+\end{itemize}
+
+\section{Calculating the minihalo flux}
+\begin{itemize}
+    \item We can do this in a variety of ways, but we don't want the AGN contamination so we should subtract this out.
+    \item Do this per dataset to account for variation over time, incorrect subtractions can result in negative bowls in emission, or remaining flux.
+    \item Other problematic sources are dealt with the same way.
+    \item Image the subtracted data and then we create a contour for significant emission (3 sigma) from the residual RMS.
+    \item Calculate total flux in the region.
+    \item Then we calculate the error using this formula from G14 modified for the AGN error since we think its lower.
+\end{itemize}
+
