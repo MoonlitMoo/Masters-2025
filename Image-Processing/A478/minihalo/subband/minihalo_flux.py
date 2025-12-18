@@ -58,9 +58,9 @@ def plot_seds(
 
 
 # --- Data ---
-mh_freq = np.array([8.5, 9.5, 10.5, 11.5])
-mh_flux = np.array([0.52, 0.35, 0.26, 0.16])
-mh_err  = np.array([0.029, 0.022, 0.02, 0.056])
+mh_freq = np.array([1.40, 8.5, 9.5, 10.5, 11.5])
+mh_flux = np.array([16.6, 0.52, 0.35, 0.26, 0.16])
+mh_err  = np.array([3, 0.029, 0.022, 0.02, 0.056])
 
 bcg_freq = np.array([1.4, 4.9, 10])
 bcg_flux = np.array([31, 9.6, 5.41])
