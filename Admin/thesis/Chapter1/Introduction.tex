@@ -26,57 +26,76 @@ The question that should then be asked is, how \textit{do} we know all of this i
 The vast majority of optical light from clusters comes from stars within the component galaxies. Although incredibly informing about the stars and galaxies themselves, in the context of clusters, optical light has limited use. One usage is the ability to calculate the radial velcoity of cluster galaxies, which can then be used to inform stuff about mass. The other usage is to combine it with radio or X-ray data in order to determine what the source of emission is. For example does a radio burst have an optical counterpart? Then its likely a galaxy instead of some floating relativistic gas.
 
 \subsection{X-ray}
-The hot gas of the ICM forms a thin plasma, which has a degree of ionisation that depends on the temperature and density. We observe an X-ray spectrum from this gas with both continuum and line characteristics, with photon energies between 0.1 keV and 100 keV.\footnote{X-ray emission is historically measured in kilo-electron volts (energy) rather than frequency or wavelength.} 
+The hot gas of the intracluster medium forms a thin plasma, which has a degree of ionisation that depends on the temperature and density. We observe an X-ray spectrum from this gas with both continuum and line characteristics, and photon energies between 0.1 keV and 100 keV.\footnote{X-ray emission is historically measured in kilo-electron volts (energy) rather than frequency or wavelength.} The energy of the photons is dependent on the temperature of the ICM, resulting in most emissions being in the narrower range of 1 to 10 keV \citep{Schneider2015}. 
 
 Line emission occurs due to electron transitions between orbitals within an atom. The temperature and density of the ICM changes the measured rate of this line emission, however, this becomes limited at higher temperatures as the ionisation fraction increases. The distribution of line emissions can also be an indicator of abundance of elements such as C, N Ne, Mg, Si, S, Ar, Ca, and Fe. This is particularly evident at lower temperatures ($\lesssim 2$ keV) where the total emissions can be dominated by line emission \citep{Schneider2015}.
 
-Continuum radiation is due to brehmsstrahlung, or free-free radiation, which is where electrons are deflected via Coulomb interaction with nearby nuclei. This deflection causes an acceleration induces a change in kinetic energy which is emitted as a photon. As this process is 
+Continuum radiation is due to brehmsstrahlung, or free-free radiation, which is where electrons are deflected via Coulomb interaction with nearby nuclei. This deflection causes an acceleration induces a change in kinetic energy which is emitted as a photon. The spectral energy distribution of these emissions is related to the kinetic energy of the particles, and therefore, the temperature of the ICM. The scale of emissions is similarly impacted by the number of particles, and thereby the density of the ICM $\rho_g$ in a given region. This gives rise to the following relationship to total continuum emissivity \citep{Schneider2015}.
+\begin{equation}
+    \epsilon_{c} \propto T^\frac12 \rho_g^2
+\end{equation}
+
+X-ray spectroscopy is a powerful tool to characterise the ICM and a clusters dynamical state. In general, telescopes trade off between high spatial or spectral resolutions, i.e. between detecting exactly where a photon originated from or an accurate measurement of the photon energy. This becomes somewhat of a constraint when observing galaxy clusters as we require reasonable spatial and spectral resolutions for these large objects. One common instrument is the space telescope \textit{Chandra X-ray Observatory} launched in 1999\stickynote{Cite telescopes}. Many studies of minihalos use \textit{Chandra} observations to map the structure of the cool core and investigate potential relationships to the radio emission (e.g. \citealp{Giacintucci2024}). However, due to the aging detectors on \textit{Chandra}, new observations aren't as good idk. A new telescope \textit{XRISM} was launched in late 2023 and was designed as a successor to \textit{Chandra}\stickynote{Science goals are on p. 10 of the Japanese slides for Hitomi}. Over the last year researchers have begun to utilise the greater resolution to more deeply probe the dynamics of the ICM in some clusters \citep{Sarkar2025, XRISM2025}. Although not the focus of this thesis, X-ray observations provide key ancillary data in investigating the processes involved.
 
 \subsection{Radio}
 
+Radio observations cover several orders of magnitude, with frequencies from 10 MHz up to over 100 GHz. This massive range comes with several difficulties for astronomers, with the primary one being the angular resolution of the telescope. Angular resolution $\theta$ defines the smallest area that can be resolved given an aperture and the observing wavelength.\footnote{The angular resolution of a human eye (with 20/20 vision) is 1 arcminute. \textit{See note 7}} Equation \ref{eq:angular_resolution} gives the formula for angular resolution in arcseconds, or $\frac1{3600}$th of a degree, for an aperture of diameter $D$ and observing wavelength $\lambda$.\footnote{Arcseconds ($"$), arcminutes ($1' = 60"$), and degrees are common units in astrophysics as declination, the celestial equivalent to latitude, is measured in these units.} 
+\begin{equation}
+    \theta = 2.5\times10^5\frac\lambda D
+    \label{eq:angular_resolution}
+\end{equation}
+Radio waves range from 3 cm to 3 km, orders of magnitude larger than optical ($\sim1\mu$m) and X-ray ($0.01$$-$$10$ nm). It is then clear that for a fixed telescope size, radio waves have much larger angular resolutions and therefore low sensitivities when compared to shorter wavelength radiation. In order to observe over this range several types of telescopes have been developed, including single dish telescopes, interferometer arrays, and very long baseline interferometry (VLBI). 
+
+The size of a single dish antenna is limited by both practical construction and from scientific use cases. The largest dish is the \textit{Five-hundred-meter Aperture Spherical Telescope} (FAST) located in Guizhou China, though of the 500 metre diameter only a 300 metre area is usable at a time. Several smaller 100 metre diameter dishes exist such as the \textit{Green Bank Telescope} in West Virginia United States, and the \textit{Effelsburg Telescope} near Bonn, Germany.\stickynote{References for telescopes} These dishes have a limited view of the sky and variable amounts of steerability due to their size, alongside hard limits on their resolution at higher radio frequencies. These restrictions developed into interferometry, the use of an array of single dish telescopes in tandem to simulate a larger dish. The \textit{Karl G. Jansky Very Large Array} (VLA) in New Mexico United States, is comprised of 28 25-metre radio telescopes mounted on railway tracks in a Y-shaped array, observing between 73 MHz and 50 GHz. The \textit{MeerKAT} telescope in the Meerkat National Park of South Australia contains 64 13.5-metre telescopes and operates between 1000 MHz and 10 GHz. These arrays can simulate observations by dishes several kilometres in diameter. VLBI takes this concept even further by using radio telescopes in different continents, synchronised by atomic clocks, to simulate dishes comparable to the size of the Earth. This thesis uses observations taken by the VLA, and the physics of these telescopes will be discussed in more detail in Chapter \ref{Chap:Background}. 
+
+Radio emission detected by these telescopes falls into the category of `synchrotron' emission. This synchrotron emission is produced by particles travelling at relativistic velocities through a magnetic field, emitting photons at radio energies characterised by their velocity and the magnetic field strength \citep{Ferreti2012,Schneider2015}. This is due to the Lorentz force ($\vec v \times \vec B$) perpendicular to their direction of motion, which induces a helical path through the field, and therefore constant acceleration. This is analagous to brehmsstrahlung radiation, but occurs due to a magnetic interaction instead electric, which is why it is somewhat rarely called `magnetobrehmsstralung'. A detailed discussion of the spectral distribution and features of this radiation is given in Chapter \ref{Chap:Background}.
+
 \subsection{Gamma}
 
+The last region of interest for minihalo research is in detecting gamma radiation, or gamma-rays. This is the high energy limit for astronomy, where telescopes are designed to detect photons with energies in the MeV and GeV range.\footnote{Like X-ray, gamma-rays are measured by their energy rather than frequency.} These prove difficult to not only detect, due to the majority of rays being absorbed in the atmosphere, but also to accurately describe their origin \citep{Schneider2015}. The \textit{Fermi Gamma-ray Space Telescope} was built specifically for this research and was launched in 2008 carrying the Large Area Telescope (LAT), with an energy range between 30 MeV and 300 GeV. 
 
-\begin{itemize}
-    \item Well, we can't just go there so we get to look at them really closely.
-    \item How do we get data about clusters
-    \item In increasing wave length, Optical, X-ray, Radio, Gamma. 
-    \item Some telescope + research that we can do with each of these.
-\end{itemize}
+There are various sources for gamma-rays, such as Gamma Ray Bursts (GRB), which are extremely short and intense flashes. Many of these have been spatially located to coincide with bright AGNS called blazars, and rapidly spinning magnetised neutron stars called pulsars. Another source is from gamma-ray background radiation, which is expected be via neutral pion decays resulting from proton-proton collisions. Attempts to detect gamma-ray emissions connected to a clusters ICM have been ongoing as they allow us to put limits on effectiveness of proposed mechanisms to create radio halos (e.g. \citealp{Reimer2003,Ackermann2010,ZandanelGamma2014}). Though progress has been made for giant radio halos, in particular firm constraints for the Coma cluster \citep{Brunetti2012}, minihalos have a smaller spatial extent and are much fainter, with no conclusive studies. The role of gamma rays in determining the processes creating minihalos is detailed in Chapter \ref{Chap:Background}.
 
-It has long been known that some clusters exhibit diffuse radio synchrotron emission that cannot be directly associated with radio galaxies within the cluster. \stickynote{sources for drse}This synchrotron emission is produced by particles travelling at relativistic velocities through a magnetic field, emitting photons at radio energies characterised by their velocity and the magnetic field strength \citep{Ferreti2012}. This emission can take many spatial arrangements, with the primary categories being radio halos, radio relics, and revived AGN sources. Radio halos are extended sources that trace the ICM distribution and operate at the scales of giant radio halos, matching the full ICM extent, and minihalos that are contained within a clusters cool core. Relics instead reflect particles that have been re-accelerated to relativistic energies by shock waves travelling through the ICM, such as the violent energies released during merger events. Revived AGN sources are radio plasma that has been emitted from and AGN and re-energised similarly to the radio relics. 
+\section{Diffuse Radio Emission}
 
-A key question in relation to the radio halos is how they are produced. Relativistic particles have a characteristic lifetime due to the energy losses as travel through space, and therefore a limited diffusion length-scale in which we should be able to observe them. Within a weak magnetic field ($\sim10^{-7}$ G) these distances are about 10 pc, which even accounting for bulk motion of the ICM and more favourable diffusion environments are well below the Mpc scales observed in many clusters \citep{Bagchi2002}. One could argue that the powerful magnetic fields supermassive black holes like M87* have and its 1.5 Mpc long jet of relativistic particles could meet the length-scale criteria, but these strong fields also corral the particles like a funnel, preventing a radial diffusion as observed. \stickynote{Citation for M87*} Two primary theories have been brought forward to explain this phenomenon, one being turbulence in the ICM causing ``re-acceleration'' of once relativistic particles (e.g. \citealp{Brunetti2001,Gitti2002,ZuHone2013,Zandanel2014}). The other is inelastic collisions between relativistic cosmic ray protons and thermal protons, termed ``hadronic'' or secondary production (e.g. \citealp{Dennison1980,Dolag2000,Keshet2010,ZuHone2015,Ignesti2020}). 
+It has long been known that some clusters exhibit diffuse radio synchrotron emission that cannot be directly associated with radio galaxies within the cluster. \stickynote{sources for drse} This synchrotron emission can take many spatial arrangements, with the primary categories being radio halos, radio relics, and revived AGN sources. Radio halos are extended sources that trace the ICM distribution and operate at the scales of giant radio halos, matching the full ICM extent, and minihalos that are contained within a clusters cool core. Relics instead reflect particles that have been re-accelerated to relativistic energies by shock waves travelling through the ICM, such as the violent energies released during merger events. Revived AGN sources are radio plasma that has been emitted from and AGN and re-energised similarly to the radio relics. 
 
-Both of these mechnaisms produce similar observable features, which makes disentangling the true source much more challenging. Investigating into spatial extents and spectral features of ginat radio halos has given the re-acceleration theory more credence than hadronic production, however, the debate is still ongoing for minihalos. Due to their faint nature and smaller size, observations require high sensitivity and resolution in order to accurately capture an image. 
+\subsection{Production}
+A key question in relation to the radio halos is how they are produced. The relativistic particles producing this emission have a characteristic lifetime due to the energy losses as they travel through space, and therefore a limited diffusion length-scale in which we should be able to observe them. Within a weak magnetic field ($\sim10^{-7}$ G) these distances are about 10 pc, which even accounting for bulk motion of the ICM and more favourable diffusion environments are well below the Mpc scales observed in many clusters \citep{Bagchi2002}. One could argue that the powerful magnetic fields supermassive black holes like M87* have and its 1.5 Mpc jet of relativistic particles could meet the length-scale criteria, but these strong fields also corral the particles like a funnel, preventing the observed radial diffusion.\stickynote{Citation for M87*} Two primary theories have been brought forward to explain this phenomenon, one being turbulence in the ICM causing ``re-acceleration'' of once relativistic particles (e.g. \citealp{Brunetti2001,Gitti2002,ZuHone2013,Zandanel2014}). The other is inelastic collisions between relativistic cosmic ray protons and thermal protons, termed ``hadronic'' or secondary production (e.g. \citealp{Dennison1980,Dolag2000,Keshet2010,ZuHone2015,Ignesti2020}). 
 
-\section{Galaxy Clusters}
-\begin{itemize}
-    \item What is a Galaxy Cluster (grav bound galaxies, in a bunch of hot gas)
-    \item Generic information about galaxy clusters (yay statistics)
-    \item Fun facts about galaxy clusters
-\end{itemize}
+Both of these mechanisms produce similar observable features, which makes disentangling the true source much more challenging. Investigating into spatial extents and spectral features of giant radio halos has given the re-acceleration theory more credence than hadronic production \citep{Brunetti2012}, however, the debate is still ongoing for minihalos. A detailed explanation of these processes is provided in Section \ref{sec:BG_reacceleration} and \ref{sec:BG_hadronic}. Due to their faint nature and smaller size, observations require high sensitivity and resolution in order to accurately capture an image. 
 
+\subsection{Minihalo detections}
 
+Talk about how many are detected, previous studies and their frequencies
 
-\section{Radio Emission}
-\begin{itemize}
-    \item This is what we are interested in, can gain information about clusters from this.
-    \item Link synchrotron emission to the electron / gas properies of the cluster and how radio emission can inform us of what the cluster is doing.
-    \item Common sources of relativistic electrons are the AGNs, lose energy over time. 
-    \item Structures larger than the lifetime of these jets, more diffuse (Halos).
-\end{itemize}
+\section{This Thesis}
+\subsection{Aims}
+The primary goal of this thesis is to calibrate, image, and analyse new radio observations of 12 minihalos at 10 GHz. These observations were performed by the \textit{Very Large Telescope} in C and D configuration over two periods in early 2024 and early 2025. This data constitutes the first broad survey of minihalos at high radio frequencies. 
 
-\section{Minihalos}
-'\begin{itemize}
-    \item What is a minihalo (diffuse radio emission in the core of a cluster.)
-    \item They are somewhat common, things about detections.
-    \item Difficulty in distinguishing between production mechanisms.
-\end{itemize}
+This data will complement previous surveys at lower frequencies taken by the \textit{Low-Frequency Array} (LOFAR) at 140 MHz and MeerKAT at 1.3 GHz\stickynote{See if we have an actual reference by now}. Processing this data will allow measurements of the minihalo flux to investigate if steepening of the spectrum occurs at higher frequency, which will assist in differentiating between the reacceleration and hadronic scenarios. 
 
-\section{Our goals}
-\begin{itemize}
-    \item We want to be able to measure minihalo flux for this subset of minihalos at high radio frequencies so that we can investigate if steepening is occuring.
-    \item This is the layout of the paper and what each chapter will cover in pursuit of said goal.
-\end{itemize}
+\subsection{Work}
+In pursuing these aims, I downloaded the raw interferometric data from the National Radio Astronomy Observatory Archive\footnote{\url{https://data.nrao.edu/portal/}} and documented the calibration and imaging process. I then performed various analyses on the final images for each minihalo to evaluate the limits and usefulness of 10 GHz observations for characterising the production mechanisms of minihalos.
+
+This work was done in a source controlled repository\footnote{\url{https://github.com/MoonlitMoo/Masters-2025}} so that the results are reproducible and documented. Due to the size of the datasets, (uncalibrated $\sim1.4$ TB compressed, calibrated $\sim2.5$ TB, imaging $\sim?$\stickynote{Add final size} TB), this is stored on the Storage fOr Learning And Research (SOLAR) large scale storage provided by Victoria University of Wellington. 
+
+The repository is split into two primary sections, \textit{Data Processing} and \textit{Image Processing}. The first section follows the calibration of the raw data and separation from observation runs into cluster specific datasets, split by observation id. The following image processing includes the cleaning and creation of the images from the trimmed datasets and the associated analysis and is split by cluster.
+
+\subsection{Layout}
+The introduction gives a brief overview for important concepts relating to minihalo physics and research. 
+
+Chapter \ref{Chap:Background} details the concept of interferometry used in the collection of the data, alongside an indepth discussion into previous studies on reacceleration and hadronic production.
+
+Chapter \ref{Chap:Calibration} introduces the collected data and explains the calibration and imaging process used.
+
+Chapter \ref{Chap:Analysis} explains the tools and techniques used in the analysis of the final images.
+
+Chapter \ref{Chap:Results} details the results found for each cluster, with the context of previous studies.
+
+Chapter \ref{Chap:Discussion}
+
+Chapter \ref{Chap:Conclusion}
+
+\subsection{Sources}
 
