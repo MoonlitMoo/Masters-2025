@@ -1,13 +1,23 @@
 \chapter[Minihalos]{Minihalos}
 \label{Chap:Background}
 
-Since the first discoveries of diffuse radio emission, much research has been devoted towards understanding the mechanisms behind the production of synchrotron electrons. These electrons are also known as `cosmic ray' (CR) electrons or non-thermal electrons to differentiate them from the thermal electrons of the ICM. In the case of CR electrons within the thin plasma of the ICM, we make the standard assumption that the population of CR electrons is homogeneous and isotropic and follows a power-law energy distribution $n(E) \propto E^{-\delta}$. From this we then predict the following basic observables (see \citet{vanWeeren2019}, \citet{Ferreti2012} and references within). \stickynote{Add graph of spectral shapes?}
+Since the first discoveries of diffuse radio emission, much research has been devoted towards understanding the mechanisms behind the production of synchrotron electrons. These electrons are also known as `cosmic ray' electrons (CRe) or non-thermal electrons to differentiate them from the thermal electrons of the ICM. In the case of CRe within the thin plasma of the ICM, we make the standard assumption that the population of CRe is homogeneous and isotropic and follows a power-law energy distribution $n(E) \propto E^{-\delta}$. From this we then predict the following basic observables (see \citet{vanWeeren2019}, \citet{Ferreti2012} and references within). \stickynote{Add graph of spectral shapes?}
 
 \begin{enumerate}
     \item The synchrotron emissivity is dependent on the number density of the CR electrons and the strength of the magnetic field. As such, the emissivity also follows a power-law $S(\nu) \propto \nu^{-\alpha}$ which is related to $\delta$ by $\alpha = (\delta - 1)/2$. Typical minihalo spectral indices are steep with $\alpha > 1$.
     \item Over time the emitting particles lose energy, which changes the particle energy distribution and therefore, the emitted radio spectrum. This appears as a steepening or curved spectrum, rather than a flat power-law. The break frequency at which this occurs is related to the time of acceleration. This means that radio events that have stopped will show an aged spectrum with a characteristic break, such as radio relics, while ongoing events are continually injecting new particles and don't feature the same steepening due to age. 
     \item Radiation from CR electrons passing through a uniform magnetic field is linearly polarised. Non-uniform and disordered fields reduce the linear polarisation. 
 \end{enumerate} 
+
+The CRe have an individual energy dependent on their Lorentz factor $\gamma = \left(1-\frac{v^2}{c^2}\right)^{-\frac12}$, which is then $E_{CRe} = \gamma m_e c^2$. In the case of radio halos, giant halos or minihalos. we can expect $\gamma\gtrsim10^4$ which corresponds to velocities within $10^{-4}\%$ of the speed of light. Throughout their radiative lifetime CRe produce radio synchrotron emission with energy as a function of the perpendicular magnetic field and their Lorentz factor. They may also interact with thermal protons within the ICM in a process called inverse Compton (IC) scattering.\footnote{Standard Compton scattering has ultrarelativistic photons interacting with thermal electrons, the opposite to what we are considering.} This boost of photon frequency is $\nu_p \sim \gamma_{CRe}^2 \nu_{p,0} \sim 10^6 \nu_{p,0}$, which for photons originating from the cosmic microwave background (CMB), results in high energy X-ray emission. IC flux comparisons to synchrotron radiation would allow direct measurement of the magnetic field strength \citep{Wik2014}. The detection of the X-ray IC component is difficult due to low energies dominanted by the thermal component, while upper energies have lacking spatial resolution. 
+
+As CRe interact with the electromagnetic fields and particles in the ICM they lose energy, until they no longer are energetic enough to produce radio emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe can be given as the following function of the perpendicular magnetic field in the ICM $B_\perp$ and the magnetic field of the CMB $B_{CMB}$. 
+
+\begin{equation}
+    \tau_{CRe} = \frac{16.2}{\left[B^2_\perp + \frac23B^2_{CMB}\right]\gamma_{CRe}}\quad\text{yr}
+\end{equation}
+
+We can also define $B_{CMB} = 3.25(1+z)^2$ $\mu$G to account for the redshift of the clusters in question. As observed minihalos have redshifts in the range $[0.1, 0.3]$ and magnetic fields within the ICM are estimated at $\lesssim$ $\mu$G, the maximum expected lifetime of a CRe is about $10^{8}$ years
 
 \section{Production mechanisms}
 
