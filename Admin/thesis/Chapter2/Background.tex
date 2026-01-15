@@ -19,48 +19,86 @@ Synchrotron radiation is insufficient to directly measure the magnetic field, an
 
 \section{Lifetime of synchrotron emission}
 
-The energy losses of the CRe as they interact with the electromagnetic fields and particles in the ICM eventually result in them no longer being energetic enough to produce radio emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe can be given as the following function of the magnetic field in the ICM $B$ and the magnetic field of the CMB $B_{CMB}$. 
+The energy losses of the CRe as they interact with the electromagnetic fields and particles in the ICM eventually result in them no longer being energetic enough to produce radio emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe can be given as the following function of the magnetic field in the ICM $B$ and the magnetic field of the CMB $B_{CMB}$ where the magnetic fields are measured in $\mu$G. 
 
 \begin{equation}
     \tau = 32 \frac{B^{\frac12}}{B^2 + B^2_{CMB}}\left[(1+z)\nu\right]^{-\frac12}
 \end{equation}
 
-We can also define $B_{CMB} = 3.25(1+z)^2$ $\mu$G to account for the redshift of the clusters in question. As observed minihalos have redshifts in the range $[0.1, 0.3]$ and magnetic fields within the ICM are estimated at $\lesssim$ $\mu$G, the maximum expected lifetime of a CRe is about $10^{8}$ years \citep{Sarazin1999, Ferreti2012, Gitti2018}. 
+We can also define $B_{CMB} = 3.25(1+z)^2$ $\mu$G to account for the redshift of the clusters in question. As the majority of observed minihalos have redshifts in the range $[0.1, 0.3]$\footnote{A handful minihalos are notably outside this range, with the Phoenix cluster at $z=0.596$, ACTJ0022-0036 at $z=0.8$, and a recent candidate SpARCS1049+56 at $z=1.709$ \citep{HLavacek2025}} and magnetic fields within the ICM are estimated at $\lesssim$ $\mu$G, the maximum expected lifetime of a CRe is about $10^{8}$ years \citep{Sarazin1999, Ferreti2012, Gitti2018}. 
 
 Then we can find the expected extent for these particles, in absentia of external forces, as $\sim 10^{16}$ m or $1$ pc. This is orders of magnitude below the extents of observed diffuse radio emission, so we then consider that the CRe are moving within the bulk motion and magnetic fields of the ICM. If we assume that there is a strong of turbulence to promote diffusion of CRe, we can use the Bohm approximation $D = \frac{k_B T}{eB}$, which models the diffusion of plasma across a magnetic field. \citet{Bagchi2002} finds that The expected length-scale of this diffusion (at $z=0.3$) is that of a random walk across its lifetime with a diffusion coefficient $\kappa$ and length-scale $L_{diff}$,\footnote{The length-scale diffusion is calculated as a random walk, scaling with the square root of time, rather than linearly.}
 \begin{equation}
-    \kappa = 3.31\times10^{21} \left(\frac E{\text{GeV}}\right)\left(\frac B{10^{-7}}\right) \>\text{m s}^{-1}
+    \kappa = 3.31\times10^{21} \left(\frac E{\text{GeV}}\right)\left(\frac B{10^{-1} \mu\text{G}}\right) \>\text{m s}^{-1}
 \end{equation}
 \begin{equation}
-    L_{diff} = \sqrt{\kappa\tau} = 6.7\left(\frac B{10^{-7}}\right)^{-\frac12}\>\text{pc}
+    L_{diff} = \sqrt{\kappa\tau} = 6.7\left(\frac B{10^{-1}\mu\text{G}}\right)^{-\frac12}\>\text{pc}
 \end{equation}
 
-Once again, we find that the expected diffusion and halo produced by a point source is measured in the 10s of parsecs, far below the kiloparsec and megaparsec halos observed. Therefore, we must assume that these particles are being re-accelerated or produced \textit{in-situ} by a process that is extended over the kiloparsec scale and long-lived across the particle lifetime. 
+Once again, we find that the expected diffusion and halo produced by a point source is measured in the 10s of parsecs, far below the kiloparsec and megaparsec halos observed. Therefore, we must assume that these particles are being reaccelerated or produced \textit{in-situ} by a process that is extended over the kiloparsec scale and long-lived across the particle lifetime. 
 
-In the case of CRe within the thin plasma of the ICM, we make the standard assumption that the population of CRe is homogeneous, isotropic, and follows a power-law energy distribution $n(E) \propto E^{-\delta}$. From this we then predict the following basic observables (see \citet{vanWeeren2019}, \citet{Ferreti2012} and references within). \stickynote{Add graph of spectral shapes?}
+Before discussing the proposed processes, it seems prudent to first mention the standard assumptions regarding the population of relativistic CRe within the ICM. These are that it is homogeneous, isotropic, and follows a power-law energy distribution $n(E) \propto E^{-\delta}$. This then gives us the following basic observables for a population of initially relativistic particles (see \citet{vanWeeren2019}, \citet{Ferreti2012} and references within). 
 
 \begin{enumerate}
-    \item The synchrotron emissivity is dependent on the number density of the CR electrons and the strength of the magnetic field. As such, the emissivity also follows a power-law $S(\nu) \propto \nu^{-\alpha}$ which is related to $\delta$ by $\alpha = (\delta - 1)/2$. Typical minihalo spectral indices are steep with $\alpha > 1$.
-    \item Over time the emitting particles lose energy, which changes the particle energy distribution and therefore, the emitted radio spectrum. This appears as a steepening or curved spectrum, rather than a flat power-law. The break frequency at which this occurs is related to the time of acceleration. This means that radio events that have stopped will show an aged spectrum with a characteristic break, such as radio relics, while ongoing events are continually injecting new particles and don't feature the same steepening due to age. 
+    \item The synchrotron emissivity is dependent on the number density of the CR electrons and the strength of the magnetic field. As such, the emissivity also follows a power-law $S(\nu) \propto \nu^{-\alpha}$ which is related to $\delta$ by $\alpha = (\delta - 1)/2$. Typical minihalo spectral indices are steep with $\alpha > 0.7$.
+    \item As the emitting particles lose energy the particle energy distribution changes, and therefore, the emitted radio spectrum changes. This appears as a steepening or curved spectrum at high frequencies, rather than a flat power-law. The break frequency at which this occurs is related to the time of acceleration. This means that radio events that have stopped will show an aged spectrum with a characteristic break, such as radio relics, while ongoing events are continually injecting new particles and don't feature the same steepening due to age. 
     \item Radiation from CR electrons passing through a uniform magnetic field is linearly polarised. Non-uniform and disordered fields reduce the linear polarisation. 
 \end{enumerate} 
 
- 
+Several models have been developed to describe the spectral shape, depending on the initial injection spectrum $\alpha_{inj}$, break frequency, and any continuous injection after the initial state. The Jaffe-Perola (JP; \citealt{JaffePerola1973}) model assumes all CRe are created in a single burst, before aging with continuous scattering of electron pitch angles. This predicts that the pitch angle (between the electron velocity vector and local magnetic field vector) will be isotropic due to scattering. The Kardashev-Pacholczyk (KP; \citealt{Kardashev1962}, \citealt{Pacholczyk1970}) model is similar to the JP model as it uses the same initial conditions, but evolves without pitch angle scattering. Continuous injection (CI) models can describe sources that existed for longer than a single burst, such as until current time (CI-on; \citealt{Kardashev1962}), or for a fixed amount of time $\tau_{on}$ (CI-off; \citealt{Komissarov1994}). An example of how these models differ in their shape is provided in Figure \ref{fig:spectral_shapes}
 
-A
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{Chapter2/synchro_aging.pdf}
+    \caption{A representation of radio spectral shapes with $\alpha_{inj} = -0.6$. The injection spectrum depicts the shape prior to energy losses.}
+    \label{fig:spectral_shapes}
+\end{figure}
 
 \section{Production mechanisms}
 
-The 
+With this understanding of the spectrum of CRe, we now consider the methods that may produce them. This can be broken down into primary models involving first and second order Fermi acceleration, and secondary models where the electrons are a byproduct or result from decay.
 
-\subsection{Turbulent re-acceleration}
+First order Fermi acceleration (Fermi-I) is also known as diffuse shock acceleration (DSA). This occurs when particles cross back and forward over the shock front, as they are reflected by magnetic instabilities upstream and downstream from the shock. Each crossing of the shock front increases the particle energy, raising it to relativistic levels.
 
+\subsection{Turbulent reacceleration}
 \label{sec:BG_reacceleration}
-\begin{itemize}
-    \item What is the process here.
-    \item How manifest spectrally.
-    \item How manifest spatially.
-\end{itemize}
+
+This process takes a pre-existing lower energy CRe population of $\gamma\sim100$ and boosts it to the factors observed $\gamma\gtrsim1000$. This occurs via interactions with plasma waves and shocks within the ICM which can be caused by several factors, such as violent cluster mergers and gas sloshing within the core \citep{Brunetti2001, Fujita2004}. This environment naturally allows these low energy `seed' electrons to undergo second order Fermi (Fermi-II) acceleration. This type of acceleration is stochastic as particles are scattered by the magnetic instabilities from the randomly moving plasma waves and has an efficiency scaling. Particles meeting these waves head-on are reflected with an increased energy, while particles in a head-tail collision are reflected with a lower energy. The chance for a head-on collision is higher than that of a head-tail collision allowing for a net gain of energy. The mean energy gained is proportional to the speed of the waves and energy of the particle via,
+
+\begin{equation}
+    \Delta E \propto \frac{v_{wave}^2}{c^2}E
+    \label{eq:fermi2}
+\end{equation}
+
+The random nature of Fermi-II acceleration makes for an inefficient process. \citet{Brunetti2007} show that reacceleration of relativistic particles moving through magnetohydrodynamic (MHD) turbulence are primarily accelerated by two Fermi-II type mechanisms. 
+
+The first mechanism is the damping of fast magnetosonic waves due to resonant transit time damping (TTD). The compressible and low-frequency plasma waves can resonate with gyrating particles at the zeroth order, $\omega = v_\parallel k_\parallel$, where $\omega$ is the frequency of the wave, $k_\parallel$ is the wavenumber, and $v_\parallel$ is the speed of the particle along the axis of the magnetic field. The random accelerations can then be captured as a random walk in momentum space, giving rise to a momentum-diffusion coefficient $D_{pp,TTD}$. \citet{ZuHone2013} simulate this process numerically in the case of minihalos and simplify this diffusion coefficient to be proportional to the average wavenumber $\langle k\rangle$, turbulent velocity of the particle $v_t$, and fraction of turbulent energy in compressible motion $R_c$.
+
+\begin{equation}
+    D_{pp, TTD} \propto \langle k \rangle v_t^2 R^c p^2
+\end{equation}
+
+The second mechanism is via non-resonant compression and expansion. The adiabatic compression increases the particle momentum, while expansion reduces it. Within a Fermi-II process, compression is statistically more likely and so a net acceleration is acheived. Here \citet{ZuHone2013} take the fast diffusion limit, where particles escape the eddies of compression before they re-expand. This non-resonant momentum-diffusion coefficient scales as
+
+\begin{equation}
+    D_{pp,C} \propto \frac{V_l^2}{D}p^2
+\end{equation}
+
+where $V_l$ is the compressive velocity at scale $l$, and $D \propto cl_{mfp}$ is the spatial diffusion rate for a mean free path of $l_{mfp}$.
+
+The reacceleration efficiency is then given via $\chi = \frac{4D_{pp}}{p^2}$, where $D_{pp}$ is the sum of the prior diffusion coefficients. The total rate of momentum increase for each particle is then 
+
+\begin{equation}
+    \frac{dp}{dt} = \chi p
+\end{equation}
+\begin{equation}
+    \frac{dp}{dt} \propto \langle k \rangle R^c v_t^2 p + \frac1{D} V_l^2 p
+\end{equation}
+
+which clearly shows the sum of two Fermi-II processes when compared to Equation \ref{eq:fermi2}. Combining theories on how sloshing gas within the cluster core creates turbulence, alongside the numerical simulations of \citet{ZuHone2013}, we can then discuss the observables we expect from CRe created via turbulent reacceleration.
+
+\subsection{Observables of turbulent reacceleration}
+
 
 \subsection{Hadronic Production}
 \label{sec:BG_hadronic}
@@ -77,7 +115,7 @@ The
     \item Use similar physics but much larger scale. 
     \item Some basics things about previous research in differentiating production. 
     \item Gamma ray non-detection.
-    \item General consensus is that its re-acceleration.
+    \item General consensus is that its reacceleration.
 \end{itemize}
 
 \subsection{Minihalos}

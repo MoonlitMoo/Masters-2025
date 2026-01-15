@@ -40,8 +40,8 @@ def plot_seds(
     axA.set_xlabel("Frequency (GHz)")
     axA.set_ylabel("Flux (mJy)")
     axA.set_title("Total flux of minihalo and BCG")
-    axA.set_xlim(0.01, 100)
-    axA.set_ylim(0.3, 5000)
+    axA.set_xlim(1, 20)
+    axA.set_ylim(0.1, 5000)
     axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
     axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
     axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
@@ -62,9 +62,9 @@ mh_freq = np.array([1.40, 8.5, 9.5, 10.5, 11.5])
 mh_flux = np.array([16.6, 0.52, 0.35, 0.26, 0.16])
 mh_err  = np.array([3, 0.029, 0.022, 0.02, 0.056])
 
-bcg_freq = np.array([1.4, 4.9, 10])
-bcg_flux = np.array([31, 9.6, 5.41])
-bcg_err  = np.array([1.6, 0.5, 0.13])
+bcg_freq = np.array([1.4, 4.9, 8.5, 9.5, 10.5, 11.5])
+bcg_flux = np.array([31, 9.6, 6.033, 5.535, 5.145, 4.750])
+bcg_err  = np.array([1.6, 0.5, 0.023, 0.019, 0.016, 0.02])
 
 # --- Recreate plot with our points ---
 plot_seds(
