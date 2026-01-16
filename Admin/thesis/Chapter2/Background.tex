@@ -55,6 +55,7 @@ Several models have been developed to describe the spectral shape, depending on 
 \end{figure}
 
 \section{Production mechanisms}
+\label{sec:BG_production}
 
 With this understanding of the spectrum of CRe, we now consider the methods that may produce them. This can be broken down into primary models involving first and second order Fermi acceleration, and secondary models where the electrons are a byproduct or result from decay.
 
@@ -101,6 +102,7 @@ The particles must also trace the distribution of turbulence within the ICM, lea
 A spectral feature of the reacceleration model is due to the balancing of reacceleration and losses, creating a cutoff energy at which the population of CRe declines more sharply. This is indeed the logic behind the CI model visualised in Figure \ref{fig:spectral_shapes}, with a steepening in the spectral index beyond the break frequency.\stickynote{Image from \citet{ZuHone2015} of turb vs had spectra} \citet{ZuHone2013} note that as there is a range of magnetic field strengths within the core, this break frequency will change between CRe, causing a smearing of the break and a gradual steepening towards high frequency.
 
 \subsection{Hadronic Production}
+\label{sec:BG_hadronic}
 For the secondary production we instead consider the protons within the ICM, rather than the electrons. We again can separate them into relativistic `cosmic ray' protons (CRp) and thermal protons and examine their interactions. CRp have significantly longer radiative lifetimes than CRe, with $\tau_p \sim10^{10}$ yrs, allowing them to travel up to 1 Mpc \citet{Dennison1980}. The spread out CRp $p_{CR}$ then collide inelastically with thermal protons $p_{th}$ to produce charged and neutral pions $\pi$
 \begin{equation}
     p_{CR} + p_{th} \rightarrow \pi^0 + \pi^+ +\pi^-
@@ -132,31 +134,25 @@ If $\sigma_{pp}$ is constant\footnote{There is a weak dependence on the CRp and 
     n_e &\propto \frac{p^{-\alpha_p+1}}{p^2}\\
     n_e &\propto p^{-(\alpha_p + 1)}
 \end{align*}
-This gives us an CRe density power-law with index $\delta = \alpha_p + 1$ and therefore a synchrotron spectral index of $\alpha = \frac{\alpha_p}2$. Using the expected values for $\alpha_p$ we then should expect $\alpha \sim 1$-$1.25$ which is similar to that of observed minihalos. However, this assumes steady state injection which is an extremely idealised case for the turbulent core of the cluster.
+This gives us an CRe density power-law with index $\delta = \alpha_p + 1$ and therefore a synchrotron spectral index of $\alpha = \frac{\alpha_p}2$. Using the expected values for $\alpha_p$ we then should expect $\alpha \sim 1$-$1.25$ which is similar to that of observed minihalos. However, this assumes steady state injection which is an extremely idealised case for the intermittent and turbulent core of the cluster.
 
 \subsection{Observables of hadronic production}
+This idealised case predicts a flat spectral index extending into high frequencies, lacking the steepening observed in the reacceleration model. This also implies the spectral index will be constant throughout the spatial extent of the minihalo, rather than varying due to localised high amounts of turbulence. \citet{Keshet2010} show that changes in the magnetic field strength relative to $B_{CMB}$ can induce changes in the emissivity. For regions of the magnetic field where $B < B_{CMB}$ they predict a radio supression $(B/B_{CMB})^2$. Assuming that the magnetic field inside a cluster has a radial steepening, there is some radius $r_b$ where the magnetic field drops below $B_{CMB}$ and a radial break may be observed in the radio profile. 
 
-\section{Large Radio Halos}
-\begin{itemize}
-    \item Use similar physics but much larger scale. 
-    \item Some basics things about previous research in differentiating production. 
-    \item Gamma ray non-detection.
-    \item General consensus is that its reacceleration.
-\end{itemize}
+The simulation of hadronic production by \citet{ZuHone2015} find that the majority of particles have spectral indices close to that of steady state. As $B$ decreases towards $B \ll B_{CMB}$ the spread of spectral indices converges tightly. The opposite happens at $B \gg B_{CMB}$ with broadening and a small skew towards steeper indices. They attribute the broadening to sampling regions with rapidly decreasing magnetic fields (flatter index) and rapidly increasing magnetic fields (steeper index). They also note that the spatial bounding of the hadronic emission is less constraining than that of the reacceleration model. A drop in the emission across the cold front occurs due to a drop in the magnetic field strength and falls $\propto B^2$. As such, the extent of the minihalo is more constrained via the strength of the magnetic field, than the cold fornts of the cool core. 
 
-\section{Minihalos}
-\begin{itemize}
-    \item These are much smaller, so therefore much harder to observe. Difference to large radio halos.
-    \item Similarities between host clusters (CC), general properties of spectral index etc.
-\end{itemize}
+Importantly, \citet{ZuHone2015} do not find evidence of a spectral flattening at high frequencies, showing that a simple power-law relationship to beyond 10 GHz. They compare the spectral distribution of the hadronic and reacceleration models and clearly show the difference in spectral shape (Figure \ref{fig:spectral_comparison}).
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{Chapter2/compare_spectra.eps}
+    \caption{The total radio spectrum within 300 kpc radius of the cluster centre, comparing the hadronic and reacceleration model at several timesteps. (Fig 8 of \citealt{ZuHone2015})}
+    \label{fig:spectral_comparison}
+\end{figure}
 
+A final clear distinction from the reacceleration model is the emission of gamma rays with the hadronic model. This implies that there will be a diffuse gamma emission aligned spatially with the minihalo. This would be a `smoking gun' proof for the hadronic model, however as mentioned earlier, current instruments don't have the spatial resolution to accurately detect diffuse gamma emission at minihalo scales. 
 
-
-
-
-
-
+\section{Previous minihalo studies}
 
 \subsection{Previous minihalo studies}
 \begin{itemize}
