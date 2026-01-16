@@ -73,21 +73,17 @@ This process takes a pre-existing lower energy CRe population of $\gamma\sim100$
 The random nature of Fermi-II acceleration makes for an inefficient process. \citet{Brunetti2007} show that reacceleration of relativistic particles moving through magnetohydrodynamic (MHD) turbulence are primarily accelerated by two Fermi-II type mechanisms. 
 
 The first mechanism is the damping of fast magnetosonic waves due to resonant transit time damping (TTD). The compressible and low-frequency plasma waves can resonate with gyrating particles at the zeroth order, $\omega = v_\parallel k_\parallel$, where $\omega$ is the frequency of the wave, $k_\parallel$ is the wavenumber, and $v_\parallel$ is the speed of the particle along the axis of the magnetic field. The random accelerations can then be captured as a random walk in momentum space, giving rise to a momentum-diffusion coefficient $D_{pp,TTD}$. \citet{ZuHone2013} simulate this process numerically in the case of minihalos and simplify this diffusion coefficient to be proportional to the average wavenumber $\langle k\rangle$, turbulent velocity of the particle $v_t$, and fraction of turbulent energy in compressible motion $R_c$.
-
 \begin{equation}
     D_{pp, TTD} \propto \langle k \rangle v_t^2 R^c p^2
 \end{equation}
 
 The second mechanism is via non-resonant compression and expansion. The adiabatic compression increases the particle momentum, while expansion reduces it. Within a Fermi-II process, compression is statistically more likely and so a net acceleration is acheived. Here \citet{ZuHone2013} take the fast diffusion limit, where particles escape the eddies of compression before they re-expand. This non-resonant momentum-diffusion coefficient scales as
-
 \begin{equation}
     D_{pp,C} \propto \frac{V_l^2}{D}p^2
 \end{equation}
-
 where $V_l$ is the compressive velocity at scale $l$, and $D \propto cl_{mfp}$ is the spatial diffusion rate for a mean free path of $l_{mfp}$.
 
-The reacceleration efficiency is then given via $\chi = \frac{4D_{pp}}{p^2}$, where $D_{pp}$ is the sum of the prior diffusion coefficients. The total rate of momentum increase for each particle is then 
-
+The reacceleration efficiency is then given via $\chi = \frac{4D_{pp}}{p^2}$, where $D_{pp}$ is the sum of the prior diffusion coefficients. The total rate of momentum increase for each particle can then be clearly written  as the sum of two Fermi-II processes when compared to Equation \ref{eq:fermi2}. 
 \begin{equation}
     \frac{dp}{dt} = \chi p
 \end{equation}
@@ -95,22 +91,52 @@ The reacceleration efficiency is then given via $\chi = \frac{4D_{pp}}{p^2}$, wh
     \frac{dp}{dt} \propto \langle k \rangle R^c v_t^2 p + \frac1{D} V_l^2 p
 \end{equation}
 
-which clearly shows the sum of two Fermi-II processes when compared to Equation \ref{eq:fermi2}. Combining theories on how sloshing gas within the cluster core creates turbulence, alongside the numerical simulations of \citet{ZuHone2013}, we can then discuss the observables we expect from CRe created via turbulent reacceleration.
+One remaining loose thread in this explanation is the source of the seed electrons themselves. A possible explanation is that the seed population is provided from radio AGN and spread throughout the cluster core by the gas sloshing \citep{Brunetti2001}. The CRe from the central BCG lose energy and fizzle out of our detectable range by the physics described earlier, however, they don't stop existing after this timescale. These `relic` CRe are lower energy but still relativistic with $\gamma\sim100$, radiating at radio frequencies that we are unable to detect. In this state they still continue to move and disperse through the core, creating the seeds for the large scale minihalos that we observe. The central BCG may not be the only source, other AGN within the cluster, galactic winds, supernovae, may all contribute relic CRe to be later reaccelerated. \citet{ZuHone2013} find that the sloshing should be sufficient to redistribute these particles to create a minihalo. Hadronic interactions as described in a later section could also contribute seed electrons.
 
 \subsection{Observables of turbulent reacceleration}
+With this understanding we can now explore the spectral and spatial features that we expect to observe from emission resulting from the reacceleration scenario. Turbulence is an inherently transient and intermittent phenomena. This spatial variance means that when we sample a given region of space, we may instead be observing several 3D components superimposed on our 2D image. Areas of with higher turbulent velocity inspire greater magnetic fields, and greater levels of emission \citep{ZuHone2013}. The lack of a steady state and variable components means that we might expect variation in the flux brightness and spectral index across different locations of the minihalo \citep{Riseley2022}. However, due to the integration over the line of sight, these artefacts could be averaged and less visible in the 2D observation. 
 
+The particles must also trace the distribution of turbulence within the ICM, leading to a spatial bounding of the minihalo within the gas sloshing of the core. The boundary of the cluster core is often associated with cold fronts visible in X-ray data, allowing comparison between X-ray and radio images. \citet{ZuHone2013} find that simulated turbulent re-acceleration is indeed boundes by the cold fronts. They also find that depending on the projection through the ICM, it may be difficult to locate the cold fronts in X-ray images due to the afore mentioned line of sight integration\stickynote{Image from \citet{ZuHone2013} of boundary?}. 
+
+A spectral feature of the reacceleration model is due to the balancing of reacceleration and losses, creating a cutoff energy at which the population of CRe declines more sharply. This is indeed the logic behind the CI model visualised in Figure \ref{fig:spectral_shapes}, with a steepening in the spectral index beyond the break frequency.\stickynote{Image from \citet{ZuHone2015} of turb vs had spectra} \citet{ZuHone2013} note that as there is a range of magnetic field strengths within the core, this break frequency will change between CRe, causing a smearing of the break and a gradual steepening towards high frequency.
 
 \subsection{Hadronic Production}
-\label{sec:BG_hadronic}
-\begin{itemize}
-    \item What is the process for hadronic production
-    \item How does this manifest spectrally and evolve. What should we expect observationally here based on simulation work.
-    \item How does this manifest spatially and evolve, what should we see observationally.
-\end{itemize}
+For the secondary production we instead consider the protons within the ICM, rather than the electrons. We again can separate them into relativistic `cosmic ray' protons (CRp) and thermal protons and examine their interactions. CRp have significantly longer radiative lifetimes than CRe, with $\tau_p \sim10^{10}$ yrs, allowing them to travel up to 1 Mpc \citet{Dennison1980}. The spread out CRp $p_{CR}$ then collide inelastically with thermal protons $p_{th}$ to produce charged and neutral pions $\pi$
+\begin{equation}
+    p_{CR} + p_{th} \rightarrow \pi^0 + \pi^+ +\pi^-
+\end{equation}
+the charged pions then decay into (anti)muons $\mu^\pm$ and muon (anti)neutrinos $\nu_\mu(\tilde \nu_\mu)$, while the neutral pions decay into gamma rays $\gamma$
+\begin{eqnarray}
+    \pi^\pm \rightarrow \mu^\pm + \nu_\mu(\tilde\nu_\mu)\\
+    \pi^0 \rightarrow 2\gamma
+\end{eqnarray}
+the muons then decay into highly relativistic (positrons)electrons $e^\pm$ and electron (anti)neutrinos $\nu_e(\tilde\nu_e)$.
+\begin{equation}
+    \mu^\pm \rightarrow e^\pm + \nu_e(\tilde\nu_e) + \tilde\nu_\mu(\nu_\mu)
+\end{equation}
 
+From this chain reactions we end up with two observables, CRes and gamma rays. Importantly, it is these secondary CRe products that are predicted to produce the minihalo emission. The emission in this model then traces the population of CRp producing the CRe, rather than the CRe directly. Due to our assumption of the long radiative lifetimes, we expect a continuous injection of CRe from the hadronic process. 
 
+\citep{ZuHone2015} investigate the hadronic method via simulation and assume a power-law momentum distribution for the CRp, $n_p(p_p) = C_pp_p^{-\alpha_p}$ ($C_p$ is a normalisation constant), and estimate the spectral index to be in the range $\alpha_p \sim 2.0$-$2.5$. They then derive a distribution for the produced CRe momentum $p$ based upon the CRp momentum distribution to be
+\begin{equation}
+    Q(p)dp = \frac4316^{1-\alpha_p} c n_{th} C_p \sigma_{pp} (16p) p^{-\alpha_p} dp
+\end{equation}
+with $n_{th}$ the density of thermal protons, $\sigma_{pp}(16p)$ is the proton-proton inelastic collision cross section at 16 times the momentum.\footnote{This is an approximation of the CRp momentum in the collision, $p_p = 16p$.} Ignoring the constant terms we can also write
+\begin{equation}
+     Q(p)dp \propto n_{th} \sigma_{pp} p^{-\alpha_p}dp
+\end{equation}
+If $\sigma_{pp}$ is constant\footnote{There is a weak dependence on the CRp and proton energies, which \citet{ZuHone2015} account for, which has a minor flattening effect on the synchrotron spectral index.} we are able to find a steady state for the number density of CRe by equating the synchrotron and IC losses $\frac{dp}{dt} \propto -p^2$. This occurs when $\frac{d}{dp}(-p^2n_e) + Q(p) = 0$, which following through by integrating for all particles $p \rightarrow \infty$,
+\begin{align*}
+    -p^2n_e &= -\int_p^\infty Q(p)\\
+    p^2n_e &\propto \int_p^\infty p^{-\alpha_p}\\
+    n_e &\propto \frac{p^{-\alpha_p+1}}{p^2}\\
+    n_e &\propto p^{-(\alpha_p + 1)}
+\end{align*}
+This gives us an CRe density power-law with index $\delta = \alpha_p + 1$ and therefore a synchrotron spectral index of $\alpha = \frac{\alpha_p}2$. Using the expected values for $\alpha_p$ we then should expect $\alpha \sim 1$-$1.25$ which is similar to that of observed minihalos. However, this assumes steady state injection which is an extremely idealised case for the turbulent core of the cluster.
 
-\subsection{Large Radio Halos}
+\subsection{Observables of hadronic production}
+
+\section{Large Radio Halos}
 \begin{itemize}
     \item Use similar physics but much larger scale. 
     \item Some basics things about previous research in differentiating production. 
@@ -118,7 +144,7 @@ which clearly shows the sum of two Fermi-II processes when compared to Equation 
     \item General consensus is that its reacceleration.
 \end{itemize}
 
-\subsection{Minihalos}
+\section{Minihalos}
 \begin{itemize}
     \item These are much smaller, so therefore much harder to observe. Difference to large radio halos.
     \item Similarities between host clusters (CC), general properties of spectral index etc.
