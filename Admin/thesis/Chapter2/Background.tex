@@ -1,33 +1,63 @@
 \chapter[Radio Halos]{Radio Halos}
 \label{Chap:Background}
 \section{Synchrotron emission}
-Since the first discoveries of diffuse radio emission, much research has been devoted towards understanding the mechanisms behind the production of synchrotron electrons. These electrons are also known as `cosmic ray' electrons (CRe) or non-thermal electrons to differentiate them from the ambient electrons of the ICM. The CRe have an individual energy $E=\gamma m_e c^2$ dependent on their Lorentz factor $\gamma$. 
+Since the first discoveries of diffuse radio emission, much research has been devoted towards understanding the mechanisms behind the production of synchrotron-emitting electrons. These electrons are also known as `cosmic ray' electrons (CRe) or non-thermal electrons to differentiate them from the thermal electrons of the ICM. The CRe have an individual energy $E=\gamma m_e c^2$ dependent on their Lorentz factor $\gamma$. 
 \begin{equation}
     \gamma = \left(1-\frac{v^2}{c^2}\right)^{-\frac12}
 \end{equation}
-In the case of radio halos we can expect $\gamma\gtrsim10^4$ which corresponds to velocities within $10^{-4}\%$ the speed of light. Throughout their radiative lifetime CRe produce radio synchrotron emission with power dependent on the (perpendicular to velocity) magnetic field and their energy. This is broadly a continuum radiation with the synchrotron power loss described by the following equation \citep{Feretti2008}. 
+In the case of radio halos we can expect $\gamma\gtrsim10^4$ which corresponds to velocities within $99.9999\%$ the speed of light. Throughout their radiative lifetime CRe produce radio synchrotron emission with power dependent on the magnetic field $B$ and their energy $E$. This is broadly a continuum radiation with the synchrotron power loss described by the following equation, where $\sigma_T$ is the Tompson cross-section, and $U_B = B^2/(8\pi)$ is the energy density of the magnetic \citep{Sarazin1999}. 
 \begin{equation}
-    -\frac{dE}{dt} = \frac{2e^4}{3m_e^4c^7}(B \sin\theta)^2E^2
+    \left[-\frac{dE}{dt}\right]_{syn} = \frac43\frac{\sigma_T}{m_e c} \gamma^2 U_{B}
 \end{equation}
-They also interact with thermal protons in the ICM via inverse Compton (IC) scattering.\footnote{Standard Compton scattering has ultrarelativistic photons interacting with thermal electrons, the opposite to what we are considering.} The scattered photon has a boosted energy that is proportional to its original energy. In units of frequency this relation is:
+They also interact with thermal protons in the ICM via inverse Compton (IC) scattering,\footnote{Standard Compton scattering has ultrarelativistic photons interacting with thermal electrons, the opposite to what we are considering.} of which the dominant proton population originates from the Cosmic Microwave Background (CMB). The scattered photon has a boosted energy that is proportional to its original energy. In units of frequency this relation is:
 \begin{equation}
     \nu_p = \frac34\gamma^2 \nu_{p,0}
 \end{equation}
-For the CRe under consideration this results in a boosting factor $\sim10^6$. The CMB is a source of thermal photons throughout the cluster with a temperature of $\text{T} = 2.73$ K, to which the Planck function peaks at $\nu \approx 1.6\times10^{11}$ Hz. This interaction causes high energy X-ray emission \citep{Sarazin1999, Govoni2004}. 
+For the CRe under consideration this results in a boosting factor $\sim10^6$. For thermal photons sourced from the CMB, they move through the cluster with a temperature of $\text{T} = 2.73$ K, to which the Planck function peaks at $\nu \approx 1.6\times10^{11}$ Hz. This interaction causes emission at $\nu\approx10^{17}$ Hz or $\lambda\approx1$ nm, corresponding to high energy X-rays \citep{Sarazin1999, Govoni2004}. The energy losses due to IC scattering with CMB photons can be expressed as the CMB energy density $U_{CMB} = B^2_{CMB}/(8\pi)$, and an equivalent magnetic field strength $B_{CMB} = 3.25(1+z)^2\> [\mu\text{G}]$. This magnetic field isn't real, but results in equivalent energy losses as if electrons were interacting with a real magnetic field within the cluster. 
+\begin{equation}
+    \left[-\frac{dE}{dt}\right]_{IC} = \frac43\frac{\sigma_T}{m_e c} \gamma^2 U_{CMB}
+\end{equation}
+These mechanisms are then highly dominated by the synchrotron and IC losses, which scale $\propto \gamma^2$, at high Lorentz factors and so can be neglected. The combined synchrotron and IC losses can then be written as a single loss equation where the magnetic fields are measured in $\mu$G.
+Further losses due to Coulomb and brehmsstrahlung interactions are possible, but scale with $\gamma$ as follows \citep{Sarazin1999}.
+\begin{equation*}
+    \left[-\frac{dE}{dt}\right]_{Coul} \propto \ln\gamma, \qquad \left[-\frac{dE}{dt}\right]_{brehm} \propto \gamma\ln(\gamma)
+\end{equation*}
+These mechanisms are naturally highly dominated by the synchrotron and IC losses, which scale $\propto \gamma^2$, at high Lorentz factors and so can be neglected. The combined synchrotron and IC losses can then be written as a single loss equation where the magnetic fields are measured in $\mu$G.
+\begin{equation}
+    -\frac{dE}{dt} = \frac1{6\pi}\frac{\sigma_T}{m_e c} \gamma^2\left(B^2 + B_{CMB}^2\right)
+\end{equation}
 
-Synchrotron radiation is insufficient to directly measure the magnetic field, and the standard method is to instead measure the equipartition field $B_{eq}$. This field is found by minimising the total energy of the magnetic field potential and that of the relativistic particles. However, the IC emission is independent of the magnetic field, meaning that comparisons between these fluxes would allow direct measurement of the magnetic field strength \citep{Govoni2004, Wik2014}. Unfortunately, detection of the X-ray IC component is difficult as low X-ray energies are dominanted by the thermal ICM emission, while upper energies lack spatial resolution in current instruments. An interesting topic in its own right, IC emission and cluster magnetic fields are outside the scope of this thesis.
+The standard assumptions regarding the population of CRe within the ICM are that it is homogeneous, isotropic, and follows a power-law energy distribution $n(E) = n_0E^{-\delta}$. The total synchrotron emissivity $\epsilon_s$ at a given frequency $\nu$ is dependent on the CRe number density, the strength of the ICM magnetic field, and the spectral index of the CRe distribution.
+\begin{equation}
+    \epsilon_s(\nu) \propto n_0 B^{(\delta + 1)/2}\nu^{-(\delta - 1)/2}
+\end{equation}
+This can be rewritten in terms of $\alpha = (\delta - 1)/2$, the spectral index of the synchrotron emission.
+\begin{equation}
+    \epsilon_s(\nu) \propto n_0 B^{\alpha + 1}\nu^{-\alpha}
+    \label{eq:synchro_general}
+\end{equation}
+This relation shows a degeneracy between the magnetic field strength and the CRe number density, as such, the synchrotron radiation alone is insufficient to directly measure the magnetic field. Estimates of the magnetic field are generally found by minimising the total energy contributed by the relativistic electrons $(1 + k)U_e$, where $k$ is the ratio of energy of relativistic protons to the electrons, and the magnetic field $U_B$.
+\begin{equation}
+    U_{tot} = (1+k)U_e + U_B
+\end{equation}
+This occurs when the total energy of the relativistic particles is close to equilibrium with the total magnetic field energy $U_B = \frac34(1+k)U_e$, and therefore $U_{min} = \frac73 U_B$, and is often referred to as the equipartition value \citep{Govoni2004}. This allows the calculation of the minimum energy density $u_{min}$ which can be used to derive the associated equipartition field $B_{eq}$. 
+\begin{equation}
+    B_{eq} = \left(\frac{24\pi}{7}u_{min}\right)^{\frac12}
+\end{equation}
+
+However, the IC emission is independent of the magnetic field, meaning that comparisons between these fluxes would allow direct measurement of the magnetic field strength \citep{Govoni2004, Wik2014}. Unfortunately, detection of the X-ray IC component is difficult as low X-ray energies are dominanted by the thermal ICM emission, while upper energies lack spatial resolution in current instruments. An interesting topic in its own right, IC emission and numeric estimations of cluster magnetic fields are outside the scope of this thesis.
 
 \section{Lifetime of synchrotron emission}
 
-The energy losses of the CRe as they interact with the electromagnetic fields and particles in the ICM eventually result in them no longer being energetic enough to produce observable radio emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe can be given as the following function of the magnetic field in the ICM $B$ and the magnetic field of the CMB $B_{CMB}$ where both fields are measured in $\mu$G. 
+The energy losses of the CRe as they interact with the electromagnetic fields and particles in the ICM eventually result in them no longer being energetic enough to produce observable radio emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe $\tau$ can be given as the following function of the magnetic field in the ICM $B$, the equivalent magnetic field of the CMB $B_{CMB}$ (both fields are measured in $\mu$G), the cluster redshift $z$, and the observed frequency of the particle $\nu$ \citep{vanWeeren2019}. 
 
 \begin{equation}
-    \tau = 32 \frac{B^{\frac12}}{B^2 + B^2_{CMB}}\left[(1+z)\nu\right]^{-\frac12}
+    \tau = 32 \frac{B^{\frac12}}{B^2 + B^2_{CMB}}\left[(1+z)\nu\right]^{-\frac12}\quad [\text{Gyr}]
 \end{equation}
 
-We can also define $B_{CMB} = 3.25(1+z)^2$ $\mu$G to account for the redshift of the clusters in question. As the majority of observed minihalos have redshifts in the range $[0.1, 0.3]$\footnote{A handful minihalos are notably outside this range, with the Phoenix cluster at $z=0.596$ \citep{vanWeeren2014}, ACTJ0022-0036 at $z=0.8$ \citep{Knowles2019}, and a recent candidate SpARCS1049+56 at $z=1.709$ \citep{HLavacek2025}} and magnetic fields within the ICM are estimated at $\lesssim$ $\mu$G, the maximum expected lifetime of a CRe is about $10^{8}$ years \citep{Sarazin1999, Ferreti2012, Gitti2018}. 
+As the majority of observed minihalos have redshifts in the range $[0.1, 0.3]$\footnote{A handful minihalos are notably outside this range, with the Phoenix cluster at $z=0.596$ \citep{vanWeeren2014}, ACTJ0022-0036 at $z=0.8$ \citep{Knowles2019}, and a recent candidate SpARCS1049+56 at $z=1.709$ \citep{HLavacek2025}} and magnetic fields within the ICM are estimated at $\lesssim$ $\mu$G, the maximum expected lifetime of a CRe is about $10^{8}$ years \citep{Sarazin1999, Ferreti2012, Gitti2018}. 
 
-We may then find the expected spatial extent for these particles, in absentia of external forces, as $\sim 10^{16}$ m or $1$ pc. This is orders of magnitude below the extents of observed diffuse radio emission, so we then consider that the CRe are moving within the bulk motion and magnetic fields of the ICM. By assuming that there is a strong enough turbulence to promote diffusion of CRe, we can use the Bohm approximation $D = \frac{k_B T}{eB}$, which models the diffusion of plasma across a magnetic field. \citet{Bagchi2002} finds that the expected length-scale of this diffusion (at $z=0.3$) is that of a random walk across its lifetime with a diffusion coefficient $\kappa$ and length-scale $L_{diff}$,\footnote{The length-scale diffusion is calculated as a random walk, scaling with the square root of time, rather than linearly.}
+A basic check for the spatial extent for these particles, in absentia of external forces $d \approx c\tau$, finds a distance of $\sim 10^{16}$ m or $1$ pc from the source. This is orders of magnitude below the extents of observed diffuse radio emission, so we then consider that the CRe are moving within the bulk motion and magnetic fields of the ICM. By assuming that there is a strong enough turbulence to promote diffusion of CRe, we can use the Bohm approximation $D = \frac{k_B T}{eB}$, which models the diffusion of plasma across a magnetic field. \citet{Bagchi2002} finds that the expected length-scale of this diffusion (at $z=0.3$) is that of a random walk across its lifetime with a diffusion coefficient $\kappa$ and length-scale $L_{diff}$,\footnote{The length-scale diffusion is calculated as a random walk, scaling with the square root of time, rather than linearly.}
 \begin{equation}
     \kappa = 3.31\times10^{21} \left(\frac E{\text{GeV}}\right)\left(\frac B{10^{-1} \mu\text{G}}\right) \>\text{m s}^{-1}
 \end{equation}
@@ -37,26 +67,24 @@ We may then find the expected spatial extent for these particles, in absentia of
 
 Once again, we find that the expected diffusion and halo produced by a point source is measured in the 10s of parsecs, far below the kiloparsec and megaparsec halos observed. It then seems a reasonable conclusion that these particles are instead reaccelerated or produced \textit{in-situ} by a process that is extended over the kiloparsec scale and long-lived across the particle lifetime. 
 
-Before discussing the proposed processes, it seems prudent to first mention the standard assumptions regarding the population of relativistic CRe within the ICM. These are that it is homogeneous, isotropic, and follows a power-law energy distribution $n(E) \propto E^{-\delta}$. This then gives us the following basic observables for a population of initially relativistic particles (see \citet{Ferreti2012}, \citet{vanWeeren2019} and references within). 
-
-\begin{enumerate}
-    \item The synchrotron emissivity is dependent on the number density of the CR electrons and the strength of the magnetic field. As such, the emissivity also follows a power-law $S(\nu) \propto \nu^{-\alpha}$ which is related to $\delta$ by $\alpha = (\delta - 1)/2$. Typical minihalo spectral indices are steep with $\alpha > 0.7$.\footnote{A typical radio galaxy emits synchrotron radiation with a spectral index $\sim0.7$.}
-    \item As the emitting particles lose energy the particle energy distribution changes, and therefore, the emitted radio spectrum changes. This appears as a steepening or curved spectrum at high frequencies, rather than a flat power-law. The break frequency at which this occurs is related to the time since acceleration. This means that radio events that have stopped will show an aged spectrum with a characteristic break, i.e. radio relics. Ongoing events that are continually injecting new particles will not feature the same steepening due to age. 
-    \item Radiation from CR electrons passing through a uniform magnetic field is linearly polarised. Non-uniform and disordered fields reduce the linear polarisation. 
-\end{enumerate} 
-
-Several models have been developed to describe the spectral shape of synchrotron emission, depending on the initial injection spectrum $\alpha_{inj}$, break frequency, and any continuous injection after the initial state. The Jaffe-Perola (JP; \citealt{JaffePerola1973}) model assumes all CRe are created in a single burst, before aging with continuous scattering of electron pitch angles. This predicts that the pitch angle (between the electron velocity vector and local magnetic field vector) will be isotropic due to scattering. The Kardashev-Pacholczyk (KP; \citealt{Kardashev1962}, \citealt{Pacholczyk1970}) model is similar to the JP model as it uses the same initial conditions, but evolves without pitch angle scattering. Continuous injection (CI) models describe sources that exist for longer than a single burst of acceleration, such as until current time (CI-on; \citealt{Kardashev1962}), or for a fixed amount of time $\tau_{on}$ (CI-off; \citealt{Komissarov1994}). An example of how these models differ in their shape is provided in Figure \ref{fig:spectral_shapes}. The initial burst models show extreme steepening towards high frequency. In contrast, the CI model offsets the losses at high energy due to newly injected particles, but still has a lower level of steepening due to the presence of aged particles alongside newer ones.
-
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{Chapter2/synchro_aging.pdf}
     \caption{A representation of radio spectral shapes with $\alpha_{inj} = -0.6$. The injection spectrum depicts the shape prior to energy losses.}
     \label{fig:spectral_shapes}
 \end{figure}
 
+The spectral shape of synchrotron emission is also affected by the lifetime of the particles, as higher energy particles have a shorter lifetimes ($\tau \propto \nu^{-\frac12})$, causing the population of CRe change over time from the initial power-law. Several models have been developed to describe the resulting spectra, depending on the initial injection spectrum $\alpha_{inj}$, break frequency, and any continuous injection after the initial state. The Jaffe-Perola (JP; \citealt{JaffePerola1973}) model assumes all CRe are created in a single burst, before aging with continuous scattering of electron pitch angles. This predicts that the pitch angle (between the electron velocity vector and local magnetic field vector) will be isotropic due to scattering. The Kardashev-Pacholczyk (KP; \citealt{Kardashev1962}, \citealt{Pacholczyk1970}) model is similar to the JP model as it uses the same initial conditions, but evolves without pitch angle scattering. Continuous injection (CI) models describe sources that exist for longer than a single burst of acceleration, such as until current time (CI-on; \citealt{Kardashev1962}), or for a fixed amount of time $\tau_{on}$ (CI-off; \citealt{Komissarov1994}). An example of how these models differ in their shape is provided in Figure \ref{fig:spectral_shapes}. The initial burst models show extreme steepening towards high frequency. In contrast, the CI model offsets the losses at high energy due to newly injected particles, but still has a lower level of steepening due to the presence of aged particles alongside newer ones.
+
+The basic observables of synchrotron radiation can then be summarised in the following points.
+
+\begin{itemize}
+    \item The synchrotron emissivity is dependent on the number density of the CR electrons and the strength of the magnetic field (Equation \ref{eq:synchro_general}). Assuming a constant magnetic field strength, the emissivity follows a power-law $\epsilon_s(\nu) \propto \nu^{-\alpha}$ which is related to the CRe energy spectral index $\delta$ by $\alpha = (\delta - 1)/2$. Typical minihalo spectral indices are steep with $\alpha > 0.7$.\footnote{A typical radio galaxy emits synchrotron radiation with a spectral index $\sim0.7$.}
+    \item As the emitting particles lose energy the particle energy distribution changes, and therefore, the emitted radio spectrum changes. This appears as a steepening or curved spectrum at high frequencies, rather than a single power-law. The break frequency at which this occurs is related to the time since acceleration. This means that radio events that have stopped will show an aged spectrum with a characteristic break, i.e. radio relics. Ongoing events that are continually injecting new particles will not feature the same level of steepening. 
+\end{itemize} 
+
 \section{Production mechanisms}
 \label{sec:BG_production}
-
 With this understanding of the spectrum of CRe, we now consider the methods that can produce them. This can be broken down into primary models involving first and second order Fermi acceleration, and secondary models where the electrons are a byproduct or resulting from decay.
 
 \subsection{Turbulent reacceleration}
@@ -64,12 +92,12 @@ With this understanding of the spectrum of CRe, we now consider the methods that
 
 This process takes a pre-existing lower energy CRe population of $\gamma\sim100$ and boosts it to the factors observed $\gamma\gtrsim1000$. This occurs via interactions with plasma waves and shocks within the ICM which can be caused by several factors, such as violent cluster mergers and gas sloshing within the core \citep{Brunetti2001, Fujita2004, Mazotta2008}. 
 
-Shocks within the ICM can cause first order Fermi acceleration (Fermi-I), also known as diffuse shock acceleration (DSA). As particles cross back and forward over the shock front, they can be reflected by magnetic instabilities upstream and downstream from the shock. Each crossing of the front increases the particle energy, raising trapped particles to relativistic levels before they escape. The energy gained via Fermi-I acceleration scales linearly with
+Shocks within the ICM can cause first order Fermi acceleration (Fermi-I), also known as diffuse shock acceleration (DSA). As particles cross back and forward over the shock front, they can be reflected by magnetic instabilities upstream and downstream from the shock. Each crossing of the front increases the particle energy, raising trapped particles to relativistic levels before they escape. The energy gained via Fermi-I acceleration from a shock with velocity $v_{wave}$ scales, compared to the speed of light $c$, as
 \begin{equation}
     \Delta E \propto \frac{v_{wave}}{c}E
     \label{eq:fermi1}
 \end{equation}
-Shocks are generally created due to merger activity in disturbed clusters, not relaxed clusters where minihalos are found. As such, it is not considered a major mechanism at play.
+Shocks are generally created due to merger activity in disturbed clusters, not relaxed clusters where minihalos are found. As such, it is not considered a major mechanism at play in the context of minihalos.
 
 Gas sloshing within the cool core of relaxed clusters has been shown as a natural consequence of the larger motions of the ICM \citep{Fujita2004}. This turbulent environment naturally allows for low relativistic `seed' electrons to undergo second order Fermi (Fermi-II) acceleration. This type of acceleration is stochastic as particles are scattered by the magnetic instabilities from the randomly moving plasma waves. Particles meeting these waves head-on are reflected with an increased energy, while particles in a head-tail collision are reflected with a lower energy. The chance for a head-on collision is higher than that of a head-tail collision allowing for a net gain. The mean energy gained is dependent on the speed of the waves and energy of the seed particle,
 
@@ -78,13 +106,13 @@ Gas sloshing within the cool core of relaxed clusters has been shown as a natura
     \label{eq:fermi2}
 \end{equation}
 
-The random nature of Fermi-II acceleration makes for an inefficient process compared to the aligned shock fronts of Fermi-I. Since $v_{wave} \ll c$, Fermi-II scales far worse than Fermi-I $(v_{wave}/c)^2 \ll v_{wave}/c$.
+The random nature of Fermi-II acceleration makes for an inefficient process compared to the aligned shock fronts of Fermi-I. Since $v_{wave} \ll c$, Fermi-II scales far more slowly than Fermi-I $(v_{wave}/c)^2 \ll v_{wave}/c$.
 
 \citet{Brunetti2007} show that reacceleration of relativistic particles moving through magnetohydrodynamic (MHD) turbulence are primarily accelerated by two Fermi-II type mechanisms. 
 
 The first mechanism is the damping of fast magnetosonic waves due to resonant transit time damping (TTD). The compressible and low-frequency plasma waves can resonate with the naturally gyrating particles at the zeroth order, $\omega = v_\parallel k_\parallel$, where $\omega$ is the frequency of the wave, $k_\parallel$ is the wavenumber, and $v_\parallel$ is the speed of the particle along the axis of the magnetic field. The random accelerations can then be captured as a random walk in momentum space, giving rise to a momentum-diffusion coefficient $D_{pp,TTD}$. \citet{ZuHone2013} simulate this process numerically in the case of minihalos and simplify this diffusion coefficient to be proportional to the average wavenumber $\langle k\rangle$, the turbulent velocity of the particle $v_t$,\footnote{This is essentially the instantaneous velocity of the particle due to turbulence.} and fraction of turbulent energy in compressible motion $R_c$.
 \begin{equation}
-    D_{pp, TTD} \propto \langle k \rangle v_t^2 R^c p^2
+    D_{pp, TTD} \propto \langle k \rangle v_t^2 R_c p^2
 \end{equation}
 
 The second mechanism is through the non-resonant compression and expansion of the ICM. Adiabatic compression increases the particle momentum, while expansion reduces it. As with collisions, the particle is more likely to experience compression than expansion, leading to a net gain in energy. Here \citet{ZuHone2013} take the fast diffusion limit, where particles escape the eddies of compression before they re-expand. This non-resonant momentum-diffusion coefficient scales as
@@ -98,15 +126,22 @@ The reacceleration efficiency is then given via $\chi = \frac{4D_{pp}}{p^2}$, wh
     \frac{dp}{dt} = \chi p
 \end{equation}
 \begin{equation}
-    \frac{dp}{dt} \propto \langle k \rangle R^c v_t^2 p + \frac1{D} V_l^2 p
+    \frac{dp}{dt} \propto \langle k \rangle R_c v_t^2 p + \frac1{D} V_l^2 p
 \end{equation}
 
-One remaining loose thread in this explanation is the source of the seed electrons themselves. A possible explanation is that the seed population is provided from radio AGN and spread throughout the cluster core by the gas sloshing \citep{Brunetti2001}. The CRe from the central BCG lose energy and fizzle out of our detectable range by the physics described earlier, however, they don't stop existing after this timescale. These `relic` CRe are lower energy but still relativistic with $\gamma\sim100$, radiating at radio frequencies that we are unable to detect. In this state they still continue to move and disperse through the core, creating the seeds for the large scale minihalos that we observe. The central BCG may not be the only source, other AGN within the cluster, galactic winds, supernovae, may all contribute relic CRe to be later reaccelerated. \citet{ZuHone2013} find that the sloshing should be sufficient to redistribute these particles to create a minihalo. Hadronic interactions as described in a later section could also contribute seed electrons.
+One remaining loose thread in this explanation is the source of the seed electrons themselves. A possible explanation is that the seed population is provided from radio AGN and spread throughout the cluster core by the gas sloshing \citep{Brunetti2001}. The CRe from the central BCG lose energy and disappear out of our detectable range by the physics described earlier, however, they don't stop existing after this timescale. These `relic` CRe are lower energy but still relativistic with $\gamma\sim100$, radiating at radio frequencies that we are unable to detect. In this state they still continue to move and disperse through the core, creating the seeds for the large scale minihalos that we observe. The central BCG may not be the only source, other AGN within the cluster, galactic winds, supernovae, may all contribute relic CRe to be later reaccelerated. \citet{ZuHone2013} find that the sloshing should be sufficient to redistribute these particles to create a minihalo. Hadronic interactions as described in a later section could also contribute seed electrons.
 
 \subsection{Observables of turbulent reacceleration}
-With this understanding we can now explore the spectral and spatial features that we expect to observe from emission resulting from the reacceleration scenario. Turbulence is an inherently transient and intermittent phenomena. This spatial variance means that when we sample a given region of space, we may instead be observing several 3D components superimposed on our 2D image. Areas with higher turbulent velocity inspire greater magnetic fields and greater levels of emission \citep{ZuHone2013}. The lack of a steady state and variable components means that we might expect variation in the flux brightness and spectral index across different locations of the minihalo \citep{Riseley2022}. However, due to the integration over the line of sight, these artefacts could be averaged and less visible in the 2D observation. 
+With this understanding we can now explore the spectral and spatial features that we expect to observe from emission resulting from the reacceleration scenario. Turbulence is an inherently transient and intermittent phenomenon. This spatial variance means that when we sample a given region of space, we may instead be observing several 3D components superimposed on our 2D image. Areas with higher turbulent velocity inspire greater magnetic fields and greater levels of emission \citep{ZuHone2013}. The lack of a steady state and variable components means that we might expect variation in the flux brightness and spectral index across different locations of the minihalo \citep{Riseley2022}. However, due to the integration over the line of sight, these artefacts could be averaged and less visible in the 2D observation. 
 
-The particles must also trace the distribution of turbulence within the ICM, leading to a spatial bounding of the minihalo within the gas sloshing of the core. The boundary of the cluster core is often associated with cold fronts visible in X-ray data, allowing comparison between X-ray and radio images. \citet{ZuHone2013} find that simulated turbulent re-acceleration is indeed bounded by the cold fronts, with a sharp steepening at the core radius. They also find that depending on the projection through the ICM, it may be difficult to locate the cold fronts in X-ray images due to the afore mentioned line of sight integration\stickynote{Image from \citet{ZuHone2013} of boundary?}. 
+The particles must also trace the distribution of turbulence within the ICM, leading to a spatial bounding of the minihalo within the gas sloshing of the core. The boundary of the cluster core is often associated with cold fronts visible in X-ray data, allowing comparison between X-ray and radio images. Cold fronts denote the boundary between cooler denser gas clouds moving through a hotter and more diffuse surrounding gas. These are notably different to shock fronts, where the boundary separates a hot and dense downstream region that the shock has passed through, from the cooler and less dense upstream region the shock is moving towards \citep{Markevitch2007}. \citet{ZuHone2013} find that simulated turbulent re-acceleration is indeed bounded by the cold fronts (Figure \ref{fig:turbulence_bounding}), with a sharp steepening at the core radius. They also find that depending on the projection through the ICM, it may be difficult to locate the cold fronts in X-ray images due to the afore mentioned line of sight integration. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter2/turb_bounding_zuhone2013.jpg}
+    \caption{2D projected gas temperature maps with overlaid radio contours at several simulation timesteps for frequencies 153, 327, and 1420 MHz. Radio emission contours begin at $(1.0, 0.5, 0.125) \times 10^{-3}$ mJy arcsec$^{-2}$ and increase by a factor of 2. Image dimensions are $750\times750$ kpc, with tick marks every 100 kpc. (Figure 10 of \citet{ZuHone2013})}
+    \label{fig:turbulence_bounding}
+\end{figure}
 
 A spectral feature of the reacceleration model arises from the balancing of reacceleration and losses, creating a cutoff energy at which the population of CRe declines more sharply. This is indeed the logic behind the CI model visualised in Figure \ref{fig:spectral_shapes}, with a steepening in the spectral index beyond the break frequency. \citet{ZuHone2013} note that as there is a range of magnetic field strengths within the core, this break frequency will change between CRe, causing a smearing of the break and a more gradual steepening towards high frequency.
 
@@ -128,7 +163,7 @@ the muons then decay into highly relativistic (positrons)electrons $e^\pm$ and e
 
 From this chain reaction we end up with two observables, CRes and gamma rays. Importantly, it is these secondary CRe products that are predicted to produce the minihalo emission. The emission in this model then traces the population of CRp producing the CRe, rather than the turbulence of the ICM. Due to our assumption of the long radiative lifetimes, we expect a continuous injection of CRe from the hadronic process. 
 
-\citep{ZuHone2015} investigate the hadronic method via simulation and assume a power-law momentum distribution for the CRp, $n_p(p_p) = C_pp_p^{-\alpha_p}$ (where $C_p$ is a normalisation constant), and estimate the CRp momentum distribution to be in the range $\alpha_p \sim 2.0$-$2.5$. They then derive a distribution for the produced CRe momentum $p$ based upon the CRp momentum distribution to be
+\citet{ZuHone2015} investigate the hadronic method via simulation and assume a power-law momentum distribution for the CRp, $n_p(p_p) = C_pp_p^{-\alpha_p}$ (where $C_p$ is a normalisation constant), and estimate the CRp momentum distribution spectral index to be in the range $\alpha_p \sim 2.0$-$2.5$. They then derive a distribution for the produced CRe momentum $p$ based upon the CRp momentum distribution to be
 \begin{equation}
     Q(p)dp = \frac4316^{1-\alpha_p} c n_{th} C_p \sigma_{pp} (16p) p^{-\alpha_p} dp
 \end{equation}
@@ -136,17 +171,17 @@ with $n_{th}$ the density of thermal protons, $\sigma_{pp}(16p)$ the proton-prot
 \begin{equation}
      Q(p)dp \propto n_{th} \sigma_{pp} p^{-\alpha_p}dp
 \end{equation}
-to clearly see that the efficiency of the hadronic method scales with the density of thermal protons, collision cross section, and as power-law. By approximating $\sigma_{pp}$ as constant\footnote{There is a weak dependence on the CRp and proton energies, which \citet{ZuHone2015} account for, resulting in a minor flattening effect on the synchrotron spectral index.} we are able to find a steady state for the number density of CRe by equating the synchrotron and IC losses $\frac{dp}{dt} \propto -p^2$. This occurs when $\frac{d}{dp}(-p^2n_e) + Q(p) = 0$, which following through by integrating for all particles $p \rightarrow \infty$,
+to clearly see that the efficiency of the hadronic method scales with the density of thermal protons, collision cross section, and as a power-law in momentum. By approximating $\sigma_{pp}$ as constant\footnote{There is a weak dependence on the CRp and thermal proton energies, which \citet{ZuHone2015} account for, resulting in a minor flattening effect on the synchrotron spectral index.} we are able to find a steady state for the number density of CRe by equating the synchrotron and IC losses $\frac{dp}{dt} \propto -p^2$. This occurs when $\frac{d}{dp}(-p^2n_e) + Q(p) = 0$, which following through by integrating for all particles $p \rightarrow \infty$,
 \begin{align*}
     -p^2n_e &= -\int_p^\infty Q(p)\\
     p^2n_e &\propto \int_p^\infty p^{-\alpha_p}\\
     n_e &\propto \frac{p^{-\alpha_p+1}}{p^2}\\
     n_e &\propto p^{-(\alpha_p + 1)}
 \end{align*}
-This gives us an CRe density power-law with index $\delta = \alpha_p + 1$ and therefore a synchrotron spectral index of $\alpha = \frac{\alpha_p}2$. Using the expected values for $\alpha_p$ we then should expect $\alpha \sim 1$-$1.25$ which is similar to that of observed minihalos. However, this assumes steady state injection which is a somewhat idealised case for the intermittent and turbulent core of the cluster.
+This gives us a CRe density power-law with index $\delta = \alpha_p + 1$ and therefore a synchrotron spectral index of $\alpha = \frac{\alpha_p}2$. Using the expected values for $\alpha_p$ we then should expect $\alpha \sim 1$-$1.25$ which is similar to that of observed minihalos. However, this assumes steady state injection which is a somewhat idealised case for the intermittent and turbulent core of the cluster.
 
 \subsection{Observables of hadronic production}
-This hadronic process predicts a flat spectral index extending into high frequencies, lacking the steepening observed in the reacceleration model. This also implies the spectral index will be constant throughout the spatial extent of the minihalo, rather than varying due to localised high amounts of turbulence. \citet{Keshet2010} show that changes in the magnetic field strength relative to $B_{CMB}$ can induce changes in the emissivity. For regions of the magnetic field where $B < B_{CMB}$ they predict a radio supression $\propto(B/B_{CMB})^2$. Assuming that the magnetic field inside a cluster has a radial steepening, there then exists a radius $r_b$ where the magnetic field drops below $B_{CMB}$ and a radial break may be observed in the radio profile. As such, the extent of the minihalo would be more constrained via the strength of the magnetic field, than the cold fronts of the cool core.
+This hadronic process predicts a flat spectral index extending into high frequencies, lacking the steepening observed in the reacceleration model. This also implies the spectral index will be constant throughout the spatial extent of the minihalo, rather than varying due to localised high amounts of turbulence. \citet{Keshet2010} show that changes in the magnetic field strength relative to $B_{CMB}$ can induce changes in the emissivity. For regions of the magnetic field where $B < B_{CMB}$ they predict a radio suppression $\propto(B/B_{CMB})^2$. Assuming that the magnetic field inside a cluster has a radial steepening, there then exists a radius $r_b$ where the magnetic field drops below $B_{CMB}$ and a radial break may be observed in the radio profile. As such, the extent of the minihalo would be more constrained via the strength of the magnetic field, than the cold fronts of the cool core.
 
 The simulation of hadronic production by \citet{ZuHone2015} find that the majority of particles have spectral indices close to that of steady state. As $B$ decreases towards $B \ll B_{CMB}$ the spread of spectral indices converges tightly. The opposite happens at $B \gg B_{CMB}$ with broadening and a small skew towards steeper indices. They attribute the broadening to sampling regions with rapidly decreasing magnetic fields (flatter index) and rapidly increasing magnetic fields (steeper index). They also note that the spatial bounding of the hadronic emission is less constraining than that of the reacceleration model. A drop in the emission across the cold front occurs due to a drop in the magnetic field strength and falls $\propto B^2$, but they simultaneously observed emission extending outside of the cool core.
 
@@ -170,7 +205,7 @@ The recent LOFAR-meets-MeerKAT series \citep{Riseley2022, Riseley2023, Riseley20
 
 Another point of interest is in a possible connection to giant radio halos. Although minihalos are found exclusively within cool-core clusters and giant radio halos are found almost entirely within disturbed clusters, they may have a physical relation to each other. The general consensus is that giant halos are formed by reacceleration due to merger-induced turbulence, due to a lack of gamma emission at the larger cluster scale \citep{Brunetti2012, Brunetti2017}. These two phenomena may have a transitional state where a minihalo switches into a giant halo due to a merger, and the inverse as the cluster relaxes \citep{Brunetti2014}. An alternative scenario could be that mini-halos are produced via the hadronic process, which shifts towards turbulent reacceleration at larger scales \citep{Zandanel2014}. 
 
-The cluster A2142 shows some evidence towards these theories, with a large scale 2 Mpc halo comprised of two parts \citep{Venturi2017}. This cluster is undergoing a minor merger and has only small disturbances in the ICM. The brighter inner core component has a spectral index $\alpha_i = 1.33\pm0.08$, which appears to be produced similarly to that of a minihalo. The outer component is fainter and somewhat steeper with $\alpha_o \approx 1.5$, suggested to be caused by large scale turbulence within the ICM. Clusters may also show evidence of a minihalo and giant halo existing simultaneously, with RXJ1720+2638 and PSZ139139.61+24.20 both exhibiting large scale steep spectrum emission outside the core region \citep{Savini2018a, Savini2019}. Physical relations to giant radio halos are useful in our understanding of how mergers change the behaviour of a cluster, but are outside the scope of this thesis.
+The cluster A2142 shows some evidence towards these theories, with a large scale 2 Mpc halo comprised of two parts \citep{Venturi2017}. This cluster is undergoing a minor merger and has only small disturbances in the ICM. The brighter inner core component has a spectral index $\alpha_i = 1.33\pm0.08$, which appears to be produced similarly to that of a minihalo. The outer component is fainter and somewhat steeper with $\alpha_o \approx 1.5$, suggested to be caused by large scale turbulence within the ICM. Clusters may also show evidence of a minihalo and giant halo existing simultaneously, with RXJ1720+2638 and PSZ139.61+24.20 both exhibiting large scale steep spectrum emission outside the core region \citep{Savini2018a, Savini2019}. Physical relations to giant radio halos are useful in our understanding of how mergers change the behaviour of a cluster, but are outside the scope of this thesis.
 
 \section{Interferometry}
 

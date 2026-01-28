@@ -43,7 +43,8 @@ for m in models:
         ax.plot(frequencies, inj * jp_0/inj[0], label="Injection", c='k')
     if m != "JP":
         model_data *= jp_0 / model_data[0]
-    ax.plot(frequencies, model_data, label=m)
+    label = m if m != "CI" else "CI-on"
+    ax.plot(frequencies, model_data, label=label)
 
 ax.set_yscale('log')
 ax.set_xscale('log')
