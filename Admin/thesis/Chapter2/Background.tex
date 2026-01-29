@@ -70,7 +70,7 @@ Once again, we find that the expected diffusion and halo produced by a point sou
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\textwidth]{Chapter2/synchro_aging.pdf}
-    \caption{A representation of radio spectral shapes with $\alpha_{inj} = -0.6$. The injection spectrum depicts the shape prior to energy losses.}
+    \caption{A representation of radio spectral shapes with $\alpha_{inj} = -0.6$. The injection spectrum depicts the shape prior to energy losses. The curves have been normalised to the injection spectrum at low wavelengths for better comparison.}
     \label{fig:spectral_shapes}
 \end{figure}
 
@@ -208,4 +208,24 @@ Another point of interest is in a possible connection to giant radio halos. Alth
 The cluster A2142 shows some evidence towards these theories, with a large scale 2 Mpc halo comprised of two parts \citep{Venturi2017}. This cluster is undergoing a minor merger and has only small disturbances in the ICM. The brighter inner core component has a spectral index $\alpha_i = 1.33\pm0.08$, which appears to be produced similarly to that of a minihalo. The outer component is fainter and somewhat steeper with $\alpha_o \approx 1.5$, suggested to be caused by large scale turbulence within the ICM. Clusters may also show evidence of a minihalo and giant halo existing simultaneously, with RXJ1720+2638 and PSZ139.61+24.20 both exhibiting large scale steep spectrum emission outside the core region \citep{Savini2018a, Savini2019}. Physical relations to giant radio halos are useful in our understanding of how mergers change the behaviour of a cluster, but are outside the scope of this thesis.
 
 \section{Interferometry}
+\label{sec:interferometry}
+
+To better understand the reasoning behind the calibration and imaging processes, it seems sensible to first cover the basics of interferometry. Interferometer arrays have individual antenna that measure the amplitude and phase of incoming electromagnetic waves. The simplest example is an array of two antenna. Since each antenna has a small difference in distance from the source, there is a geometric time delay $\tau_g$ between each receiving a signal. By combining the two individual signals, an interference pattern is created due to the phase shift caused by the time delay. Given a cosinusoidal wave travelling at the speed of light $c$, from a source in the far field at $\vec s$, and the baseline distance between the two antenna as $\vec b$, the geometric delay is $\tau_g = \vec{b} \cdot \vec{s} / c$. The interference pattern measured between the two antenna is then the product of the individual fields $V_1 = E\cos(\omega t)$ and $V_2 = E\cos(\omega (t - \tau_g))$, which can be written as $\frac{E^2}2\left[\cos(\omega\tau_g) + \cos(2\omega t - \omega\tau_g)\right]$ \citep{Perley2018}. The second term varies much faster than the first and can be averaged out, and we can write the prefactor as $P = \frac{E^2}2$. This gives the final cosine response as 
+\begin{equation}
+    R_C = P\cos(\omega \tau_g)
+\end{equation}
+or written in terms of the signal wavelength $\lambda = 2\pi c / \omega$ and the baseline
+\begin{equation}
+    R_C = P\cos\left(2\pi \frac{\vec b \cdot \vec s}{\lambda}\right)
+\end{equation}
+The fringes of the interference pattern then sample the sky, with longer baselines corresponding to small spatial features, and small baselines mapping large spatial features. When considering the whole sky at  some frequency $\nu$ with intensity $I_\nu(\vec s)$, the interferometer response is the spatial integral\footnote{The spatial integral is in units of solid angle $\Omega$, as the usual axes of the sky are given in arcseconds, or arcminutes.} of the sky modified by the cosinusoidal fringe pattern. 
+\begin{equation}
+    R_C = \iint I_\nu(\vec s)\cos\left(2\pi\nu \frac{\vec b \cdot \vec s}{c}\right) \> d\Omega
+\end{equation}
+This response function is even due to the cosine term, resulting in any odd functions described by the intensity map being averaged out. This can be solved by modifying the phase of one of the antennas by 90 degrees, $V_2 = E\sin(\omega(t-\tau_g))$, and applying the same processes as before, to get a response varying sinusoidally as $R_S = P\sin(\omega \tau_g)$. The two responses $R_C$ and $R_S$ can then be used to define the complex visibility function \citep{Perley2018}.
+\begin{equation}
+    V(\vec b) = R_C - iR_S = \iint I_\nu(\vec s)e^{-\frac{2\pi \nu}c i \vec b \cdot \vec s}\> d\Omega
+\end{equation}
+
+If the baselines lie on a flat plane, the complex visibility is then a 2D Fourier transform of the sky brightness at the observing frequency, allowing an inverse transform to be performed to reconstruct the sky given complete sampling. 
 
