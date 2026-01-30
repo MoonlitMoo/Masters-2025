@@ -1,14 +1,83 @@
 \chapter[Calibration]{Calibration and Imaging}
 \label{Chap:Calibration}
-This would be how to calibrate and the calibration results for the datasets, plus any special considerations we took.
 
-\section{What is an interferometer}
-\begin{itemize}
-    \item Limits of dish size in resolution, causes us to explore different ideas.
-    \item How does an interferometer work.
-    \item Bunch of dishes being interfered, delay to tune positioning, uv plane to determine coverage.
-    \item From all of this we retrieve amp + phase measurements.
-\end{itemize}
+The observations to be calibrated are VLA X-band (8-12 GHz) data taken in C and D configurations of 12 galaxy cluster minihalos. The VLA antennas can be arranged in four standard configurations, A through D. A has the longest baselines and best angular resolution, trading off brightness sensitivity. The baseline length decreases towards D configuration, which has the poorest angular resolution, but highest brightness sensitivity. Due to the faint and extended nature of minihalos, the most suitable arrangement is the highly sensitive D configuration. The better angular resolution C configuration observations are added to allow accurate imaging the compact AGN sources. 
+
+The C configuration observations were performed between January and February of 2024, with project code 24A-411, and the D configuration observations were taken during February and March 2025 under project code 25A-157. The frequency range for X-band is 7.977-12.025 GHz with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels. An overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster is given in Table \ref{tab:observation_list}.
+
+\begin{table}
+    \centering
+    \begin{threeparttable}
+        \begin{tabular}{lccccc}
+            \toprule
+            Cluster & R.A.$_{\text{J2000}}$ & Decl$_{\text{J2000}}$ & $z$ & Scale \\
+            & (h, m, s) & \multicolumn{1}{c}{(deg, arcmin, arcsec)} & & (kpc\,arcsec$^{-1}$) \\
+            \midrule
+            2A0335+096 & 03 38 40.5 & +09 58 12.4 & 0.036 & 0.716 \\
+            A2626 & 23 36 30.5 & +21 08 47.6 & 0.055 & 1.069 \\
+            A1795 & 13 48 52.5 & +26 35 34.0 & 0.062 & 1.195 \\
+            A478 & 04 13 25.3 & +10 27 55.0 & 0.086 & 1.612 \\
+            A1413 & 11 55 18.0 & +23 24 19.0 & 0.141 & 2.482 \\
+            A2204 & 16 32 47.0 & +05 34 35.0 & 0.152 & 2.643 \\
+            RXJ1720+2638 & 17 20 10.0 & +26 37 32.0 & 0.160 & 2.758 \\
+            RXJ2129+0005 & 21 29 39.9 & +00 05 21.3 & 0.234 & 3.722 \\
+            MS1455+2232 & 14 57 15.1 & +22 20 34.0 & 0.257 & 3.990 \\
+            Z3146 & 10 23 39.6 & +04 11 11.0 & 0.288 & 4.329 \\
+            RXCJ1115+0129\tnote{a} & 11 15 52.0 & +01 29 54.0 & 0.350 & 4.940 \\
+            ACTJ0022-0036\tnote{b} & 00 22 13.0 & $-$00 36 33.0 & 0.804 & 7.521 \\
+            \bottomrule
+        \end{tabular}
+        
+        \begin{tablenotes}[flushleft]
+            \footnotesize
+            \item \textit{Notes.} Redshifts are from the NASA/IPAC Extragalactic Database (NED). Values for kpc arcsec$^{-1}$ are calculated using the Cosmology Calculator I \citep{Wright2006}.
+            \item[a] Also known as ZwCl 1454.8+2233.
+            \item[b] Also known as ZwCl 1113.8+0144.
+        \end{tablenotes}
+    \end{threeparttable}
+    \caption{List of observed clusters, sorted by redshift.}
+    \label{tab:cluster_list}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{threeparttable}
+        \caption{Summary of the VLA X-band observations and calibration sources used.}
+        \label{tab:observations}
+
+        \begin{tabular}{lcccccc}
+            \toprule
+            Cluster & VLA & Date & Time & Primary & Secondary \\
+            & Config. & & (min) & Calib. & Calib. \\
+            \midrule
+            2A0335+096    & C & 2024-01-27 & 45.3  & 3C48  & J0321+1221 \\
+                          & D & 2025-02-28 & 68.5  & 3C48  & J0321+1221 \\
+            A478          & C & 2024-01-27 & 45.3  & 3C48  & J0424+0204 \\
+                          & D & 2025-02-27 & 124.5 & 3C48  & J0424+0204 \\
+            A2204         & C & 2024-02-03 & 64    & 3C286 & J1616+0459 \\
+            MS1455+2232   & C & 2024-02-03 & 61    & 3C286 & J1436+2321 \\
+            RXJ1720+2638  & C & 2024-02-03 & 62.3  & 3C286 & J1719+1745 \\
+            A2204         & C & 2024-02-03 & 64    & 3C286 & J0424+0204 \\
+            A1413         & C & 2024-02-04 & 36.9  & 3C286 & J1150+2417 \\
+                          & D & 2024-02-28 & 129.2 & 3C286 & J1150+2417 \\
+            A1795         & C & 2024-02-04 & 71.5  & 3C286 & 3C286      \\
+            RXCJ1115+0129 & C & 2024-02-04 & 73.1  & 3C286 & J1058+0133 \\
+                          & D & 2025-02-27 & 36.5  & 3C286 & J1058+0133 \\
+            Z3146         & C & 2024-02-04 & 73.1  & 3C286 & J1041+0610 \\
+                          & D & 2025-02-27 & 36.5  & 3C286 & J1041+0610 \\
+            A2626         & C & 2024-02-11 & 41.5  & 3C48  & J2253+1608 \\
+            ACTJ0022-0036 & C & 2024-02-11 & 109.5 & 3C48  & J0022+0014 \\
+            RXJ2129+0005  & C & 2024-02-11 & 138.1 & 3C48  & J2136+0041 \\
+            \bottomrule
+        \end{tabular}
+
+        \begin{tablenotes}[flushleft]
+            \footnotesize
+            \item \textit{Notes.} 
+        \end{tablenotes}
+
+    \end{threeparttable}
+\end{table}
 
 \section{Our observations}
 \begin{itemize}

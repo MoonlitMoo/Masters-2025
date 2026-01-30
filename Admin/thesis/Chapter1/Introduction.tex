@@ -35,6 +35,10 @@ Continuum radiation is due to brehmsstrahlung, or free-free radiation, which is 
 
 X-ray spectroscopy is a powerful tool to characterise the ICM and a clusters dynamical state. In general, telescopes trade off between high spatial or spectral resolutions, i.e. between detecting exactly where a photon originated from or an accurate measurement of the photon energy. This becomes somewhat of a constraint when observing galaxy clusters as we require reasonable spatial and spectral resolutions for these large objects. One common instrument is the space telescope \textit{Chandra X-ray Observatory} launched in 1999\stickynote{Cite/footnote telescopes}. Many studies of minihalos use \textit{Chandra} observations to map the structure of the cool core and investigate potential relationships to the radio emission (e.g. \citealp{Giacintucci2024}). However, due to the aging detectors and contaminant build up on \textit{Chandra}, the sensitivity of the telescope is decreasing. This is particularly bad at low energies ($<2$ keV), where sensitivity is below $10$\% of where it was two decades ago \citep{Grant2024}. A new telescope \textit{XRISM} was launched in late 2023 and was designed as a successor to \textit{Chandra}. Over the last year researchers have begun to utilise the greater resolution to more deeply probe the dynamics of the ICM in some clusters \citep{Sarkar2025, XRISM2025}. Although not the focus of this thesis, X-ray observations provide key ancillary data in investigating the processes involved.
 
+\subsection{SZ}
+\stickynote{Actually write this you idiot}
+
+
 \subsection{Radio}
 
 Radio observations cover several orders of magnitude in wavelength, with frequencies from 10 MHz to over 100 GHz. This massive range comes with several difficulties for astronomers, with the primary one being the angular resolution of the telescope. Angular resolution $\theta$ defines the smallest area that can be resolved given an aperture and the observing wavelength.\footnote{The angular resolution of a human eye (with 20/20 vision) is 1 arcminute. \textit{See note 7}} Equation \ref{eq:angular_resolution} gives the formula for angular resolution in arcseconds, or $\frac1{3600}$th of a degree, for an aperture of diameter $D$ and observing wavelength $\lambda$.\footnote{Arcseconds ($"$), arcminutes ($1' = 60"$), and degrees are common units in astrophysics as most angles are measured with this unit.} 
@@ -87,6 +91,9 @@ In pursuing these aims, I downloaded the raw interferometric data from the Natio
 This work was done in a source controlled repository\footnote{\url{https://github.com/MoonlitMoo/Masters-2025}} so that the results are reproducible and documented. Due to the size of the datasets, (uncalibrated $\sim1.4$ TB compressed, calibrated $\sim2.5$ TB, imaging $\sim?$\stickynote{Add final size} TB), this is stored on the Storage fOr Learning And Research (SOLAR) large scale storage provided by Victoria University of Wellington. 
 
 The repository is split into two primary sections, \textit{Data Processing} and \textit{Image Processing}. The first section follows the calibration of the raw data and separation from observation runs into cluster specific datasets, split by observation id. The following image processing includes the cleaning and creation of the images from the trimmed datasets and the associated analysis and is split by cluster.
+
+\subsection{Cosmology}
+Several physical values depend on the constants chosen for the cosmological model of the universe. This work assumes a flat $\Lambda$CDM model with Hubble's constant $H_0=70$ km s$^{-1}$ Mpc$^{-1}$, fractional density of dark energy $\Omega_\Lambda=0.7$, and fractional density of matter $\Omega_m=0.3$.
 
 \subsection{Layout}
 The introduction has given a brief overview on several concepts necessary for understanding what minihalos are. The remainder of the thesis is organised as follows.
