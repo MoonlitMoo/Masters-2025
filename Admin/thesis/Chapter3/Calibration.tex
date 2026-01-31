@@ -39,45 +39,99 @@ The C configuration observations were performed between January and February of 
     \label{tab:cluster_list}
 \end{table}
 
-\begin{table}
+\setlength{\tabcolsep}{4pt}  % default 6pt
+
+\begin{sidewaystable}
     \centering
     \begin{threeparttable}
         \caption{Summary of the VLA X-band observations and calibration sources used.}
         \label{tab:observations}
-
-        \begin{tabular}{lcccccc}
-            \toprule
-            Cluster & VLA & Date & Time & Primary & Secondary \\
-            & Config. & & (min) & Calib. & Calib. \\
-            \midrule
-            2A0335+096    & C & 2024-01-27 & 45.3  & 3C48  & J0321+1221 \\
-                          & D & 2025-02-28 & 68.5  & 3C48  & J0321+1221 \\
-            A478          & C & 2024-01-27 & 45.3  & 3C48  & J0424+0204 \\
-                          & D & 2025-02-27 & 124.5 & 3C48  & J0424+0204 \\
-            A2204         & C & 2024-02-03 & 64    & 3C286 & J1616+0459 \\
-            MS1455+2232   & C & 2024-02-03 & 61    & 3C286 & J1436+2321 \\
-            RXJ1720+2638  & C & 2024-02-03 & 62.3  & 3C286 & J1719+1745 \\
-            A2204         & C & 2024-02-03 & 64    & 3C286 & J0424+0204 \\
-            A1413         & C & 2024-02-04 & 36.9  & 3C286 & J1150+2417 \\
-                          & D & 2024-02-28 & 129.2 & 3C286 & J1150+2417 \\
-            A1795         & C & 2024-02-04 & 71.5  & 3C286 & 3C286      \\
-            RXCJ1115+0129 & C & 2024-02-04 & 73.1  & 3C286 & J1058+0133 \\
-                          & D & 2025-02-27 & 36.5  & 3C286 & J1058+0133 \\
-            Z3146         & C & 2024-02-04 & 73.1  & 3C286 & J1041+0610 \\
-                          & D & 2025-02-27 & 36.5  & 3C286 & J1041+0610 \\
-            A2626         & C & 2024-02-11 & 41.5  & 3C48  & J2253+1608 \\
-            ACTJ0022-0036 & C & 2024-02-11 & 109.5 & 3C48  & J0022+0014 \\
-            RXJ2129+0005  & C & 2024-02-11 & 138.1 & 3C48  & J2136+0041 \\
-            \bottomrule
+        \begin{tabular}{@{}l@{\hspace{1em}}l@{}}
+        % First minitable
+        \begin{minipage}[t]{0.48\textheight}
+            \vspace{0pt}
+            \begin{tabular}{lcccccc}
+                \toprule
+                Cluster & VLA & Date & Time & Primary & Secondary \\
+                & Config. & & (min) & Calib. & Calib. \\
+                \midrule
+                2A0335+096    & C & 2024-01-27 & 45.3  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J0321+1221} \\
+                            & D & 2025-02-28 & 68.5  &                        &                             \\
+                            & D & 2025-03-15 & 68.5  &                        &                             \\
+                \addlinespace[0.5em]
+                A478          & C & 2024-01-27 & 44.5  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J0424+0204} \\
+                            & D & 2025-02-27 & 124.5 &                        &                             \\
+                            & D & 2025-03-11 & 124.5 &                        &                             \\
+                \addlinespace[0.5em]
+                A2204         & C & 2024-02-03 & 64    & \multirow{3}{*}{3C286} & \multirow{3}{*}{J1616+0459} \\
+                            & D & 2025-02-28 & 36.6  &                        &                             \\
+                            & D & 2025-03-27 & 36.6  &                        &                             \\
+                \addlinespace[0.5em]
+                MS1455+2232   & C & 2024-02-03 & 61.1  & \multirow{3}{*}{3C286} & \multirow{3}{*}{J1436+2321} \\
+                            & D & 2025-03-19 & 36.2  &                        &                             \\
+                            & D & 2025-03-27 & 35.6  &                        &                             \\
+                \addlinespace[0.5em]
+                RXJ1720+2638  & C & 2024-02-03 & 62.2  & \multirow{3}{*}{3C286} & \multirow{3}{*}{J1719+1745} \\
+                            & D & 2025-02-28 & 35.6  &                        &                             \\
+                            & D & 2025-03-27 & 35.6  &                        &                             \\
+                \addlinespace[0.5em]
+                A2204         & C & 2024-02-03 & 64    & \multirow{3}{*}{3C286} & \multirow{3}{*}{J0424+0204} \\
+                            & D & 2025-02-28 & 36.6  &                        &                             \\
+                            & D & 2025-03-27 & 36.6  &                        &                             \\
+                \addlinespace[0.5em]
+                A1413         & C & 2024-02-04 & 36.9  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J1150+2417} \\
+                            & D & 2025-02-28 & 129.2 &                        &                             \\
+                            & D & 2025-02-28 & 129.2 &                        &                             \\
+                \addlinespace[0.5em]
+                A1795         & C & 2024-02-04 & 71.5  & \multirow{3}{*}{3C286} & \multirow{3}{*}{3C286}      \\
+                            & D & 2025-03-19 & 35.6 &                        &                             \\
+                            & D & 2025-03-27 & 35.9 &                        &                             \\
+                \addlinespace[0.5em]
+                \bottomrule
+            \end{tabular}
+        \end{minipage}&
+        % Second mini table
+        \begin{minipage}[t]{0.48\textheight}
+            \vspace{0pt}
+            \begin{tabular}{lcccccc}
+                \toprule
+                Cluster & VLA & Date & Time & Primary & Secondary \\
+                & Config. & & (min) & Calib. & Calib. \\
+                \midrule
+                RXCJ1115+0129 & C & 2024-02-04 & 73.1  & \multirow{3}{*}{3C286} & \multirow{3}{*}{J1058+0133} \\
+                            & D & 2025-02-27 & 36.5  &                        &                             \\
+                            & D & 2025-03-16 & 36.5  &                        &                             \\
+                \addlinespace[0.5em]
+                Z3146         & C & 2024-02-04 & 73.1  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J1041+0610} \\
+                            & D & 2025-02-27 & 36.5  &                        &                             \\
+                            & D & 2025-03-16 & 36.5  &                        &                             \\
+                \addlinespace[0.5em]
+                A2626         & C & 2024-02-10 & 41.5  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J2253+1608} \\
+                            & C & 2024-02-11 & 41.5  &                        &                             \\
+                            & D & 2025-02-28 & 41.5  &                        &                             \\
+                            & D & 2025-02-28 & 33.2  &                        &                             \\
+                \addlinespace[0.5em]
+                ACTJ0022-0036 & C & 2024-02-10 & 109.5 & \multirow{2}{*}{3C48}  & \multirow{2}{*}{J0022+0014} \\
+                            & C & 2024-02-11 & 109.5 &                        &                             \\
+                            & D & 2025-02-28 & 27.4  &                        &                             \\
+                            & D & 2025-02-28 & 36.5  &                        &                             \\
+                \addlinespace[0.5em]
+                RXJ2129+0005  & C & 2024-02-10 & 138.1 & \multirow{2}{*}{3C48}  & \multirow{2}{*}{J2136+0041} \\
+                            & C & 2024-02-11 & 138.1 &                        &                             \\
+                            & D & 2025-02-28 & 64.5  &                        &                             \\
+                            & D & 2025-02-28 & 64.5  &                        &                             \\
+                \bottomrule
+            \end{tabular}
+        \end{minipage}
         \end{tabular}
-
+        
         \begin{tablenotes}[flushleft]
             \footnotesize
             \item \textit{Notes.} 
         \end{tablenotes}
 
     \end{threeparttable}
-\end{table}
+\end{sidewaystable}
 
 \section{Our observations}
 \begin{itemize}
