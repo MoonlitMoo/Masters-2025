@@ -59,6 +59,33 @@
     \marginnote{\color{red}\footnotesize\textbf{#1}}
   \fi
 }
+% Lua code style
+\lstdefinelanguage{Lua}{
+  keywords={
+    and, break, do, else, elseif, end, false, for, function,
+    goto, if, in, local, nil, not, or, repeat, return,
+    then, true, until, while
+  },
+  keywordstyle=\color{blue},
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{--},
+  morecomment=[s]{--[[}{]]},
+  commentstyle=\color{gray},
+  stringstyle=\color{teal},
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstset{
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    frame=single,
+    breaklines=true,
+    showstringspaces=false
+}
+
 % Set header style
 \fancyhead{}
 \fancyhead[RE]{\leftmark}   % Even pages
@@ -170,8 +197,8 @@
 %**************************************************** 
 %UNCOMMENT THIS SECTION IF YOU ARE USING APPENDICES.
 %Simply adapt the same formatting used for other chapters.
-% \appendix
-% % If you need appendix in your thesis then consider the following appendix file (you can add more if you need more) otherwise you should not consider it in your main thesis.
-% \include{./Appendix/Appendix}
+% If you need appendix in your thesis then consider the following appendix file (you can add more if you need more) otherwise you should not consider it in your main thesis.
+\appendix
+\include{./Appendix/Appendix}
 
 \end{document}

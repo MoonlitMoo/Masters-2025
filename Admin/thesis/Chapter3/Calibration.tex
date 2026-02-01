@@ -1,11 +1,11 @@
 \chapter[Calibration]{Calibration and Imaging}
 \label{Chap:Calibration}
 
-The observations to be calibrated are VLA X-band (8-12 GHz) data taken in C and D configurations of 12 galaxy cluster minihalos. The VLA antennas can be arranged in four standard configurations, A through D. A has the longest baselines and best angular resolution, trading off brightness sensitivity. The baseline length decreases towards D configuration, which has the poorest angular resolution, but highest brightness sensitivity. Due to the faint and extended nature of minihalos, the most suitable arrangement is the highly sensitive D configuration. The better angular resolution C configuration observations are added to allow accurate imaging the compact AGN sources. 
+The observations to be calibrated are VLA X-band (8--12 GHz) data, taken in C and D configurations of 12 galaxy clusters hosting minihalos. VLA antennas may be arranged in four standard configurations, A through D. A has the longest baselines and best angular resolution, at the expense of lower brightness sensitivity. Baseline length decreases towards D-configuration, which has the poorest angular resolution, but greatest brightness sensitivity. D-configuration was chosen to maximise brightness sensitivity to detect the faint and extended minihalos. C-configuration observations were added to allow accurate imaging of compact AGN sources embedded within the minihalos.
 
-The C configuration observations were performed between January and February of 2024, with project code 24A-411, and the D configuration observations were taken during February and March 2025 under project code 25A-157. The frequency range for X-band is 7.977-12.025 GHz with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels. An overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster is given in Table \ref{tab:observation_list}.
+The C-configuration observations were performed between January and February 2024, under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken the following year during February and March 2025 under project code 25A-157 (PI: Yvette Perrott). The frequency range for X-band spans 7.977--12.025 GHz, with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels per window. For reference, an overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster are given in Table \ref{tab:observations}.
 
-\begin{table}
+\begin{table}[h]
     \centering
     \begin{threeparttable}
         \begin{tabular}{lccccc}
@@ -30,7 +30,7 @@ The C configuration observations were performed between January and February of 
         
         \begin{tablenotes}[flushleft]
             \footnotesize
-            \item \textit{Notes.} Redshifts are from the NASA/IPAC Extragalactic Database (NED). Values for kpc arcsec$^{-1}$ are calculated using the Cosmology Calculator I \citep{Wright2006}.
+            \item \textit{Notes.} Right ascension and Declination values are taken from the observation phase centres. Redshifts are from the NASA/IPAC Extragalactic Database (NED). Values for kpc arcsec$^{-1}$ are calculated using the Cosmology Calculator I \citep{Wright2006}.
             \item[a] Also known as ZwCl 1454.8+2233.
             \item[b] Also known as ZwCl 1113.8+0144.
         \end{tablenotes}
@@ -39,8 +39,22 @@ The C configuration observations were performed between January and February of 
     \label{tab:cluster_list}
 \end{table}
 
-\setlength{\tabcolsep}{4pt}  % default 6pt
+To calibrate and image these observations, \textit{Common Astronomy Software Applications} (CASA) has been developed by an international collaboration of scientists and software developers.\footnote{\url{https://casa.nrao.edu/index.shtml}} This provides Python-based tools for the processing, analysis, and manipulation of observations from the VLA and the Atacama Large Millimeter/submillimeter Array (ALMA). Part of this software suite is the VLA pipeline, which is able to perform calibration and automated flagging of raw observations. The pipeline allows a streamlined process with reduced manual intervention, while producing a final weblog detailing the applied steps for reproducibility. Flagging of data refers to the exclusion of problematic points, often due to the presence of radio frequency interference (RFI). For these observations, pipeline flagging did not sufficiently mitigate the RFI for accurate calibration, necessitating the development of a modified version. A description of the pipeline steps and calibration is provided in Section \ref{sec:calibration_steps}. The following section details the RFI present in the data and the measures taken to mitigate it.
 
+\section{Radio Frequency Interference}
+An unavoidable consequence of ground-based antenna is that they can pick up spurious radio sources, broadly termed RFI. This can be attributed to internal mechanisms of the telescope, or external sources such as ground and satellite communications. With the increasing number of satellites in orbit, RFI is a growing problem with only a few narrow frequency ranges protected for observation. RFI is very strong near declinations of 0\textdegree{} as this aligns with the orbit of geostationary satellites, known as the Clarke Belt. RFI can be categorised as intermittent or continuous in time, and broadband or narrowband in frequency.\stickynote{Image of interfernce 2D?} Detecting and automatically removing this data can be difficult due to the wide range of forms it can take. NRAO monitors RFI at different bands of the VLA and provides a description of the source to aid in cleaning the data. For observations at X-band,\footnote{\url{https://science.nrao.edu/facilities/vla/observing/RFI/X-Band}} satellite and weather radars are an intermittent source between 9.3--9.9 GHz, continuous ground-based microwave links contaminate 10.7--11.5 GHz, and strong RFI exists at 11.7--12 GHz from the Clarke Belt. 
+
+The standard pipeline flagging uses a combination of the TFCrop and RFlag algorithms\stickynote{Can't find the reference for these via CASA} to detect and remove RFI. TFCrop uses the visibility amplitudes to form an average time spectrum, and a polynomial frequency bandshape. Using this model it then flags outlier points beyond a given relative threshold. This is adept at flagging out short spikes of RFI in narrow and broadbands, and persistent RFI in narrowband. RFlag uses a sliding window to calculate the local visibility RMS, and flags points beyond a relative threshold. This operates on individual baselines over single frequencies (channels) with the sliding window over the time axis, followed by single time steps with the sliding window across channels. RFlag is best at identifying weak and sparse RFI that may be affecting few antenna. The pipeline also extends the flags, so that any baselines with channels or time steps that are $>50\%$ flagged will be entirely flagged. It also propagates flags between polarisations, with all four flagged if any individual one is. 
+
+To improve upon the results from the algorithms implemented in CASA, I tested \texttt{AOFLAGGER} which was originally designed for LOFAR, but expanded to several more telescopes \citep{Offringa2010, Offringa2012, Offringa2023}.\footnote{\url{https://aoflagger.readthedocs.io/en/latest/index.html}} This is implemented via a flexible Lua script to allow customisation to each observation. The default VLA script performs RMS-based time step and channel flagging, high pass filtering, and morphological filtering. The morphological analysis is performed via the \texttt{SumThreshold} algorithm, which uses several decreasing thresholds to evaluate a sequence of samples. Points exceeding the highest threshold are marked for flagging and the next lower threshold is evaluated, repeating. This works well for broadband and peaked RFI. This script has two primary parameters, \texttt{base\_threshold} and \texttt{transient\_threshold\_factor} which define the thresholds to use for flagging. Lower thresholds corresponds to more sensitiviy, and therefore more aggressive flagging. For frequent but intermittent RFI bursts, \texttt{transient\_threshold\_factor} can be used to tune separetely to the main threshold. The script was altered to preserve pre-existing flags that may be applied by the pipeline.
+
+
+Based upon the NRAO description of RFI in the X-band, the script is configured to do three passes with separate paramters for each. The first two passes only flag 9.3--9.5 GHz (weather radar), and 10.7--12 GHz (ground communications), before the final full band pass. This allows for tuning of aggression based upon the RFI present in each observation. The higher angular sensitivity C-configuration observations had a much lower amount of RFI compared to the D-configuration. Many of datasets were contaminated enough by the ground communications that these spectral windows were completely removed. A summary of the final datasets is given somewhere.\stickynote{Need to do this} Scripts were tuned for each source and observation independently using a manual and iterative testing process. An example Lua script is given Appendix \ref{app:aoflagger}.
+
+
+
+
+\setlength{\tabcolsep}{4pt}  % default 6pt
 \begin{sidewaystable}
     \centering
     \begin{threeparttable}
@@ -127,7 +141,7 @@ The C configuration observations were performed between January and February of 
         
         \begin{tablenotes}[flushleft]
             \footnotesize
-            \item \textit{Notes.} 
+            \item \textit{Notes.} The primary calibrator was used for setting the flux scale and bandpass calibration. The secondary calibrator was used for phase calibration. 
         \end{tablenotes}
 
     \end{threeparttable}
