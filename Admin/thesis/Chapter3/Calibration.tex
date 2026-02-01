@@ -3,7 +3,7 @@
 
 The observations to be calibrated are VLA X-band (8--12 GHz) data, taken in C and D configurations of 12 galaxy clusters hosting minihalos. VLA antennas may be arranged in four standard configurations, A through D. A has the longest baselines and best angular resolution, at the expense of lower brightness sensitivity. Baseline length decreases towards D-configuration, which has the poorest angular resolution, but greatest brightness sensitivity. D-configuration was chosen to maximise brightness sensitivity to detect the faint and extended minihalos. C-configuration observations were added to allow accurate imaging of compact AGN sources embedded within the minihalos.
 
-The C-configuration observations were performed between January and February 2024, under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken the following year during February and March 2025 under project code 25A-157 (PI: Yvette Perrott). The frequency range for X-band spans 7.977--12.025 GHz, with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels per window. For reference, an overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster are given in Table \ref{tab:observations}.
+The C-configuration observations were performed between January and February 2024, under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken the following year during February and March 2025 under project code 25A-157 (PI: Yvette Perrott). The frequency range for X-band spans 7.977--12.025 GHz, with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels per window.\stickynote{Add max-min baselines} For reference, an overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster are given in Table \ref{tab:observations}.
 
 \begin{table}[h]
     \centering
@@ -41,21 +41,8 @@ The C-configuration observations were performed between January and February 202
 
 To calibrate and image these observations, \textit{Common Astronomy Software Applications} (CASA) has been developed by an international collaboration of scientists and software developers.\footnote{\url{https://casa.nrao.edu/index.shtml}} This provides Python-based tools for the processing, analysis, and manipulation of observations from the VLA and the Atacama Large Millimeter/submillimeter Array (ALMA). Part of this software suite is the VLA pipeline, which is able to perform calibration and automated flagging of raw observations. The pipeline allows a streamlined process with reduced manual intervention, while producing a final weblog detailing the applied steps for reproducibility. Flagging of data refers to the exclusion of problematic points, often due to the presence of radio frequency interference (RFI). For these observations, pipeline flagging did not sufficiently mitigate the RFI for accurate calibration, necessitating the development of a modified version. A description of the pipeline steps and calibration is provided in Section \ref{sec:calibration_steps}. The following section details the RFI present in the data and the measures taken to mitigate it.
 
-\section{Radio Frequency Interference}
-An unavoidable consequence of ground-based antenna is that they can pick up spurious radio sources, broadly termed RFI. This can be attributed to internal mechanisms of the telescope, or external sources such as ground and satellite communications. With the increasing number of satellites in orbit, RFI is a growing problem with only a few narrow frequency ranges protected for observation. RFI is very strong near declinations of 0\textdegree{} as this aligns with the orbit of geostationary satellites, known as the Clarke Belt. RFI can be categorised as intermittent or continuous in time, and broadband or narrowband in frequency.\stickynote{Image of interfernce 2D?} Detecting and automatically removing this data can be difficult due to the wide range of forms it can take. NRAO monitors RFI at different bands of the VLA and provides a description of the source to aid in cleaning the data. For observations at X-band,\footnote{\url{https://science.nrao.edu/facilities/vla/observing/RFI/X-Band}} satellite and weather radars are an intermittent source between 9.3--9.9 GHz, continuous ground-based microwave links contaminate 10.7--11.5 GHz, and strong RFI exists at 11.7--12 GHz from the Clarke Belt. 
-
-The standard pipeline flagging uses a combination of the TFCrop and RFlag algorithms\stickynote{Can't find the reference for these via CASA} to detect and remove RFI. TFCrop uses the visibility amplitudes to form an average time spectrum, and a polynomial frequency bandshape. Using this model it then flags outlier points beyond a given relative threshold. This is adept at flagging out short spikes of RFI in narrow and broadbands, and persistent RFI in narrowband. RFlag uses a sliding window to calculate the local visibility RMS, and flags points beyond a relative threshold. This operates on individual baselines over single frequencies (channels) with the sliding window over the time axis, followed by single time steps with the sliding window across channels. RFlag is best at identifying weak and sparse RFI that may be affecting few antenna. The pipeline also extends the flags, so that any baselines with channels or time steps that are $>50\%$ flagged will be entirely flagged. It also propagates flags between polarisations, with all four flagged if any individual one is. 
-
-To improve upon the results from the algorithms implemented in CASA, I tested \texttt{AOFLAGGER} which was originally designed for LOFAR, but expanded to several more telescopes \citep{Offringa2010, Offringa2012, Offringa2023}.\footnote{\url{https://aoflagger.readthedocs.io/en/latest/index.html}} This is implemented via a flexible Lua script to allow customisation to each observation. The default VLA script performs RMS-based time step and channel flagging, high pass filtering, and morphological filtering. The morphological analysis is performed via the \texttt{SumThreshold} algorithm, which uses several decreasing thresholds to evaluate a sequence of samples. Points exceeding the highest threshold are marked for flagging and the next lower threshold is evaluated, repeating. This works well for broadband and peaked RFI. This script has two primary parameters, \texttt{base\_threshold} and \texttt{transient\_threshold\_factor} which define the thresholds to use for flagging. Lower thresholds corresponds to more sensitiviy, and therefore more aggressive flagging. For frequent but intermittent RFI bursts, \texttt{transient\_threshold\_factor} can be used to tune separetely to the main threshold. The script was altered to preserve pre-existing flags that may be applied by the pipeline.
-
-
-Based upon the NRAO description of RFI in the X-band, the script is configured to do three passes with separate paramters for each. The first two passes only flag 9.3--9.5 GHz (weather radar), and 10.7--12 GHz (ground communications), before the final full band pass. This allows for tuning of aggression based upon the RFI present in each observation. The higher angular sensitivity C-configuration observations had a much lower amount of RFI compared to the D-configuration. Many of datasets were contaminated enough by the ground communications that these spectral windows were completely removed. A summary of the final datasets is given somewhere.\stickynote{Need to do this} Scripts were tuned for each source and observation independently using a manual and iterative testing process. An example Lua script is given Appendix \ref{app:aoflagger}.
-
-
-
-
 \setlength{\tabcolsep}{4pt}  % default 6pt
-\begin{sidewaystable}
+\begin{sidewaystable}[h]
     \centering
     \begin{threeparttable}
         \caption{Summary of the VLA X-band observations and calibration sources used.}
@@ -147,49 +134,105 @@ Based upon the NRAO description of RFI in the X-band, the script is configured t
     \end{threeparttable}
 \end{sidewaystable}
 
-\section{Our observations}
-\begin{itemize}
-    \item We are using VLA data in X-band, what does this mean and what are the specs for the VLA.
-    \item These observations are of list minihalos and this setup, observation proposal.
-    \item Original source of these minihalos is the G14 paper (among others).
-    \item Table of minihalos + observing setup.
-\end{itemize}
+\section{Radio Frequency Interference}
+An unavoidable consequence of ground-based antennas is that they can pick up spurious radio sources, broadly termed RFI. This can be attributed to internal mechanisms of the telescope, as well as external sources such as ground-based and satellite communications. With the increasing number of satellites in orbit, RFI is a growing problem, with only a few narrow frequency ranges protected for radio astronomy. RFI is particularly strong near the declination of 0\textdegree{}, as this aligns with the orbit of geostationary satellites, known as the Clarke Belt. RFI can be categorised as intermittent or continuous in time, and as broadband or narrowband in frequency.\stickynote{Image of interfernce 2D?} Detecting and automatically removing these data can be difficult due to the wide range of forms RFI can take. NRAO monitors RFI across the VLA frequency bands and provides descriptions of known sources to aid in cleaning the data. For observations at X-band,\footnote{\url{https://science.nrao.edu/facilities/vla/observing/RFI/X-Band}} satellite and weather radars are an intermittent source between 9.3--9.9 GHz, continuous ground-based microwave links contaminate 10.7--11.5 GHz, and strong RFI exists between 11.7--12 GHz due to emission associated with the Clarke Belt. 
 
-\section{How to calibrate a dataset}
-\begin{itemize}
-    \item We have the VLA calibration pipeline to remove stress from our lives.
-    \item We have a non-neglible amount of RFI to add stress to our lives. 
-    \item A variety of steps but first pain, what is RFI and what does it cause.
-\end{itemize}
+For the faint sources of minihalos ($\sim\mu$Jy), RFI signals can be orders of magnitude brighter (mJy). This smothers the signal and can bias calibration results. Sources of RFI may have different delays in reaching antenna compared to the science target, which can bias delay and phase calibrations and increase noise. This degrades the angular and brightness sensitivities. When imaging, RFI may appear as bright wave-like artefacts, arising from the Fourier transform of high-amplitude visibilities with random phase.
 
-\section{Flagging data}
-\begin{itemize}
-    \item Initial testing showed that the pipeline flagging steps didn't work well for our data.
-    \item AOFLAGGER worked much better and has a mostly out-of-box VLA script.
-    \item How does AOFLAGGER work
-    \item Integrating into a pipeline step to still use the pipeline
-\end{itemize}
+The standard pipeline flagging uses a combination of the tfcrop and rflag algorithms\stickynote{Ref for algorithms} to detect and remove RFI. tfcrop uses the visibility amplitudes to form an average time spectrum, and a polynomial model for the frequency bandshape. Using this model, it then flags outlier points beyond a given relative threshold. This is adept at flagging short-duration spikes of RFI in both narrowband and broadband ranges, as well as time-persistent RFI in the narrowband. rflag uses a sliding window to calculate the local visibility RMS, and flags points beyond a relative threshold. This operates on individual baselines over single frequencies (channels) with the sliding window over the time axis, followed by single time steps with the sliding window across channels. rflag is best at identifying weak and sparse RFI that may be affecting a subsection of antennas. The pipeline also extends the flags for each baseline, such that any channel or time step that is $>50\%$ flagged will be entirely flagged. Flags are also propagated between polarisations, with all four correlations flagged if any individual polarisation is flagged.
+
+To improve upon the results from the algorithms implemented in CASA, I tested \texttt{AOFLAGGER}, which was originally designed for LOFAR but has since expanded for use with several other telescopes \citep{Offringa2010, Offringa2012, Offringa2023}.\footnote{\url{https://aoflagger.readthedocs.io/en/latest/index.html}} This is implemented via a flexible Lua script, allowing customisation in algorithms to each telescope and observation setup. The default VLA script performs RMS-based time step and channel flagging, high-pass filtering, and morphological filtering. The morphological analysis is performed via the \texttt{SumThreshold} algorithm, which uses several decreasing thresholds to evaluate a sequence of samples. Points exceeding the highest threshold are marked for flagging, after which next lower threshold is evaluated, and the process is repeated. This works well for broadband and peaked RFI. This script has two primary parameters, \texttt{base\_threshold} and \texttt{transient\_threshold\_factor} which define the thresholds to use for flagging. Lower thresholds correspond to increased sensitivity, and therefore more aggressive flagging. For frequent but intermittent RFI bursts, \texttt{transient\_threshold\_factor} can be used to tune detection separately to the main threshold. The script was altered to preserve any pre-existing flags applied by the pipeline.
+
+
+Based on the NRAO description of RFI in the X-band, the script is configured to do three passes with separate parameters for each. The first two passes flag only 9.3--9.5 GHz (weather radar) and 10.7--12 GHz (ground communications), before a final full frequency range pass. This allows for tuning of aggression based upon the RFI present in each observation. The higher angular resolution C-configuration observations had a much lower amount of RFI compared to the D-configuration, where many datasets were sufficiently contaminated by the ground communications that these spectral windows were completely removed. A summary of the final datasets is given somewhere.\stickynote{Need to do this} Scripts were tuned for each source and observation independently using a manual and iterative testing process. An example Lua script is given Appendix \ref{app:aoflagger}. This process was incorporated into a copy of the VLA Pipeline version 6.6.1 as a custom step \texttt{hifv\_aoflagger} with three arguments: the source target to be flagged \texttt{flag\_target}, the lua script \texttt{aoflagger\_file}, and the data column to use (raw or corrected). If the corrected data column is selected, this first subtracts the model from the corrected data to estimate the residual spectrum. Given an accurate source model, these residuals are expected to be closer to a Gaussian noise distribution, improving RMS-based RFI detection. This provides flexibility per observed source with customisable parameters per source and region of RFI. The implementation of this custom pipeline step is available in a separate repository.\footnote{\url{https://github.com/MoonlitMoo/casa-pipeline/tree/main/hifv}}
 
 \section{Calibration pipeline}
-\begin{itemize}
-    \item Work through each calibration step explaining what it does and why it is important. 
-    \item Final preparation for imaging is averaging down to further reduce noise.
-    \item Notes about general trends from the calibration, with RFI in 10-12 GHz D config being bad, much of it being flagged.
-\end{itemize}
+All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. An example pipeline script is given in Listing \ref{lst:pipescript}. The following descriptions are written with reference to the Pipeline Tasks Reference Manual and CASA docuumentation.\footnote{\url{https://almascience.eso.org/processing/documents-and-tools/cycle12/reference-manual-2025}}\footnote{\url{https://casadocs.readthedocs.io/en/stable/index.html}}.
 
-\section{Special mentions}
-\begin{itemize}
-    \item Either here or during following imaging section talk about the 2-3 datasets we processed slightly differently due to bad fits.
-    \item Describe the fitting process for the custom bandpass.
-\end{itemize}
+The first stage \texttt{hifv\_importdata} is to loads the data, in the format of a Measurement Set (MS), with the associated metadata. This context is used throughout the pipeline to determine which scans, sources, and spectral windows are evaluated. 
+
+\begin{lstlisting}[
+    language=Python,
+    caption={Example CASA pipeline script.}, 
+    label={lst:pipescript}
+]
+hifv_importdata(vis=["DATASET"])
+hifv_flagdata(
+    hm_tbuff='1.5int', fracspw=0.01, intents='*POINTING*,
+    *FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, 
+    *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
+hifv_vlasetjy()
+hifv_priorcals(show_tec_maps=False)
+hifv_aoflagger(
+    flag_target='PRIMARY', aoflagger_file='PRIMARY.lua')
+hifv_testBPdcals()
+hifv_semiFinalBPdcals()
+hifv_aoflagger(
+    flag_target='SECONDARY', aoflagger_file='SECONDARY.lua')
+hifv_solint()
+hifv_fluxboot()
+hifv_aoflagger(
+    flag_target='CALIBRATORS', aoflagger_file='CALIBRATORS.lua', 
+    use_corrected=True)
+hifv_finalcals()
+hifv_applycals()
+hifv_aoflagger(
+    flag_target='SCIENCE_TARGET', aoflagger_file='SCIENCE.lua', 
+    use_corrected=True)
+hifv_statwt()
+hifv_plotsummary()
+hifv_exportdata()
+h_save()
+\end{lstlisting}
+
+\subsection{Initial Flagging}
+The \texttt{hifv\_flagdata} task is used to perform deterministic (apriori) flagging. These flagging categories include antenna shadowing, unwanted intents, autocorrelation, edge channels, clipping, quacking, and basebands. Antenna shadowing occurs when the target is close to the horizon, as antennas may block the field of view of antennas behind them. CASA automatically models the positioning of antennas against the source in order to remove shadowed antennas. Unwanted intents are scans in the MS that are not science targets or necessary for calibration. In Listing \ref{lst:pipescript}, these can be seen to primarily system configuration related or unspecified scans. Auto-correlation is the correlation of the antenna to itself, these zero distance baselines are removed. Edge channel flagging removes the first and last channel of each spectral window, as the interferometer is least sensitive at these boundaries. Clipping removes any visibility amplitudes below zero. Quacking flags a short period at the start and end of each scan. Since the antenna physically moves (slews) between scans, this removes data measured while the antennas may still be settling. Baseband flagging removes ten channels at the start and end of each baseband, analagous to the spectral window flagging. For these observations, there are two basebands covering 8--10 GHz and 10--12 GHz. 
+
+\subsection{Primary calibrator flux scale}
+The visibilities measured by each antenna have a direction-dependent gain and phase scale. These relative amplitudes and phases must then be corrected in order to measure the correct flux from a source. Primary calibrators are unresolved point sources with high flux densities (typically $>>10$ Jy at $\lambda=1$ m) and stable over long timescales (years). CASA implements the Perley--Butler flux density scale, spanning the frequency range 50 MHz to 50 GHz \citep{Perley2017} and recommends observations of 3C286, 3C48, 3C147, or 3C138 to set the absolute flux scale. For the observed clusters, the nearest primary calibrators were 3C286 or 3C48 (see Table \ref{tab:observations}). Scans of the primary calibrators were performed at the start or end of each observing block. 
+
+Due to the small number of primary calibrators, the likelihood of a science target lying in close proximity to one is low. This necessitates the use of secondary calibrators, which are also unresolved compact sources but may exhibit significant time variability on the timescale of months to years. The list of VLA calibrators is an inexhaustive list of approximately 1862 usable sources.\footnote{\url{https://science.nrao.edu/facilities/vla/observing/callist}} The absolute flux density scale obtained from the primary calibrator is used to scale the flux density of the secondary sources, as precise emission values are difficult to estimate due to the time-variability. These closer sources then allow for more accurate direction-dependent gain and phase solutions for the science targets.
+
+\subsection{Prior calibrations}
+Several deterministic calibrations are monitored and saved during the observations or defined by the instrument setup. Those applied during \texttt{hifv\_priorcals} include gain curves, atmospheric opacity, antenna position corrections, and requantisation gains. Gain curves account for elevation-dependent gains, where the angle of the antenna causes gravitational deformation of the dish surface. Changes in elevation also alter the atmospheric path-length, which is not entirely transparent to radio emission. The atmospheric opacity correction adjusts for this attenuation, while other atmospheric effects (re-emitted radio emission, delay errors due to density fluctuations) are corrected by later fitted calibrations. The geographical coordinates of antennas may have small time-dependent errors over the course of the observation, which result in delay and baseline errors when correlated. This calibration references an online database of antenna position corrections to apply adjustments. Requantiser gains are amplitude offsets introduced when visibilities are re-quantised to a lower bit size to reduce data rates. These effects are antenna and time-dependent and estimated during the observation. 
+
+\subsection{Calibrator flagging}
+Before using the primary calibrator observation to fit calibrations, it is flagged for RFI using the custom step \texttt{hifv\_aoflagger} discussed previously. This step is the first flagging applied to this source and operates on the uncalibrated visibilities. This may share a script and parameter set with other calibrators or science targets, depending on the similarity of the RFI present. These parameters were tested prior to running the full calibration pipeline to optimise the mitigation of RFI signals and preservation of source data. A second round of flagging is performed prior to the \texttt{hifv\_finalcals} step, described in a following section. The second flagging step operates on the corrected data, which provides the closest representation to the true source. These two passes improve the RFI detection as the quality of the visibilities increase, resulting in cleaner gain and phase solutions during the final calibration stage.
+
+Similarly to the primary calibrators, the secondary calibrators are flagged prior to fitting any calibrations. A first flagging run is performed prior to setting the flux density scale on the raw visibilities. A second pass is performed prior to creating the final calibrators on the corrected visibilities.
+
+\subsection{Delay and Bandpass calibrations}
+Errors in antenna position and time measurements cause systematic errors in the measured delay and phases between antennas. These effects are antenna-dependent and can be corrected using observations of the primary calibrator. This assumes one antenna as the reference with zero delay, and calibrates the relative delays of all other antennas. This provides one solution per antenna, per spectral window, and per parallel correlation (LL, RR). To mitigate time-dependent phase errors, a test phase calibration is fitted per integration interval and applied prior to the delay calibration. Following the delay calibration, residual frequency-dependent errors in the phase and gain remain. This is correlated with the spectral window subbands and the basebands, resulting in a total bandpass response. These errors are also corrected using observations of the primary calibrator. To reduce time-dependent amplitude errors, a test complex gain calibration is created over the integration timescales. The test amplitude, test phase, and delay calibrations are then used to construct the bandpass calibration. The step \texttt{hifv\_testBPdcals} iteratively constructs a self-consistent delay and bandpass calibration for the primary calibrator. The prior, delay, and initial bandpass calibrations are then applied to the primary calibrator visibilities. The following step \texttt{hifv\_semiFinalBPdcals} recalculates these calibrations and applies them to the primary and secondary calibrator data.
+
+\subsection{Secondary calibrator flux scale}
+With the base calibrations completed, the flux density scale can now be transferred from the primary calibrator to the secondary calibrator. In order to accurately transfer a known scale to a source of unknown flux, a well-constrained complex gain calibration is necessary. Note that any missing spectral windows or antennas in the primary calibrator solutions are propagated to the secondary calibrator. To reduce the time-variability in the complex gain of the secondary calibrator, a minimal time solution interval is found using the \texttt{hifv\_solint} task. The minimum possible interval is the integration timescale, however, a high flagging fraction may make this infeasible. This is then used during the \texttt{hifv\_fluxboot} task to create a short-timescale phase solution. These corrections are used to fit a complex gain solution with outlier solutions flagged during the fit. This model of the source amplitude is then scaled using the absolute flux density scale of the primary calibrator, and a polynomial model is fit to the resulting spectrum. This model represents the predicted true spectrum of the secondary calibrator and added to the dataset.
+
+\subsection{Final calibration}
+With flux density scales established for the calibrators and flagging performed on the corrected visibilities, the final calibrations can be fitted using the \texttt{hifv\_finalcals} task. This step first refits the delay and bandpass calibrations using the primary calibrator. An average phase solution is then computed over all scans to normalise the time-dependent phase errors. The short-timescale phase corrections are then computed for all calibrators and used to derive the final complex gain and phase solutions. The final calibration list then consists of the prior, delay, bandpass, average phase, complex gain, and phase calibrations. These calibrations are then applied to obtain the final corrected visibilities. This includes applying the calibrations from the secondary calibrators to the science targets. These solutions are more accurate than those derived from the primary calibration, as the smaller angular seperation reduces interpolation errors in the gain and phase. Once again, any missing spectral windows or antennas in the secondary calibrator solutions are propagated to the science targets to maintain consistency. 
+
+\subsection{Science target processing}
+The science targets then undergo a single flagging run performed on the corrected visibilities. Ideally, this would occur without the model subtraction, but this was not implemented in the pipeline step. The default model column of a Measurement Set is a 1 mJy point source located at the phase centre. Subtracting this is equivalent to offsetting the visibilities by a constant, to which RMS-based detection is insensitive to. As the science targets are primarily comprised of faint and diffuse emission, the visibilities are visually similar to noise, and fluctuations can be attributed to RFI. The benefits gained in using the corrected data, rather than the raw visibilities, for flagging were considered to outweigh the risk of erroneous flagging. The variance of the unflagged visibilities is then weighted per baseline based on the resulting exposure time and the number of unflagged points. This improves the sensitivity of the observations by down-weighting baselines that have less data and therefore a lower signal-to-noise ratio. 
+
+\subsection{Pipeline outputs}
+The \texttt{hifv\_plotsummary} task produces several plots to check the quality of the final calibration. This includes phase-vs-frequency and amplitude-vs-frequency of the raw and calibrated visibilities for each calibrator and science target. These, alongside reports produced by the previous pipeline tasks, are collected into a weblog and exported alongside the final calibrated datasets as a single product by \texttt{hifv\_exportdata}. 
+
+The calibrated science fields were split from the full dataset, trimming the polarisation products to the parallel correlations and averaging over frequency and time bins. Averaging over frequency alters the uv distribution since $\vec u = \vec b / \lambda$, which results in radial smearing. A typical maximum limit for frequency bin size $\Delta \nu$ can be found in terms of the antenna diameter $D$ and the maximum baseline $B$, observing frequency $\nu$, and sensitivity $x$ (in the range 1--4, where lower values are stricter limits). For high frequency VLA data, the sensitivity was set to 4.
+\begin{equation}
+    \Delta\nu = x \frac{\nu D}{4B}
+\end{equation}
+For VLA dishes of diameter 25 m, maximum baselines $\sim1.25\times10^5$ m, and a minimum observing frequency of 8 GHz, this gives $\Delta\nu \approx 57$ MHz. For channels of width 2 MHz, this corresponds channel averaging by a factor of 28.5. Erring on the side of caution, frequency averaging was decided over 16 channels. Time averaging can also cause smearing due to the Earth's rotation, with an analogous time bin limit $\Delta t$ in terms of antenna diameter $D$, maximum baseline $B$, sensitivity $x$ (in the range 1--3.7), and the angular frequency of Earth's rotation $\omega$. The maximum value for the sensitivity $x=3.7$ was chosen to match the spectral averaging. 
+\begin{equation}
+    \Delta t = x \frac{D}{4\omega B}
+\end{equation}
+With $\omega \approx 7.27\times10^{-5}$ rad s$^{-1}$, the maximal time bin is $\Delta t \approx 91$ s. The time averaging was chosen at 60s based upon this limit. Since these values are independent of a specific observation, the same averaging was applied to all datasets.\stickynote{Ref eqs (slides somewhere?)}
+
+\section{Calibration exceptions}
+Two observing runs, ID \texttt{25A-157.sb47856643.eb48084985.60734.6548690162} and \\\texttt{25A-157.sb47896788.eb48078564.60733.06076180555}, required manual intervention during calibration. This was due to noisy and inconsistent amplitude and phase solutions for a secondary calibrator, in both datasets, affecting spectral windows 22--31. This resulted in an antenna-dependent spread of amplitudes and phases over these spectral windows following the final calibration. This was caused by the pipeline selecting a long solution interval despite the presence of short-timescale phase variations. This was likely due to high RFI in these spectral windows inflating the minimum timescale estimated during \texttt{hifv\_solint}. To resolve this, a short-timescale phase calibration was fitted while excluding spectral windows contaminated with RFI to produce a single time-dependent solution per antenna, per correlation. A residual phase and amplitude gradient across the spectral windows remained following this correction. A linear bandpass solution was iteratively fit to this gradient, excluding outlying points until convergence. This phase and bandpass solution was then applied in place of the final complex gain and phase solutions to the affected secondary calibrator and science field. This solution was sufficient to correct the phase issues in both datasets. 
+
+The observation \texttt{25A-157.sb47856643.eb48084985.60734.6548690162} also contained a mislabelled secondary calibrator scan. This scan was labelled with the intent for bandpass calibration, which caused it to be handled alongside the primary calibrator data. This was fixed using the CASA \texttt{defintent} task to set the intent to the correct values.
 
 \section{Imaging}
-\begin{itemize}
-    \item When we make a raw image from the data, we still have a lot of artefacts from the point spread function, which comes from the beam.
-    \item This means we need a more advanced imaging process to remove this to get a clean image. Implemented in a few different ways, we choose tclean in CASA.
-    \item Tclean works by modelling the PSF, creating an empty model, find brightest point in residuals, model that as real, subtract model from residuals, repeat 20K times.
-    \item This works mostly well, but we can improve results using self calibration.
-\end{itemize}
+The collated calibrated datasets were then imaged using CASA's \texttt{tclean} task. This implements the CLEAN algorithm discussed in Section \ref{sec:interferometry}. 
 
 \subsection{Self calibration}
 \begin{itemize}
