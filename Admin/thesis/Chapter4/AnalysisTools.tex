@@ -1,13 +1,19 @@
 \chapter[Analysis Tools]{How to Analysis}
 \label{Chap:Analysis}
-This chapter starts with an overview on imaging and how that is performed. Then we talk a bit about how we actually want to measure the flux of the minihalos.
-Could combine with actual results.
 
-\section{Final datasets}
-\begin{itemize}
-    \item Could have a table here talking about each minihalo, how much data is remaining, spws that are flagged out, some sort of visual. 
-    \item Maybe bar graph of spws, line or point graph for minihalo C/D (either total or differentiated by style) normalised to [0, 1]
-\end{itemize}
+With calibrated and imaged datasets, the primary analysis is to extract a reliable flux density measurements of the minihalo emission. This requires several steps in the image domain to isolate the diffuse emission from point sources, define the spatial region of the emission, and estimate associated uncertainties. 
+
+\section{Removal of contaminating sources}
+In order to remove contaminating sources, a sky model of the emission can be formed and used to subtract from the visibilities. A image of the source-subtracted data then contains solely minihalo emission in the region of interest. This method can also be used to subtract problematic variable sources that are not modelled cleanly and are causing artefacts in the image. Independent models of the source can be created per dataset and subtracted individually, similar in process to during self calibration, so that the joint image no longer contains the variable source. An accurate model of the source is necessary for subtraction, as if the model contains minihalo emission, the resulting image will feature a negative bowl where it was removed. Similarly, if the model misses contaminating flux, the minihalo flux will be artificially peaked and the total flux density will be boosted. 
+
+Baseline length corresponds to different spatial scales in the image, so by removing short baselines during imaging, the large scale minihalo emission will be missing in the image. This can be achieved by specifying a \texttt{uvrange} in \texttt{tclean}, which only images using the selected range. To determine an optimal region to perform the cutoff, testing was performed on the observations of RXJ1720+2368. The lower uvrange bound was iteratively increased and the BCG was fit to a Gaussian point source using the \texttt{imfit} task for each dataset. The fitted values will then converge to a constant value as the cutoff increases and the minihalo emission is removed. Figure \ref{fig:uvrange_cutoff} shows this occurs at baselines $>10$ klambda. The peak values for the D-configuration datasets are inconsistent at low cutoffs due to the higher brightness sensitivity and therefore greater minihalo contamination, causing problematic fits. A minimum cutoff was chosen at 12 k$\lambda$ to ensure no minihalo remained, while minimising the effect on the signal-to-noise ratio.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter4/uvrange_vs_flux.pdf}
+    \caption{Flux density fit for RXJ1720+2638 BCG as a function of minimum uvrange used during imaging. The black vertical line indicates the adopted minimum uvcut. \textit{Left Panel:} Absolute peak flux with $1\sigma$ error for each dataset. \textit{Right Panel:} Relative peak flux density of D-configuration to C-configuration.}
+    \label{fig:uvrange_cutoff}
+\end{figure}
 
 \section{Calibration Error}
 \begin{itemize}
