@@ -1,12 +1,23 @@
-\chapter[Analysis Tools]{How to Analysis}
+\chapter[Analysis Tools]{Analysis Methods}
 \label{Chap:Analysis}
 
-With calibrated and imaged datasets, the primary analysis is to extract a reliable flux density measurements of the minihalo emission. This requires several steps in the image domain to isolate the diffuse emission from point sources, define the spatial region of the emission, and estimate associated uncertainties. 
+The primary goal of this thesis is to extract reliable flux density measurements of the minihalo emisssion. These values are then able to be compared with previous works to estimate the spectral index of the emission. With the calibrated datasets, several further steps in the image domain are necessary to isolate the diffuse emission from point sources, define the spatial region of the emission, and estimate the associated uncertainties. This chapter details the methods used to reach a total flux measurement for the minihalo, with the following chapter presenting the results per cluster. 
 
 \section{Removal of contaminating sources}
-In order to remove contaminating sources, a sky model of the emission can be formed and used to subtract from the visibilities. A image of the source-subtracted data then contains solely minihalo emission in the region of interest. This method can also be used to subtract problematic variable sources that are not modelled cleanly and are causing artefacts in the image. Independent models of the source can be created per dataset and subtracted individually, similar in process to during self calibration, so that the joint image no longer contains the variable source. An accurate model of the source is necessary for subtraction, as if the model contains minihalo emission, the resulting image will feature a negative bowl where it was removed. Similarly, if the model misses contaminating flux, the minihalo flux will be artificially peaked and the total flux density will be boosted. 
+Contamination of the minihalo emission can occur in several ways, such as AGN embedded within the spatial region of the minihalo and positive or negative radial artefacts from the convolution of the PSF with poorly modelled sources. These bias the total minihalo flux, necessitating the removal of contaminating sources. This was achieved by forming a sky model of the emission and using the Fourier transformed model to subtract from the observed visibilities. The resulting source-subtracted images then depict the minihalo emission without contamination. Unstable sources were primarily attributed to time-variability between observation dates, resulting in an unphysical model and imaging artefacts. Independent models of the source were created for each dataset and subtracted individually, so that the joint image no longer contained the variable source. An accurate model of the source is necessary for subtraction, since if the model contains minihalo emission, the resulting image will feature a negative bowl where it was removed. Conversely, if the model underestimates the flux, the minihalo flux will be artificially peaked and the total flux density will be boosted. 
 
-Baseline length corresponds to different spatial scales in the image, so by removing short baselines during imaging, the large scale minihalo emission will be missing in the image. This can be achieved by specifying a \texttt{uvrange} in \texttt{tclean}, which only images using the selected range. To determine an optimal region to perform the cutoff, testing was performed on the observations of RXJ1720+2368. The lower uvrange bound was iteratively increased and the BCG was fit to a Gaussian point source using the \texttt{imfit} task for each dataset. The fitted values will then converge to a constant value as the cutoff increases and the minihalo emission is removed. Figure \ref{fig:uvrange_cutoff} shows this occurs at baselines $>10$ klambda. The peak values for the D-configuration datasets are inconsistent at low cutoffs due to the higher brightness sensitivity and therefore greater minihalo contamination, causing problematic fits. A minimum cutoff was chosen at 12 k$\lambda$ to ensure no minihalo remained, while minimising the effect on the signal-to-noise ratio.
+To ensure that the subtraction model does not include diffuse emission, it is desirable to remove flux corresponding to large-scale emission. Since baseline length corresponds to spatial scale in the image, removing short baselines will cause the large scale minihalo emission to be strongly suppressed in the image. This was achieved by specifying a \texttt{uvrange} in \texttt{tclean}, which allows specification of a baseline cutoff. To determine an optimal uv value to perform the cutoff, testing was performed on the observations of RXJ1720+2368. The spatial region of this minihalo is contaminated with the bright BCG, while a variable AGN to the south west caused negative radial spikes that in proximity to the minihalo emission (see Figure \ref{fig:contaminating_emission}). 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter4/contaminating_emission.pdf}
+    \caption{Calibrated image of RXJ1720+2368, showing minihalo contamination from the central unresolved BCG and radial PSF artefacts from a variable AGN (S1). The image has a restoring beam of 2.79"$\times$2.51" at a position angle of -25.6\textdegree (shown in grey at bottom left). The noise RMS is $3.49$ $\mu$Jy beam$^{-1}$ and the image was cleaned to a threshold of 3$\sigma$.}
+    \label{fig:contaminating_emission}
+\end{figure}
+
+To evaluate an appropriate cutoff, the lower uv bound was varied and a Gaussian point source was fitted to the BCG using the \texttt{imfit} task for each dataset. As this region contains the sum of the minihalo and BCG fluxes, there exists a cutoff value for which the BCG emission alone remains, and the peak flux will converge to a constant value. The peak flux was used instead of the integrated flux as the BCG represents an unresolved point source, though these values will also converge as extended emission is removed. Figure \ref{fig:uvrange_cutoff} shows the results of the testing, with convergence at baselines $>10$ k$\lambda$.\footnote{As $\vec u = \vec b / \lambda$, baseline lengths are often expressed in units of the observing wavelength.} The peak values for the D-configuration datasets are inconsistent at low cutoffs due to the greater minihalo contamination (from higher brightness sensitivity). This caused the fitted Gaussian to exhibit a low peak and wide spread, boosting the integrated flux over the extended region. A minimum cutoff was chosen at 12 k$\lambda$ to ensure no minihalo remained, while minimising the effect on the signal-to-noise ratio. 
+
+A clear difference of approximately 10\% in the measured AGN flux exists between the D-configuration observations. This may be due to calibration error or true variability. This important distinction is discussed in more detail in Section \ref{sec:calibration_error}. The models for AGN subtraction used a 12 k$\lambda$ minimum uv cut, and all models were subtracted on an individual dataset basis to prevent under- or over-subtraction due to time-variability. 
 
 \begin{figure}
     \centering
@@ -15,22 +26,51 @@ Baseline length corresponds to different spatial scales in the image, so by remo
     \label{fig:uvrange_cutoff}
 \end{figure}
 
-\section{Calibration Error}
-\begin{itemize}
-    \item Calibration error exists, and sources can vary in their flux amount.
-    \item We can try and constrain the error and variance by comparing the secondary calibrator models for D config and the point source fluxes for the images.
-    \item Fluxes for secondaries can vary a lot over a year (100\%?) maybe, but lower per month. Can then compare to differences in sources in the image.
-    \item If a trend is observed, likely calibration error. If no trend or close models, constrain calibration error and can see the variance in AGN etc.
-    \item Can retrieve the point source flux by cutting out diffuse sources (uvrange) and by masking to a tight border.
-\end{itemize}
+\section{Minihalo spatial extent}
+To estimate the total minihalo flux density, the individual fluxes within the spatial extent of the minihalo must be integrated. For valid comparisons with previous studies, the ideal approach would use an identical spatial mask. However, these masks are often not available or lack detailed information. For these clusters, the spatial extent is instead estimated as the sum of pixels with flux $>3\sigma$, where the noise $\sigma$ was determined from the RMS per beam across the residual image. The initial binary selection mask was segmented into separate emission structures. The minihalo region was identified and confirmed to be isolated from other discrete sources prior to final summation. 
 
-\section{Calculating the minihalo flux}
-\begin{itemize}
-    \item We can do this in a variety of ways, but we don't want the AGN contamination so we should subtract this out.
-    \item Do this per dataset to account for variation over time, incorrect subtractions can result in negative bowls in emission, or remaining flux.
-    \item Other problematic sources are dealt with the same way.
-    \item Image the subtracted data and then we create a contour for significant emission (3 sigma) from the residual RMS.
-    \item Calculate total flux in the region.
-    \item Then we calculate the error using this formula from G14 modified for the AGN error since we think its lower.
-\end{itemize}
+One exception was RXJ1720+2638, as \citet{Giacintucci2014a} defined a mask used for calculation of the minihalo emission (see Figure 2b). Furthermore, they categorise a central and tail region. This allowed the reconstruction of the mask, which was used in results of this thesis. 
 
+\section{Total flux density uncertainity}
+\label{sec:calibration_error}
+There are three primary sources of error for estimations in the total flux density of minihalo emission, due to AGN subtraction $\sigma_{AGN}$, spatial image noise $\sigma_{noise}$, and calibration error $\sigma_{cal}$. The total uncertainity is then the RMS of the components,\begin{equation}
+    \sigma = \sqrt{\sigma_{AGN}^2 + \sigma_{noise}^2 + \sigma_{cal}^2} 
+\end{equation}
+
+Secondary calibrators and compact AGN used for amplitude and phase calibration can show flux density fluctuations between 5--10\% at month to year timescales \citep{Kurinsky2013}. This is additional to the 3--5\% intrinsic uncertainity in the primary calibrators \cite{Perley2017}. Any variation in a target source is then the conflation of potential variations in the calibrators and errors during calibration. This motivates the inclusion of a systematic calibration uncertainty to quantify for fluctuations in the primary and secondary calibrators. 
+
+The error from the subtraction of AGN can be attributed to errors in the imaging. This corresponds to the residual RMS per beam during AGN modelling $\sigma_{rms, AGN}$, weighted by the number of beams covering the AGN. Since these are compact sources, there is only a single beam, and the error is simply $\sigma_{AGN} = \sigma_{rms, AGN}$. This differs to the estimate used by \citet{Giacintucci2014a}, where $\sigma_{AGN}^2 = (A_{AGN} \times I_{MH})^2$ with $A_{AGN}$ the area of the radio galaxy and $I_{MH}$ the average surface brightness of the minihalo near the source. This makes the conservative assumption that the flux of the minihalo is entirely erroneous at the location of the subtraction. For a clean subtraction, the former method is more realistic, and was used. 
+
+The image noise from the spatial sum over the minihalo region is calculated as the residual RMS per beam of the minihalo image, weighted by the beams in spatial region. The number of beams is given by $N_{beam} = A_{MH} / A_{beam}$, where $A_{MH}$ is the area of the minihalo  and $A_{beam}$ is the restoring beam area. This gives the total image noise as $\sigma_{noise}^2 = (\sigma_{rms}\sqrt{N_beam})^2$.
+
+The calibration error 5\% \stickynote{Justify}
+
+\section{Sample completion}
+The completeness of analysis for the observed clusters is provided in \ref{tab:completeness}. All calibration has been completed, alongside the majority of self calibration. Estimates of the minihalo flux are obtained for X clusters. The corresponding results are presented in the following chapter, with a seperate section describing the status of clusters where self calibration was not achieved. Incompleteness is primarily attributed to time constraints and challenges in the modelling of more complex cluster morphology. \stickynote{Update after results} 
+
+\begin{table}
+    \centering
+    \setlength{\tabcolsep}{6pt}
+    \begin{threeparttable}
+        \begin{tabular}{lccc}
+            \toprule
+            Cluster & Calibration & Self-calibration & Minihalo flux \\
+            \midrule
+            2A0335+096      & Done & Partial & No \\
+            A1413           & Done & Done    & Pending \\
+            A1795           & Done & No      & No \\
+            A2204           & Done & Done    & Pending \\
+            A2626           & Done & No      & No \\
+            A478            & Done & Done    & Done \\
+            ACTJ0022-0036   & Done & Done    & Pending \\
+            MS1455+2232     & Done & Done    & Pending \\
+            RXCJ1115+0129   & Done & Done    & Pending \\
+            RXJ1720+2638    & Done & Done    & Done \\
+            RXJ2129+0005    & Done & Pending & Pending \\
+            Z3146           & Done & Pending & Pending \\
+            \bottomrule
+        \end{tabular}
+        \caption{Processing completeness for each cluster, showing the status of calibration, self-calibration, and final minihalo flux measurement.}
+        \label{tab:completeness}
+    \end{threeparttable}
+\end{table}

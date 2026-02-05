@@ -58,8 +58,8 @@ def plot_heatmap_with_teff(config_label: str):
     epoch_level = (
         sub.groupby(["cluster", "freq_GHz", "epoch"], as_index=False)
         .agg(
-            retained_frac=("retained_frac", "mean"),   # or "first" if identical
-            exposure_s=("exposure_s", "sum")            # total exposure for that epoch+freq
+            retained_frac=("retained_frac", "first"),   # or "first" if identical
+            exposure_s=("exposure_s", "first")            # total exposure for that epoch
         )
     )
     agg = (
@@ -84,19 +84,19 @@ def plot_heatmap_with_teff(config_label: str):
     freqs = mat.columns.to_numpy()
     Z = mat.to_numpy()
 
-    teff_sub = (
-        teff[teff["config"] == config_label]
-        .set_index("cluster")
-        .reindex(clusters)
-    )
-    teff_vals = teff_sub["Teff_s"].to_numpy()
+    # teff_sub = (
+    #     teff[teff["config"] == config_label]
+    #     .set_index("cluster")
+    #     .reindex(clusters)
+    # )
+    # teff_vals = teff_sub["Teff_s"].to_numpy()
 
     # ---- plot: heatmap + side bar ----
-    fig, (ax_hm, ax_bar) = plt.subplots(
-        ncols=2,
+    fig, (ax_hm) = plt.subplots(
+        ncols=1,
         figsize=(7, 4),
-        gridspec_kw={"width_ratios": [8, 2]},
-        sharey=True,
+        # gridspec_kw={"width_ratios": [8, 2]},
+        # sharey=True,
         constrained_layout=True
     )
 
@@ -147,15 +147,55 @@ def plot_heatmap_with_teff(config_label: str):
     ax_hm.set_xlabel("Frequency (GHz)")
     ax_hm.set_ylabel("Cluster")
     
-    # Side bars: effective exposure (hours)
-    teff_hours = teff_vals / 3600.0
-    y = np.arange(len(clusters))
-    ax_bar.barh(y, teff_hours)
-    ax_bar.set_xlabel(r"$T_{\mathrm{eff}}$ (hr)")
-    ax_bar.set_xticks(np.arange(0, 4, 1))
-    ax_bar.grid(True, axis="x", linestyle=":", linewidth=0.5)
-    ax_bar.set_ylim(ax_hm.get_ylim())
+    # # Side bars: effective exposure (hours)
+    # teff_hours = teff_vals / 3600.0
+    # y = np.arange(len(clusters))
+    # ax_bar.barh(y, teff_hours)
+    # ax_bar.set_xlabel(r"$T_{\mathrm{eff}}$ (hr)")
+    # ax_bar.set_xticks(np.arange(0, 4, 1))
+    # ax_bar.grid(True, axis="x", linestyle=":", linewidth=0.5)
+    # ax_bar.set_ylim(ax_hm.get_ylim())
+
     plt.savefig(f"flagging_{config_label}.pdf", dpi=300)
 
 plot_heatmap_with_teff("C")
 plot_heatmap_with_teff("D")
+
+# Give reduction in exposure time
+initial_exposure_time = {
+    "2A0335+096": {"C": 45.3, "D": 137.0},
+    "A478": {"C": 44.5, "D": 249.0},
+    "A2204": {"C": 64.0, "D": 73.2},
+    "MS1455+2232": {"C": 61.1, "D": 71.8},
+    "RXJ1720+2638": {"C": 62.2, "D": 71.2},
+    "A1413": {"C": 36.9, "D": 258.4},
+    "A1795": {"C": 71.5, "D": 71.5},
+    "RXCJ1115+0129": {"C": 73.1, "D": 73.0},
+    "Z3146": {"C": 73.1, "D": 73.0},
+    "A2626": {"C": 83.0, "D": 74.7},
+    "ACTJ0022-0036": {"C": 219.0, "D": 63.9},
+    "RXJ2129+0005": {"C": 276.2, "D": 129.0},
+}
+
+lf = []
+for _, row in teff.iterrows():
+        cluster = row["cluster"]
+        config = row["config"]
+        teff_min = row["Teff_s"] / 60.0
+
+        try:
+            sched_min = initial_exposure_time[cluster][config]
+        except KeyError:
+            print(f"{cluster:15s} {config}: no scheduled time")
+            continue
+
+        lost_frac = max(0.0, 1.0 - teff_min / sched_min)
+        lost_pct = 100.0 * lost_frac
+        lf.append(lost_pct)
+        print(
+            f"{cluster:15s} {config} & {sched_min:6.1f} & {teff_min:6.1f} & {lost_pct:5.1f}"
+        )
+
+teff["Lost_pc"] = lf
+print(teff[teff["config"] == "C"].describe())
+print(teff[teff["config"] == "D"].describe())

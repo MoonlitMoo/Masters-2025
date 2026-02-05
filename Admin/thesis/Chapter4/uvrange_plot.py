@@ -109,11 +109,11 @@ ax2.set_title("Relative")
 ax2.set_xlabel(r"$uv$ min cut (k$\lambda$)")
 ax1.set_xlabel(r"$uv$ min cut (k$\lambda$)")
 
-ax1.axvline(12, c='k')
-ax2.axvline(12, c='k')
+ax1.axvline(12, c='k', linestyle='--', linewidth=1)
+ax2.axvline(12, c='k', linestyle='--', linewidth=1)
 
-ax1.set_xlim(0, 22)
-ax2.set_xlim(0, 22)
+ax1.set_xlim(-0.5, 22)
+ax2.set_xlim(-0.5, 22)
 ax1.set_ylim(0.8, 1.2)
 ax2.set_ylim(-20, 5)
 

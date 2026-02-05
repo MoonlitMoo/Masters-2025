@@ -76,10 +76,6 @@ To calibrate and image these observations, \textit{Common Astronomy Software App
                             & D & 2025-02-28 & 35.6  &                        &                             \\
                             & D & 2025-03-27 & 35.6  &                        &                             \\
                 \addlinespace[0.5em]
-                A2204         & C & 2024-02-03 & 64    & \multirow{3}{*}{3C286} & \multirow{3}{*}{J0424+0204} \\
-                            & D & 2025-02-28 & 36.6  &                        &                             \\
-                            & D & 2025-03-27 & 36.6  &                        &                             \\
-                \addlinespace[0.5em]
                 A1413         & C & 2024-02-04 & 36.9  & \multirow{3}{*}{3C48}  & \multirow{3}{*}{J1150+2417} \\
                             & D & 2025-02-28 & 129.2 &                        &                             \\
                             & D & 2025-02-28 & 129.2 &                        &                             \\
@@ -192,7 +188,7 @@ The \texttt{hifv\_flagdata} task is used to perform deterministic (apriori) flag
 \subsection{Primary calibrator flux scale}
 The visibilities measured by each antenna have a direction-dependent gain and phase scale. These relative amplitudes and phases must then be corrected in order to measure the correct flux from a source. Primary calibrators are unresolved point sources with high flux densities (typically $>>10$ Jy at $\lambda=1$ m) and stable over long timescales (years). CASA implements the Perley--Butler flux density scale, spanning the frequency range 50 MHz to 50 GHz \citep{Perley2017}. This scale contains polynomial flux models of several primary calibrators, allowing the visibilities to be scaled to minimise errors to the model. This assumes an accurate model and low time-variability of the primary calibrator between the modelling and observation. The Perley--Bulter scale quotes accuracy to 3--5\% over the full frequency range. CASA recommends observations of 3C286, 3C48, 3C147, or 3C138 to set the absolute flux scale. For the observed clusters, the nearest primary calibrators were 3C286 or 3C48 (see Table \ref{tab:observations}). Scans of the primary calibrators were performed at the start or end of each observing block. 
 
-Due to the small number of primary calibrators, the likelihood of a science target lying in close proximity to one is low. This necessitates the use of secondary calibrators, which are also unresolved compact sources but may exhibit significant time variability on the timescale of months to years. The list of VLA calibrators is an inexhaustive list of approximately 1862 usable sources.\footnote{\url{https://science.nrao.edu/facilities/vla/observing/callist}} The absolute flux density scale obtained from the primary calibrator is used to scale the flux density of the secondary sources, as precise emission values are difficult to estimate due to the time-variability. These closer sources then allow for more accurate direction-dependent gain and phase solutions for the science targets.
+Due to the small number of primary calibrators, the likelihood of a science target lying in close proximity to one is low. This necessitates the use of secondary calibrators, which are also unresolved compact sources but may exhibit significant time variability on the timescale of months to years. At 5 GHz, observations have shown a median variability of 4.3\% over 60--260 days, increasing to 5.3\% over the same time period at 33 GHz \citep{Kurinsky2013}. The list of VLA calibrators is an inexhaustive list of approximately 1862 usable sources.\footnote{\url{https://science.nrao.edu/facilities/vla/observing/callist}} The absolute flux density scale obtained from the primary calibrator is used to scale the flux density of the secondary sources, as precise emission values are difficult to estimate due to the time-variability. These closer sources then allow for more accurate direction-dependent gain and phase solutions for the science targets.
 
 \subsection{Prior calibrations}
 Several deterministic calibrations are monitored and saved during the observations or defined by the instrument setup. Those applied during \texttt{hifv\_priorcals} include gain curves, atmospheric opacity, antenna position corrections, and requantisation gains. Gain curves account for elevation-dependent gains, where the angle of the antenna causes gravitational deformation of the dish surface. Changes in elevation also alter the atmospheric path-length, which is not entirely transparent to radio emission. The atmospheric opacity correction adjusts for this attenuation, while other atmospheric effects (re-emitted radio emission, delay errors due to density fluctuations) are corrected by later fitted calibrations. The geographical coordinates of antennas may have small time-dependent errors over the course of the observation, which result in delay and baseline errors when correlated. This calibration references an online database of antenna position corrections to apply adjustments. Requantiser gains are amplitude offsets introduced when visibilities are re-quantised to a lower bit size to reduce data rates. These effects are antenna and time-dependent and estimated during the observation. 
@@ -276,16 +272,15 @@ Time variability of AGN was an issue noticed during calibration of some clusters
 
 \section{Final imaging datasets} 
 
-The calibrated datasets exhibit varying levels of flagging, with D-configuration observations most effected. This is worst at frequencies $>10.7$ GHz due to broadband ground-based communications create broadband interference, and at $\sim9.3$ GHz from narrowband weather radars. 
-
-The single C-configuration observation of A1413 is a notable outlier, with the majority of spectral windows completely flagged. This occurred during self calibration, rather than the pipeline, and may be represent the removal of residual RFI. This observation was taken in the same block as A1795, Z3146, and RXCJ1115+0129, which do not exhibit the same level of flagging. However, it is also 50\% shorter in base exposure times to the other datasets, which decreases the signal-to-noise ratio. The lack of C-configuration data for A1413 means that point source estimates and source subtraction should be interpreted with caution, as flux may be missing.
+The calibrated datasets exhibit varying levels of flagging, with D-configuration observations most effected. This is worst at frequencies $>10.7$ GHz due to broadband ground-based communications create broadband interference, and at $\sim9.3$ GHz from narrowband weather radars. An average exposure time of 22\% was lost for C-configuration observations, while an average of 32\% was lost for D-configuration. Per cluster losses are summarised in Table \ref{tab:eff_exposure}.
 
 The effective exposure time $T_{eff}$ is calculated as the sum of exposure times per integration time $T_i$, weighted by the unflagged fractional bandwidth $f_{i,j}$ of each polarisation correlation $j$ (normalised by the number of correlations per integration time $c_i$), and the maximum number of baselines $N_b = N(N-1)/2$ for $N$ antenna. 
 \begin{equation}
     T_{eff} = \frac1{N_b}\left(\sum_iT_i\sum_j\left[\frac{f_{i,j}}{n_i}\right]\right)
-\end{equation}
+\end{equation}   
 
-Maybe do table of exposure times with \% reduction from original value.
+The single C-configuration observation of A1413 is a notable outlier, with the majority of spectral windows completely flagged. This occurred during self calibration, rather than the pipeline, and may be represent the removal of residual RFI. This observation was taken in the same block as A1795, Z3146, and RXCJ1115+0129, which do not exhibit the same level of flagging. However, it is also 50\% shorter in base exposure time to the other clusters, which decreases the signal-to-noise ratio. The lack of C-configuration data for A1413 means that point source estimates and source subtraction should be interpreted with caution, as flux may be missing.
+
 
 \begin{figure}[htbp]
     \centering
@@ -304,6 +299,54 @@ Maybe do table of exposure times with \% reduction from original value.
         \caption{D configuration}
         \label{fig:flagging_D}
     \end{subfigure}
-    \caption{Summary of retained data per cluster following the calibration pipeline and self calibration. The results are separated for C-configuration and D-configuration. \textit{Left Panel:} Fraction of retained data shown as a function of frequency. Binning is done per spectral window and averaged weighted by exposure time for multiple observations. \textit{Right Panel:} Effective exposure time summed over all datasets.}
+    \caption{Summary of retained data per cluster following the calibration pipeline and self calibration. The results are separated for C-configuration and D-configuration. The fraction of retained data is shown as a function of frequency. Binning is done per spectral window and averaged with multiple observations weighted by exposure time.}
     \label{fig:flagging_exposure}
 \end{figure}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        Cluster & Config & Total & Effective & Reduced \\
+        & & Time (min) & Time (min) & (\%) \\
+        \midrule
+        2A0335+096      & C &   45.3 &   43.4 &   4.1\\
+                        & D &  137.0 &   68.8 &  49.8\\
+        \addlinespace[0.5em]
+        A1413           & C &   36.9 &    6.8 &  81.5\\
+                        & D &  258.4 &  116.3 &  55.0\\
+        \addlinespace[0.5em]
+        A1795           & C &   71.5 &   70.8 &   1.0\\
+                        & D &   71.5 &   72.3 &   0.0\\
+        \addlinespace[0.5em]
+        A2204           & C &   64.0 &   49.3 &  23.0\\
+                        & D &   73.2 &   46.0 &  37.2\\
+        \addlinespace[0.5em]
+        A2626           & C &   83.0 &   67.8 &  18.3\\
+                        & D &   74.7 &   57.1 &  23.6\\
+        \addlinespace[0.5em]
+        A478            & C &   44.5 &   41.9 &   5.9\\
+                        & D &  249.0 &  174.8 &  29.8\\
+        \addlinespace[0.5em]
+        ACTJ0022-0036   & C &  219.0 &  171.7 &  21.6\\
+                        & D &   63.9 &   39.1 &  38.8\\
+        \addlinespace[0.5em]
+        MS1455+2232     & C &   61.1 &   57.5 &   5.9\\
+                        & D &   71.8 &   67.3 &   6.3\\
+        \addlinespace[0.5em]
+        RXCJ1115+0129   & C &   73.1 &   61.4 &  16.0\\
+                        & D &   73.0 &   49.0 &  32.9\\
+        \addlinespace[0.5em]
+        RXJ1720+2638    & C &   62.2 &   26.5 &  57.3\\
+                        & D &   71.2 &   36.0 &  49.4\\
+        \addlinespace[0.5em]
+        RXJ2129+0005    & C &  276.2 &  207.7 &  24.8\\
+                        & D &  129.0 &   79.7 &  38.2\\
+        \addlinespace[0.5em]
+        Z3146           & C &   73.1 &   68.2 &   6.7\\
+                        & D &   73.0 &   60.4 &  17.2\\
+        \bottomrule
+    \end{tabular}
+    \caption{Effective exposure time following calibration pipeline and self calibration. The total raw observation time, effective time, and percent lost is given per cluster and configuration.}
+    \label{tab:eff_exposure}
+\end{table}
