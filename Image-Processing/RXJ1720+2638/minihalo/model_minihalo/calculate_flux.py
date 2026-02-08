@@ -10,7 +10,7 @@ from matplotlib.lines import Line2D
 OUTPUT_DIR = "flux_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-images = ["minihalo", "minihalo2", "minihalo3"]
+images = ["minihalo", "minihalo_uvconstr"]
 masks = []
 
 # Get all the different masks
@@ -36,7 +36,7 @@ for im in images:
 ia.open(f"{images[0]}.image.tt0")
 shape, coords = ia.shape(), ia.coordsys().torecord()
 ia.close()
-centre_region = "ellipse[[17:20:09.4, +026.37.30], [30.0arcsec, 34.8arcsec], 323deg]"
+centre_region = "ellipse[[17:20:09.4, +026.37.30], [30.0arcsec, 34.8arcsec], 127deg]"
 tail_region = "poly[[17:20:10.50000, +026.38.02.0000], [17:20:11.40000, +026.38.07.5000], " + \
     "[17:20:14.20000, +026.37.34.0000], [17:20:14.20000, +026.37.00.0000], " + \
     "[17:20:13.00000, +026.36.33.0000], [17:20:11.20000, +026.36.23.0000], " + \
