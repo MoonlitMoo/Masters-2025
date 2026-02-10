@@ -309,6 +309,76 @@ def _get_flux_from_log(log):
     return np.nan, np.nan
 
 
+def dump_flux_summary(
+    df: pd.DataFrame,
+    out_path: str = "flux_summary.txt",
+):
+    """
+    Writes the full DataFrame and the per-position flux summary
+    (weighted mean + conservative uncertainty) to a single text file.
+    """
+
+    # ---- build summary ----
+    rows = []
+
+    for pos, g in df.groupby("Position"):
+        s = g["Flux (mJy)"].to_numpy(dtype=float)
+        e = g["Error (mJy)"].to_numpy(dtype=float)
+        n = s.size
+
+        w = 1.0 / e**2
+        mean = np.sum(w * s) / np.sum(w)
+        sig_mean = np.sqrt(1.0 / np.sum(w))
+
+        if n > 1:
+            scatter = np.sqrt(np.sum((s - mean) ** 2) / (n - 1))
+            sig_scat = scatter / np.sqrt(n)
+        else:
+            scatter = np.nan
+            sig_scat = np.nan
+
+        sig_final = np.nanmax([sig_mean, sig_scat])
+
+        rows.append({
+            "Position": pos,
+            "N": n,
+            "S_mean_mJy": mean,
+            "sigma_final_mJy": sig_final,
+            "sigma_formal_mJy": sig_mean,
+            "rms_scatter_mJy": scatter,
+        })
+
+    summary = pd.DataFrame(rows).sort_values("Position")
+
+    # ---- write to text file ----
+    with open(out_path, "w") as f:
+
+        # Header
+        f.write("# Input flux measurements\n")
+        f.write("# -----------------------\n")
+
+        f.write(df.to_string(index=False))
+        f.write("\n\n")
+	# Full df
+        f.write("# Calculated statistics \n")
+        f.write("# -----------------------\n")
+        f.write(summary.to_string(index=False))
+        f.write("\n\n")
+        # Summary
+        f.write("# Per-source flux summary\n")
+        f.write("# Weighted mean with conservative uncertainty\n")
+        f.write("# --------------------------------------------\n")
+
+        for r in summary.itertuples(index=False):
+            f.write(
+                f"{r.Position:>10s} : "
+                f"{r.S_mean_mJy:.4f} ± {r.sigma_final_mJy:.4f} mJy "
+                f"(N={r.N})\n"
+            )
+
+    return summary
+    
+
 def check_point_flux(datasets, regions, labels, clean_params: dict = {},
                      redo_images: bool = False, output_dir: str = "check_flux"):
     image_dir = f"{output_dir}/images"
@@ -364,6 +434,8 @@ def check_point_flux(datasets, regions, labels, clean_params: dict = {},
     df = pd.DataFrame(data)
     df.sort_values(by=['Dataset', 'Position'], inplace=True)
     print(df.to_string(index=False))
+
+    dump_flux_summary(df)
 
     # Plotting provided by ChatGPT, because plotting is hard.
 

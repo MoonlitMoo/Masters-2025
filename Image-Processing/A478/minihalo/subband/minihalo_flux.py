@@ -68,8 +68,8 @@ bcg_err  = np.array([1.6, 0.5, 0.023, 0.019, 0.016, 0.02])
 
 # --- Recreate plot with our points ---
 plot_seds(
-    minihalo=(mh_freq, mh_flux, mh_err),
-    bcg=(bcg_freq, bcg_flux, bcg_err),
+    minihalo=(mh_freq[1:], mh_flux[1:], mh_err[1:]),
+    bcg=(bcg_freq[2:], bcg_flux[2:], bcg_err[2:]),
     savepath="A478_subband_seds.png",
 )
 

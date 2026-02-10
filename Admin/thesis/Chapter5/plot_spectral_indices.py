@@ -237,7 +237,7 @@ def plot_rxj1720_seds(
     fig_size=(9, 4),
     savepath: Optional[str] = None,
 ):
-    fig, (axA, axB) = plt.subplots(1, 2, figsize=fig_size)
+    fig, (axA, axB) = plt.subplots(1, 2, sharey=True, figsize=fig_size)
 
     # ---------- Panel (a): minihalo + BCG ----------
     f_mh, s_mh, e_mh = minihalo
@@ -288,6 +288,7 @@ def plot_rxj1720_seds(
     axB.set_xscale("log")
     axB.set_yscale("log")
     axB.set_xlabel("Frequency (GHz)")
+    axB.tick_params(axis="y", labelleft=True)
     # axB.set_title("Total flux of minihalo centre and tail")
     axB.set_xlim(0.01, 100)
     axB.set_ylim(0.3, 1000)
@@ -308,22 +309,25 @@ def plot_rxj1720_seds(
 
 
 # --- RXJ1720+2638 ---
-mh_freq = np.array([0.317, 0.617, 1.28, 1.48, 4.86, 8.44, 10])
-mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.72])
-mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.44])
-bcg_flux = np.array([24, 11, 6.9, 6.7, 2.3, 1.4, 1.27])
-bcg_err  = np.array([2, 1, 0.4, 0.3, 0.1, 0.1, 0.2])
-central_freq = mh_freq
-central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.76])
-central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.39])
-tail_freq = mh_freq
-tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 0.96])
-tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.08])
+def rxj1720():
+    mh_freq = np.array([0.317, 0.617, 1.28, 1.48, 4.86, 8.44, 10])
+    mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.50])
+    mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.42])
+    bcg_flux = np.array([24, 11, 6.9, 6.7, 2.3, 1.4, 1.27])
+    bcg_err  = np.array([2, 1, 0.4, 0.3, 0.1, 0.1, 0.2])
+    central_freq = mh_freq
+    central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.54])
+    central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.38])
+    tail_freq = mh_freq
+    tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 0.96])
+    tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.06])
 
-fig, axs = plot_rxj1720_seds(
-    minihalo=(mh_freq, mh_flux, mh_err),
-    bcg=(mh_freq, bcg_flux, bcg_err),
-    central=(mh_freq, central_flux, central_err),
-    tail=(mh_freq, tail_flux, tail_err),
-    savepath="rxj1720_seds.pdf",
-)
+    fig, axs = plot_rxj1720_seds(
+        minihalo=(mh_freq, mh_flux, mh_err),
+        bcg=(mh_freq, bcg_flux, bcg_err),
+        central=(mh_freq, central_flux, central_err),
+        tail=(mh_freq, tail_flux, tail_err),
+        savepath="rxj1720_seds.pdf",
+    )
+
+rxj1720()

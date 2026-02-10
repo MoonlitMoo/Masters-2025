@@ -5,12 +5,13 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
 import astropy.units as u
+from astropy.visualization import MinMaxInterval, AsinhStretch, ImageNormalize
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
+from matplotlib.colors import FuncNorm
+from matplotlib.ticker import MaxNLocator, AutoMinorLocator
 from matplotlib.patches import Ellipse
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
-from matplotlib.ticker import MaxNLocator, AutoMinorLocator
-from matplotlib.colors import FuncNorm
-import matplotlib.patheffects as pe
 
 
 f_scale = 1.0
@@ -101,6 +102,7 @@ def annotate_scale_bar(
     scale_loc,
     kpc_scale,
     length,
+    inv_colour=False,
     *,
     text_offset=0.02,
     line_kwargs=None,
@@ -145,13 +147,16 @@ def annotate_scale_bar(
     xl = x_center - b_length / 2
     xr = x_center + b_length / 2
     # Draw line
-    line_pe = [pe.Stroke(linewidth=1, foreground="black"), pe.Normal()]
-    line_kwargs.setdefault("color", "white")
-    line = ax.plot([xl, xr], [y_center, y_center], **line_kwargs, path_effects=line_pe)[0]
-
+    outline_c = "black" if not inv_colour else "white"
+    text_c = "black" if inv_colour else "white"
+    line_pe = [pe.Stroke(linewidth=1.5, foreground=outline_c), pe.Normal()]
+    line_kwargs.setdefault("color", text_c)
+    
+    line = ax.plot([xl, xr], [y_center, y_center], **line_kwargs)[0]
+    line.set_path_effects([pe.Stroke(linewidth=3.0, foreground=outline_c), pe.Normal()])
     # Draw text centred above the line
     dy = text_offset * (y1 - y0)
-    text_kwargs.setdefault("color", "white")
+    text_kwargs.setdefault("color", text_c)
     text = ax.text(
         x_center,
         y_center + dy,
@@ -295,6 +300,8 @@ def annotate_arrow_label_pixel(
 ):
     dx, dy = text_offset_pix
     xt, yt = x_pix + dx, y_pix + dy
+    text_pe = [pe.Stroke(linewidth=1.5, foreground="black"), pe.Normal()]
+    arrow_pe = [pe.Stroke(linewidth=2, foreground="black"), pe.Normal()]
 
     ann = ax.annotate(
         text,
@@ -302,6 +309,7 @@ def annotate_arrow_label_pixel(
         xycoords=ax.get_transform("pixel"),
         xytext=(xt, yt),
         textcoords=ax.get_transform("pixel"),
+        path_effects=text_pe,
         ha=ha,
         va=va,
         color=text_color,
@@ -313,6 +321,7 @@ def annotate_arrow_label_pixel(
             mutation_scale=arrow_ms,
             shrinkA=0,
             shrinkB=0,
+            path_effects=arrow_pe
         ),
         zorder=zorder,
     )
@@ -321,26 +330,23 @@ def annotate_arrow_label_pixel(
 def plot_fits(
     fits_path,
     rms,
-    vmin=None,  # Mjy
-    vmax=None,  # Mjy
-    scale="linear",
-    alpha=None,
+    scale = "ujy",
+    vmin=None,
+    vmax=None,
+    colour_scale="linear",
+    alpha=0.1,
     cmap="inferno",
     zoom = 1,
+    contour_levels=[-3, 3, 6, 12, 24, 48],
+    neg_contour_color="white",
     beam_detail="high",  # Should beam image include major/minor axis
     figsize=(6.5, 6.5),
-    beam_loc=(0.1, 0.1),  # In fraction of axis
-    cbar_label=r"$\mu$Jy beam$^{-1}$",
+    beam_loc=(0.1, 0.1)  # In fraction of axis
 ):
     hdu = fits.open(fits_path)[0]
     data = np.squeeze(hdu.data).astype(float)
     hdr = hdu.header
     wcs = WCS(hdr)
-    
-    # Scale Jy/beam -> uJy/beam for display. Clip to max and min values.
-    data *= 1e6
-    rms *= 1e6
-    data = np.clip(data, vmin, vmax)
     
     # Set vmin/vmax
     if vmin is None:
@@ -348,14 +354,33 @@ def plot_fits(
     if vmax is None:
         vmax = np.max(data)
     
+    # Scale Jy/beam -> uJy/beam for display. 
+    if scale.lower() == "ujy":
+        scale_factor = 1e6
+        cbar_label = r"$\mu$Jy beam$^{-1}$"
+    elif scale.lower() == "mjy":
+        scale_factor = 1e3
+        cbar_label = r"mJy beam$^{-1}$"
+    else:
+        raise ValueError(f"Unknown scale {scale}.")   
+    data *= scale_factor 
+    rms *= scale_factor
+    vmin *= scale_factor
+    vmax *= scale_factor
+    data = np.clip(data, vmin, vmax)
+    
     # Set colour scaling
-    if scale == "linear":
+    if colour_scale == "linear":
         norm = FuncNorm(
             (lambda x: x, lambda y: y),
             vmin=vmin, vmax=vmax
         )
         cticks = np.linspace(0, round(vmax), 5)
-    elif scale == "log":
+    elif colour_scale == "asinh":
+        norm = ImageNormalize(data, interval=MinMaxInterval(),
+                      stretch=AsinhStretch(a=alpha))
+        cticks = None
+    elif colour_scale == "log":
         # Log scale colouring, mimic CARTA func log(ax + 1)
         norm = FuncNorm(
             (lambda x: np.log10(alpha*x + 1),
@@ -364,7 +389,7 @@ def plot_fits(
         )
         cticks = [0, 0.01, 0.05, 0.1, 0.5, 1]
     else:
-        raise ValueError("Unknown scale")
+        raise ValueError(f"Unknown colour_scale {colour_scale}")
 
 
     fig = plt.figure(figsize=figsize)
@@ -379,14 +404,15 @@ def plot_fits(
     )
 
     # Add contours
-    levels = np.array([-3, 3, 6, 12, 24, 48]) * rms
+    levels = np.array(contour_levels) * rms
     linestyles = ['dotted' if lvl < 0 else 'solid' for lvl in levels]
+    colors = [neg_contour_color if lvl < 0 else 'white' for lvl in levels]
 
     ax.contour(
         data,
         levels=levels,
-        colors="white",
-        linewidths=0.5,
+        colors=colors,
+        linewidths=1,
         linestyles=linestyles,
         transform=ax.get_transform(wcs)
     )
@@ -427,7 +453,8 @@ def plot_fits(
     cax = fig.add_axes([pos.x1 + 0.015, pos.y0, 0.02, pos.height])
     cbar = fig.colorbar(im, cax=cax)
     cbar.set_label(cbar_label, rotation=90, labelpad=10)
-    cbar.set_ticks(cticks)
+    if cticks is not None:
+        cbar.set_ticks(cticks)
     
     # Restoring beam (from FITS header)
     if all(k in hdr for k in ("BMAJ", "BMIN", "BPA", "CDELT1")):
@@ -459,11 +486,29 @@ def get_threshold(image):
 # RXJ1720+2638
 def rxj1720():
     print("RXJ1720+2638:")
-    img = "../../../../Image-Processing/RXJ1720+2638/minihalo/model_minihalo/minihalo.image.tt0"
-    fits_file = "rxj1720.fits"
-    # export_fits(img, fits_file)
-    sigma = 3.12e-06  # get_threshold(img)
-    fig, ax, wcs = plot_fits(fits_file, rms=sigma, vmin=-1, vmax=50, zoom=5, beam_detail="high")
+    c_name = "rxj1720"
+    full_img = "../../../../Image-Processing/RXJ1720+2638/full_image/image-p5.image.tt0"
+    sub_img = "../../../../Image-Processing/RXJ1720+2638/minihalo/model_minihalo/minihalo_uvconstr.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 3.48e-6  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=200)
+    annotate_arrow_label_pixel(ax, 1158, 1158, "S1", text_offset_pix=(50, 50))
+    annotate_arrow_label_pixel(ax, 1055, 1270, "S2")
+    annotate_arrow_label_pixel(ax, 1400, 1045, "S3")
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+
+    # Make the subtracted image
+    sub_fits_file = f"FITS/{c_name}_sub.fits"
+    # export_fits(sub_img, sub_fits_file)
+    sigma = 3.38e-6  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(sub_fits_file, rms=sigma, zoom=5, colour_scale="asinh", beam_detail="flat")
     # This has a custom mask that we need to build, load, and then add as contour.
     # os.system("casa --nologger --nogui -c rxj1720_custom_mask.py")
     def plot_mask_contour(ax, wcs, mask_path, *, level=0.5, **contour_kwargs):
@@ -477,25 +522,43 @@ def rxj1720():
     # Annotate the scale + BCG + subtracted points.
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=100)
     annotate_cross(ax, "17h20m10.03s", "26d37m31.9s")
-    plt.savefig("rxj1720.pdf", dpi=300, bbox_inches='tight')
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
 # A478
 def a478():
     print("A478:")
     c_name = "a478"
-    img = "../../../../Image-Processing/A478/minihalo/minihalo.image.tt0"
-    fits_file = f"{c_name}.fits"
-    mask_file = f"{c_name}_mask.fits"
-    # export_fits(img, fits_file)
-    sigma = 1.88e-06  # get_threshold(img)
-    fig, ax, wcs = plot_fits(fits_file, rms=sigma, vmin=-1, vmax=50, zoom=5, beam_detail="high")
+    full_img = "../../../../Image-Processing/A478/full_image/image-p6.image.tt0"
+    sub_img = "../../../../Image-Processing/A478/minihalo/minihalo.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 1.94e-6  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(
+        fits_file, rms=sigma, zoom=2, scale="mjy", colour_scale="asinh", alpha=0.001, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=150)
+    annotate_arrow_label_pixel(ax, 1165, 1165, "S1", text_offset_pix=(60, 60))
+    annotate_arrow_label_pixel(ax, 970, 1250, "S2", text_offset_pix=(60, 60))
+    annotate_arrow_label_pixel(ax, 850, 1340, "S3", text_offset_pix=(-60, 60))
+    annotate_arrow_label_pixel(ax, 770, 1150, "S4", text_offset_pix=(-20, -90))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 1.88e-6  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(fits_file, rms=sigma, colour_scale="asinh", alpha=0.1, zoom=5, beam_detail="flat")
     # Annotate mask
     # export_fits("../../../../Image-Processing/A478/minihalo/significance.mask", mask_file)
     annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=75)
     annotate_cross(ax, "4h13m25.29s", "10d27m54.6s")
-    plt.savefig("a478.pdf", dpi=300, bbox_inches='tight')
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
     
 
 # rxj1720()
