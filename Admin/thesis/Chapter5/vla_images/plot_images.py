@@ -28,6 +28,7 @@ from astropy.wcs import WCS
 from matplotlib.ticker import AutoMinorLocator
 from matplotlib.patches import Ellipse
 
+BASE_MASTERS_DIR = "../../../.."
 
 def plot_restoring_beam(ax, hdr, beam_loc, beam_detail):
         bmaj_as = hdr["BMAJ"] * 3600.0  # deg -> arcsec
@@ -348,11 +349,19 @@ def plot_fits(
     hdr = hdu.header
     wcs = WCS(hdr)
     
-    # Set vmin/vmax
+    # Get zoom factors
+    ny, nx = data.shape
+    cx, cy = nx / 2, ny / 2
+    width = nx / zoom
+    height = ny / zoom
+    x_min, x_max = int(round(cx - width / 2)), int(round(cx + width / 2))
+    y_min, y_max = int(round(cy - height / 2)), int(round(cy + height / 2))
+
+    # Set vmin/vmax based on visible data
     if vmin is None:
-        vmin = np.min(data)
+        vmin = np.nanmin(data[y_min:y_max, x_min:x_max])
     if vmax is None:
-        vmax = np.max(data)
+        vmax = np.nanmax(data[y_min:y_max, x_min:x_max])
     
     # Scale Jy/beam -> uJy/beam for display. 
     if scale.lower() == "ujy":
@@ -440,12 +449,8 @@ def plot_fits(
     dec.tick_params(color="white", which="both", direction="in", left=True, right=True, labelleft=True)
 
     # Trim image size (central zoom)
-    ny, nx = data.shape
-    cx, cy = nx / 2, ny / 2
-    width = nx / zoom
-    height = ny / zoom
-    ax.set_xlim(cx - width/2, cx + width/2)
-    ax.set_ylim(cy - height/2, cy + height/2)
+    ax.set_xlim(x_min, x_max)
+    ax.set_ylim(y_min, y_max)
 
     # Colorbar axis: fixed fraction of the parent axes height, since inset_axes and divider don't like the CoordinateHelper
     fig.canvas.draw()
@@ -468,7 +473,7 @@ def export_fits(image, out):
     os.system("rm casa*.log")
 
 def get_threshold(image):
-    residual_image = ".".join(image.split(".")[:-2]) + ".residual.tt0"
+    residual_image = image.split(".image.tt0")[0].split(".pbcor")[0] + ".residual.tt0"
     c_str = (
         f"res = imstat('{residual_image}')\n"
         "sigma = res['sigma'][0]\n"
@@ -483,53 +488,54 @@ def get_threshold(image):
     print(f"Found threshold {sigma:.3g} for {image}")
     return sigma
 
-# RXJ1720+2638
-def rxj1720():
-    print("RXJ1720+2638:")
-    c_name = "rxj1720"
-    full_img = "../../../../Image-Processing/RXJ1720+2638/full_image/image-p5.image.tt0"
-    sub_img = "../../../../Image-Processing/RXJ1720+2638/minihalo/model_minihalo/minihalo_uvconstr.image.tt0"
-    
+# 2A0335+096
+def twoA0335():
+    print("2A0335+096:")
+    c_name = "2A0335"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/2A0335+096/full_image/image-p6.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/2A0335+096/minihalo/minihalo.pbcor.image.tt0"
+    mask_img = f"{BASE_MASTERS_DIR}/Image-Processing/2A0335+096/minihalo/significance.mask"
     # Make the full image
     fits_file = f"FITS/{c_name}.fits"
     # export_fits(full_img, fits_file)
-    sigma = 3.48e-6  # get_threshold(full_img)
-    fig, ax, wcs = plot_fits(
-        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+    sigma = 2.52e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 4.14x3.32 arcsec, -9.9
+        fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.001, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=200)
-    annotate_arrow_label_pixel(ax, 1158, 1158, "S1", text_offset_pix=(50, 50))
-    annotate_arrow_label_pixel(ax, 1055, 1270, "S2")
-    annotate_arrow_label_pixel(ax, 1400, 1045, "S3")
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=0.716, length=50)
+    annotate_arrow_label_pixel(ax, 1150, 1145, "S1", text_offset_pix=(-10, -60))
+    annotate_arrow_label_pixel(ax, 1164, 1164, "S2", text_offset_pix=(30, 0))
+    annotate_arrow_label_pixel(ax, 1070, 1115, "S3", text_offset_pix=(-40, -40))
+    annotate_arrow_label_pixel(ax, 1120, 1167, "E Lobe", text_offset_pix=(-80, 20))
+    annotate_arrow_label_pixel(ax, 1175, 1137, "W Lobe", text_offset_pix=(80, -20))
     plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
-
-    # Make the subtracted image
-    sub_fits_file = f"FITS/{c_name}_sub.fits"
-    # export_fits(sub_img, sub_fits_file)
-    sigma = 3.38e-6  # get_threshold(sub_img)
-    fig, ax, wcs = plot_fits(sub_fits_file, rms=sigma, zoom=5, colour_scale="asinh", beam_detail="flat")
-    # This has a custom mask that we need to build, load, and then add as contour.
-    # os.system("casa --nologger --nogui -c rxj1720_custom_mask.py")
-    def plot_mask_contour(ax, wcs, mask_path, *, level=0.5, **contour_kwargs):
-        mask = np.load(mask_path)
-        mask = np.squeeze(mask).astype(float).T
-        contour_kwargs.setdefault("colors", "red")
-        contour_kwargs.setdefault("linewidths", 1)
-        ax.contour(mask, levels=[level], transform=ax.get_transform(wcs), **contour_kwargs,)
-    plot_mask_contour(ax, wcs, "rxj1720_masks/centre_mask.npy", colors="red")
-    plot_mask_contour(ax, wcs, "rxj1720_masks/tail_mask.npy", colors="red", linestyles="--")
-    # Annotate the scale + BCG + subtracted points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=100)
-    annotate_cross(ax, "17h20m10.03s", "26d37m31.9s")
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.43e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 6.68x5.14 arcsec, -14.2
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.3, zoom=6, beam_detail="flat")
+    # Annotate mask
+    # export_fits(mask_img, mask_file)
+    annotate_mask_contour(ax, wcs, mask_file)
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=0.716, length=25)
+    annotate_cross(ax, "3h38m41.4s", "9d58m17.5s")
+    annotate_cross(ax, "3h38m40.6s", "9d58m11.6s")
+    annotate_cross(ax, "3h38m39.9s", "9d58m07.3s")
+    annotate_cross(ax, "3h38m40.3s", "9d58m17.9s")
+    annotate_arrow_label_pixel(ax, 1070, 1120, "S3", text_offset_pix=(-40, 20))
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
 # A478
 def a478():
     print("A478:")
     c_name = "a478"
-    full_img = "../../../../Image-Processing/A478/full_image/image-p6.image.tt0"
-    sub_img = "../../../../Image-Processing/A478/minihalo/minihalo.image.tt0"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/A478/full_image/image-p6.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/A478/minihalo/minihalo.pbcor.image.tt0"
     
     # Make the full image
     fits_file = f"FITS/{c_name}.fits"
@@ -550,16 +556,313 @@ def a478():
     fits_file = f"FITS/{c_name}_sub.fits"
     mask_file = f"FITS/{c_name}_mask.fits"
     # export_fits(sub_img, fits_file)
-    sigma = 1.88e-6  # get_threshold(sub_img)
-    fig, ax, wcs = plot_fits(fits_file, rms=sigma, colour_scale="asinh", alpha=0.1, zoom=5, beam_detail="flat")
+    sigma = 1.88e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=7, beam_detail="flat")
     # Annotate mask
-    # export_fits("../../../../Image-Processing/A478/minihalo/significance.mask", mask_file)
+    # export_fits(f"{BASE_MASTERS_DIR}/Image-Processing/A478/minihalo/significance.mask", mask_file)
     annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=75)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=50)
     annotate_cross(ax, "4h13m25.29s", "10d27m54.6s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
-    
 
+# RXJ1720+2638
+def rxj1720():
+    print("RXJ1720+2638:")
+    c_name = "rxj1720"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXJ1720+2638/full_image/image-p5.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXJ1720+2638/minihalo/model_minihalo/minihalo_uvconstr.pbcor.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 3.48e-6  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.79x2.51 arcsec, -25.6
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=200)
+    annotate_arrow_label_pixel(ax, 1158, 1158, "S1", text_offset_pix=(50, 50))
+    annotate_arrow_label_pixel(ax, 1055, 1270, "S2")
+    annotate_arrow_label_pixel(ax, 1400, 1045, "S3")
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+
+    # Make the subtracted image
+    sub_fits_file = f"FITS/{c_name}_sub.fits"
+    # export_fits(sub_img, sub_fits_file)
+    sigma = 3.38e-6  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 4.65x4.38 arcsec, -55.7
+        sub_fits_file, rms=sigma, zoom=6, colour_scale="asinh", alpha=0.15, beam_detail="flat")
+    # This has a custom mask that we need to build, load, and then add as contour.
+    # os.system("casa --nologger --nogui -c rxj1720_custom_mask.py")
+    def plot_mask_contour(ax, wcs, mask_path, *, level=0.5, **contour_kwargs):
+        mask = np.load(mask_path)
+        mask = np.squeeze(mask).astype(float).T
+        contour_kwargs.setdefault("colors", "red")
+        contour_kwargs.setdefault("linewidths", 1)
+        ax.contour(mask, levels=[level], transform=ax.get_transform(wcs), **contour_kwargs,)
+    plot_mask_contour(ax, wcs, "rxj1720_masks/centre_mask.npy", colors="red")
+    plot_mask_contour(ax, wcs, "rxj1720_masks/tail_mask.npy", colors="red", linestyles="--")
+    # Annotate the scale + BCG + subtracted points.
+    annotate_scale_bar(ax, (0.65, 0.1), kpc_scale=2.758, length=100)
+    annotate_cross(ax, "17h20m10.03s", "26d37m31.9s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# A2204
+def a2204():
+    print("A2204:")
+    c_name = "a2204"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/A2204/full_image/image-p4.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/A2204/minihalo/minihalo.pbcor.image.tt0"
+    mask_img = f"{BASE_MASTERS_DIR}/Image-Processing/A2204/minihalo/significance.mask"
+
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 6.04e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.02x1.69 arcsec, -58.0
+        fits_file, rms=sigma, zoom=5, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.643, length=50)
+    annotate_arrow_label_pixel(ax, 455, 445, "S1", text_offset_pix=(20, 0))
+    annotate_arrow_label_pixel(ax, 455, 462, "S2", text_offset_pix=(20, 0))
+    annotate_arrow_label_pixel(ax, 485, 489, "S3", text_offset_pix=(15, -15))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.99e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 3.67x2.79 arcsec, -32.4
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=8, beam_detail="flat")
+    # Annotate mask
+    # export_fits(mask_img, mask_file)
+    annotate_mask_contour(ax, wcs, mask_file)
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.643, length=75)
+    annotate_cross(ax, "16h32m46.94s", "5d34m40.7s")
+    annotate_cross(ax, "16h32m46.94s", "5d34m32.5s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# MS1455+2232
+def ms1455():
+    print("MS1455+2232:")
+    c_name = "ms1455"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/MS1455+2232/full_image/image-p4.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/MS1455+2232/minihalo/minihalo.image.tt0"
+
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 2.99e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.43x2.27 arcsec, -27.5
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.990, length=200)
+    annotate_arrow_label_pixel(ax, 1160, 1160, "S1", text_offset_pix=(30, 30))
+    annotate_arrow_label_pixel(ax, 1278, 943, "S2", text_offset_pix=(30, 30))
+    annotate_arrow_label_pixel(ax, 1330, 1120, "S3", text_offset_pix=(-40, 40))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.85e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 3.02x2.80 arcsec, -25.1 
+        fits_file, rms=sigma, scale="mjy", colour_scale="asinh", alpha=0.1, zoom=4.5, beam_detail="flat")
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.1, 0.2), kpc_scale=3.990, length=100)
+    annotate_cross(ax, "14h57m15.11s", "22d20m34s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# Z3146
+def z3146():
+    print("Z3146:")
+    c_name = "z3146"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/Z3146/full_image/image-final.image.tt0"
+
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 3.19e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 3.56x2.62 arcsec, -35.
+        fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.329, length=200)
+    annotate_arrow_label_pixel(ax, 1160, 1160, "S1", text_offset_pix=(30, 40))
+    annotate_arrow_label_pixel(ax, 1185, 1145, "S2", text_offset_pix=(30, 20))
+    annotate_arrow_label_pixel(ax, 1000, 1075, "S3", text_offset_pix=(0, -50))
+    annotate_arrow_label_pixel(ax, 972, 1100, "S4", text_offset_pix=(-50, 30))
+    annotate_arrow_label_pixel(ax, 1000, 1216, "S5", text_offset_pix=(20, 20))
+    annotate_arrow_label_pixel(ax, 1213, 900, "S6", text_offset_pix=(-70, -10))
+    annotate_arrow_label_pixel(ax, 1225, 925, "Lobes", text_offset_pix=(30, 20))
+    annotate_arrow_label_pixel(ax, 1243, 900, "Lobes", text_offset_pix=(12, 45))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+
+# RXCJ1115+0129
+def rxcj1115():
+    print("RXCJ1115+0129:")
+    c_name = "rxcj1115"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXCJ1115+0129/full_image/image-p4.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXCJ1115+0129/minihalo/minihalo.pbcor.image.tt0"
+    mask_image = f"{BASE_MASTERS_DIR}/Image-Processing/RXCJ1115+0129/minihalo/significance.mask"
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 2.66e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.89x2.20 arcsec, -31.9
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.940, length=300)
+    annotate_arrow_label_pixel(ax, 1160, 1140, "S1", text_offset_pix=(0, -70))
+    annotate_arrow_label_pixel(ax, 1475, 1000, "S2", text_offset_pix=(-80, -10))
+    annotate_arrow_label_pixel(ax, 830, 955, "S3", text_offset_pix=(60, -10))
+    annotate_arrow_label_pixel(ax, 875, 1280, "S4", text_offset_pix=(60, -10))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.63e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 2.89x2.20 arcsec, -31.9
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=9, beam_detail="flat")
+    # Annotate mask
+    # export_fits(mask_image, mask_file)
+    annotate_mask_contour(ax, wcs, mask_file)
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.940, length=100)
+    annotate_cross(ax, "11h15m51.93s", "1d29m55.1s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# A1413
+def a1413():
+    print("A1413:")
+    c_name = "a1413"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/A1413/full_image/image-p4.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/A1413/minihalo/minihalo.pbcor.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 2.6e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 6.33x5.97 arcsec, -49.9
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.482, length=150)
+    annotate_arrow_label_pixel(ax, 1248, 1117, "S1", text_offset_pix=(40, -10))
+    annotate_arrow_label_pixel(ax, 1136, 1170, "S2", text_offset_pix=(0, 40))
+    annotate_arrow_label_pixel(ax, 1160, 1160, "S3", text_offset_pix=(30, 40))
+    annotate_arrow_label_pixel(ax, 1186, 1090, "S4", text_offset_pix=(30, -50))
+    annotate_arrow_label_pixel(ax, 1387, 1400, "S5", text_offset_pix=(-80, -10))
+    annotate_arrow_label_pixel(ax, 1193, 904, "S6", text_offset_pix=(40, -10))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.27e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 8.32x7.85 arcsec, -52.6
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=6, beam_detail="flat")
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.482, length=50)
+    annotate_cross(ax, "11h55m18.0s", "23d24m17.3s")
+    annotate_cross(ax, "11h55m18.6s", "23d24m22.6s")
+    annotate_cross(ax, "11h55m17.1s", "23d23m53.4s")
+    annotate_cross(ax, "11h55m15.1s", "23d24m01.9s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# ACTJ0022-0036
+def actj0022():
+    print("ACTJ0022-0036:")
+    c_name = "actj0022"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/ACTJ0022-0036/full_image/image-p4.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/ACTJ0022-0036/minihalo/minihalo.pbcor.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 2.1e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.47x2.10 arcsec, 13.2
+        fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=7.521, length=300)
+    annotate_arrow_label_pixel(ax, 1160, 1138, "S1", text_offset_pix=(20, -40))
+    annotate_arrow_label_pixel(ax, 1347, 1224, "S2", text_offset_pix=(-60, -10))
+    annotate_arrow_label_pixel(ax, 1033, 1147, "S3", text_offset_pix=(30, -30))
+    annotate_arrow_label_pixel(ax, 1170, 1338, "S4", text_offset_pix=(30, -30))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 1.94e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 2.90x2.36 arcsec, 10.7
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=9, beam_detail="flat")
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=7.521, length=200)
+    annotate_cross(ax, "0h22m13.02s", "-0d36m33.57s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+# A2204
+def rxj2129():
+    print("RXJ2129+0005:")
+    c_name = "rxj2129"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXJ2129+0005/full_image/image-p4-2.image.tt0"
+    sub_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXJ2129+0005/minihalo/minihalo.pbcor.image.tt0"
+    mask_img = f"{BASE_MASTERS_DIR}/Image-Processing/RXJ2129+0005/minihalo/significance.mask"
+
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 2.24e-06  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.53x2.23 arcsec, -15.4
+        fits_file, rms=sigma, zoom=5, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.722, length=150)
+    annotate_arrow_label_pixel(ax, 1134, 1143, "S1", text_offset_pix=(-40, -20))
+    annotate_arrow_label_pixel(ax, 1181, 1130, "S2", text_offset_pix=(20, -10))
+    annotate_arrow_label_pixel(ax, 973, 1230, "S3", text_offset_pix=(20, -10))
+    # annotate_arrow_label_pixel(ax, 455, 462, "S2", text_offset_pix=(20, 0))
+    # annotate_arrow_label_pixel(ax, 485, 489, "S3", text_offset_pix=(15, -15))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+    
+    # Make subtracted image
+    fits_file = f"FITS/{c_name}_sub.fits"
+    mask_file = f"FITS/{c_name}_mask.fits"
+    # export_fits(sub_img, fits_file)
+    sigma = 2.03e-06  # get_threshold(sub_img)
+    fig, ax, wcs = plot_fits(  # 3.67x2.79 arcsec, -32.4
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=9, beam_detail="flat")
+    # Annotate mask
+    # export_fits(mask_img, mask_file)
+    annotate_mask_contour(ax, wcs, mask_file)
+    # Annotate the scale + bcg
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.722, length=75)
+    annotate_cross(ax, "21h29m39.97s", "0d05m21.05s")
+    annotate_cross(ax, "21h29m39.97s", "0d05m21.05s")
+    plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
+
+
+# twoA0335()
+# a478()
 # rxj1720()
-a478()
+# a2204()
+# ms1455()
+# z3146()
+# rxcj1115()
+# a1413()
+# A1795
+# A2626
+# actj0022()
+# rxj2129()

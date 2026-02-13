@@ -1,0 +1,3436 @@
+High-Frequency Radio Observations of
+Galaxy Cluster Minihalos
+by
+
+Benjamin Colquhoun
+
+A thesis submitted to the Victoria University of Wellington in
+fulfillment of the requirements for the degree of Master of Science
+in Physics.
+
+Te Herenga Waka - Victoria University of Wellington
+2026
+
+Abstract
+Diffuse radio sources have been found within the cool cores of a growing number of relaxed
+galaxy clusters. These faint ‘minihalos’ are a result of synchrotron-emitting, highly relativistic
+electrons. With extents over several hundred kiloparsec, they are far beyond the expected extent
+of a single source of relativistic electrons. The processes of in-situ turbulent reacceleration
+and hadronic production have been proposed to explain this phenomenon. Spectral steepening
+is expected at high radio frequencies for the reacceleration scenario, however, the majority of
+previous studies have been performed at lower radio frequencies (144 MHz to 1.4 GHz) where
+this is difficult to detect.
+To investigate potential steepening, in this thesis I calibrate and image Very Large Array
+radio interferometer observations at 10 GHz of 12 clusters hosting minihalos. This represents
+the first steps towards a high frequency survey of minihalos. Source-subtracted measurements
+of minihalo flux are performed for 4 clusters, enabling comparison with prior observations
+at lower frequencies. Steepening was not observed for RXJ1720+2638, with a spectral index
+𝛼 = 1.07 ± 0.05, suggesting a hadronic origin for the minihalo. The remainder of the sample
+requires more extensive analysis.
+Challenges encountered during the calibration and imaging are discussed, and recommendations for future analysis of high frequency minihalo studies are presented.
+
+Acknowledgments
+People who helped me during my Thesis: Yvette, CASA people, sibling, raapoi.
+Artificial intelligence tools, ChatGPT (OpenAI, versions 4o, 5.1, and 5.2), were utilised in
+a supportive capacity over the course of this thesis. Assistance was provided in generation of
+code templates, plot styling, background research and concept clarification, and proofreading
+for understanding and flow. These tools were not used for any analysis of data, formation of
+conclusions, or writing sections of the thesis. All scientific results, conclusions, and final edits
+are the author’s own work.
+
+iii
+
+Contents
+
+Abstract
+
+ii
+
+Acknowledgements
+
+iii
+
+Contents
+
+iv
+
+1 Introduction
+
+1
+
+1.1
+
+Observations of Galaxy Clusters . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+1.1.1
+
+Optical . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+1.1.2
+
+X-ray . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+3
+
+1.1.3
+
+SZ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+
+1.1.4
+
+Radio . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+
+1.1.5
+
+Gamma . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+Diffuse Radio Emission . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+
+1.2.1
+
+Production . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+7
+
+1.2.2
+
+Minihalo detections . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+1.3 This Thesis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+1.2
+
+1.3.1
+
+Aims . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+1.3.2
+
+Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+8
+
+1.3.3
+
+Cosmology . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+1.3.4
+
+Layout . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+9
+
+2 Radio Halos
+
+11
+
+2.1
+
+Synchrotron emission . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+11
+
+2.2
+
+Lifetime of synchrotron emission . . . . . . . . . . . . . . . . . . . . . . . . .
+
+13
+
+2.3
+
+Production mechanisms . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+15
+
+2.3.1
+
+Turbulent reacceleration . . . . . . . . . . . . . . . . . . . . . . . . .
+
+15
+
+2.3.2
+
+Observables of turbulent reacceleration . . . . . . . . . . . . . . . . .
+
+17
+
+2.3.3
+
+Hadronic Production . . . . . . . . . . . . . . . . . . . . . . . . . . .
+iv
+
+19
+
+CONTENTS
+2.3.4
+
+Observables of hadronic production . . . . . . . . . . . . . . . . . . .
+
+20
+
+2.4
+
+Previous minihalo studies . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+21
+
+2.5
+
+Interferometry . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+23
+
+3 Calibration
+
+27
+
+3.1
+
+Radio Frequency Interference . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+28
+
+3.2
+
+Calibration pipeline . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+31
+
+3.2.1
+
+Initial Flagging . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+32
+
+3.2.2
+
+Primary calibrator flux scale . . . . . . . . . . . . . . . . . . . . . . .
+
+33
+
+3.2.3
+
+Prior calibrations . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+33
+
+3.2.4
+
+Calibrator flagging . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+34
+
+3.2.5
+
+Delay and Bandpass calibrations . . . . . . . . . . . . . . . . . . . . .
+
+34
+
+3.2.6
+
+Secondary calibrator flux scale . . . . . . . . . . . . . . . . . . . . . .
+
+35
+
+3.2.7
+
+Final calibration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+35
+
+3.2.8
+
+Science target processing . . . . . . . . . . . . . . . . . . . . . . . . .
+
+35
+
+3.2.9
+
+Pipeline outputs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+36
+
+3.3
+
+Calibration exceptions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+37
+
+3.4
+
+Imaging . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+37
+
+3.5
+
+Self-calibration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+39
+
+3.6
+
+Final imaging datasets . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+41
+
+4 Analysis Tools
+
+45
+
+4.1
+
+Removal of contaminating sources . . . . . . . . . . . . . . . . . . . . . . . .
+
+45
+
+4.2
+
+Minihalo spatial extent . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+47
+
+4.3 Total flux density uncertainity . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+48
+
+4.4
+
+48
+
+Sample completion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+5 Results
+
+51
+
+5.1
+
+RXJ1720+2638 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+51
+
+5.1.1
+
+10 GHz observation . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+52
+
+5.2 A478 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+53
+
+5.2.1
+5.3
+
+10 GHz observation . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+54
+
+End . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+55
+
+6 Discussion
+
+57
+
+7 Conclusion
+
+59
+
+Bibliography
+
+61
+v
+
+CONTENTS
+A Example AOFLAGGER Lua script
+
+71
+
+vi
+
+Chapter 1
+
+Introduction
+When looking up into the sky on a clear night, those without an interest in astrophysics might
+imagine many of the points in the sky as galaxies just like our own, floating alone in the deep
+void of space. Although true to an extent, it doesn’t paint an accurate picture of the cosmos. In
+reality, many of these are associated with galaxy clusters, massive structures of tens to thousands
+of individual galaxies that are gravitationally bound into a single system (somewhat analagous to
+the planets in our solar system, but on a vastly different scale).1 Galaxy clusters are the largest
+gravitationally bound structures in the universe, with total masses of order 1014 –1015 M⊙ and
+diameters larger than 1.5 million parsec.2
+One might naturally expect that the majority of the cluster mass originates from the innumerable galaxies held within, however, only a few percent of the total mass comes from this
+baryonic matter3 (such as stars, planets, etc). The remainder of the baryonic mass comes from a
+hot diffuse gas (107 –108 K) spread throughout the cluster called the intracluster medium (ICM).
+This dilute gas (∼ 103 particles m−3 ) is held together by the gravitational pull of the cluster, with
+the highest density in the core and mose sparse at the edges (Meekins et al., 1971; Serlemitsos
+et al., 1977). Even then, this amount of visible baryonic matter only comprises 15% of the
+gravitational mass calculated from the dynamics of the cluster, a huge discrepancy that became a
+key piece of evidence for the existence of dark matter. Indeed, the rough consensus from decades
+of study on galaxy clusters has ∼ 3% of the mass budget taken by galaxies, ∼ 12% from the ICM,
+and a staggering ∼ 85% from unobservable dark matter (Blumenthal et al., 1984; Vikhlinin et al.,
+2006; Pratt et al., 2019).
+Between these clusters, long filaments of galaxies span across space, with their own warmhot intergalactic medium (WHIM) mimicking the role of the ICM. The WHIM is cooler and
+1 Smaller clusters with only tens of galaxies are often known as groups.
+30
+⊙ is the solar mass and defined as 1 M ⊙ ≈ 10 kg. A parsec
+16
+is defined as 1 pc ≈ 3 × 10 m. These unusual units are far more suitable at the scale of the universe.
+2 For those unaccustomed to astrophysical units, M
+
+3Astronomers use the term ‘baryonic’ to broadly refer to all matter that is not ‘dark’ matter, rather than the
+
+proper particle physics definition.
+
+1
+
+CHAPTER 1. INTRODUCTION
+more diffuse than the ICM, with densities ≤ 102 particles m−3 and temperatures 105 –107 K.
+These filaments are far larger than clusters, though not gravitationally bound, stretching up to
+hundreds of Mpc to create a cosmic web throughout the universe with galaxy clusters located at
+intersections between filaments (Böhringer et al., 2025). This cosmic web is the largest structure
+in the universe, with observable galaxies and clusters tracing a vast network of dark matter (Bond
+et al., 1996; Pimbblet, 2005). Detecting and understanding these filaments observationally is
+the subject of ongoing work (Tudorache et al., 2025). Clusters are known to form in part due
+to accretion of the WHIM at intersections of the cosmic web, as well as by mergers between
+smaller clusters (Press and Schechter, 1974; Voit, 2005; Kravtsov and Borgani, 2012).
+An important distinction should be made when analysing clusters, between ‘disturbed’
+clusters undergoing merger events or still in a turbulent state from a recent merger, and ‘relaxed’
+clusters which have settled into an equilibrium state. Relaxed clusters favour theoretical studies
+due to their greater spherical symmetries, fewer substructures and, therefore, simpler modelling
+(Mantz et al., 2016). Many of these relaxed clusters also feature a ‘cool core’, where the dense
+central region of the cluster exhibits a lower temperature than the outer regions. The high density
+of the ICM in the core causes a large outflux of X-ray emission. The resulting cooling time
+may then be lower than the expansion rate of the universe (known as Hubble time), causing the
+core temperature to drop and an inwards flow of gas to develop (Peterson and Fabian, 2006;
+Hudson et al., 2010). Although cool cores are observed, there is little evidence for the predicted
+inward cooling flow, suggesting the existence of a counteracting heating mechanism. The most
+widely supported theory involves active galactic nuclei (AGN), supermassive black holes at
+the centre of some galaxies. AGN consume massive amounts of matter and produce radio
+synchrotron emission that forms jets and lobes, which have been observed interacting with the
+ICM to distribute energy in ‘radio-mode’ feedback (Fabian, 2012). The exact method of this
+heating is still disputed and undergoing research.
+Within the high mass subset of relaxed cool core clusters (𝑀500 > 6 × 1014 M⊙ )4 recent works
+have shown that 80% contain radio minihalos (Giacintucci et al., 2017). Less common in lower
+mass clusters, and unobserved within non-cool core clusters, minihalos are diffuse radio sources
+with currently unknown origins. This radio emission is localised within the cool core, with radii
+from 50 kpc to 0.2𝑅500 .5 This emission cannot be directly formed by radio sources such as AGN,
+as the spatial extent of these halos is well beyond the expected extent for particles sourced from
+an AGN (e.g. Bagchi et al., 2002; Giacintucci et al., 2014b). Understanding the origins and
+physics behind minihalos is an ongoing process, with viable production methods proposed, but a
+lack of conclusive observational evidence to differentiate between them. This thesis will provide
+4The value 𝑀
+500 refers to the total mass within a radius of 𝑅500 , defined by the distance at which the clusters
+
+average enclosed density is 500 times the critical density of the universe at the cluster redshift. The critical density
+is a cosmological quantity that has varied over the lifetime of the universe.
+5The radius 0.2𝑅
+500 is a standard metric to separate the core and the outer ICM. Within this radius, the cooling,
+AGN feedback, and similar processes become significant to the behaviour of the ICM.
+
+2
+
+1.1. OBSERVATIONS OF GALAXY CLUSTERS
+new observational data and a generalised process to provide further evidence to differentiate
+between the proposed processes.
+
+1.1
+
+Observations of Galaxy Clusters
+
+Different processes within the cluster, and more specifically ICM, provide information about
+the physical environment. This radiation is emitted across the electromagnetic spectrum and we
+design telescopes to capture and relay different bands in order to identify different components
+of what we observe. The question then becomes, how do observations at different frequency
+bands inform us to the structure and processes occuring within a cluster?
+
+1.1.1
+
+Optical
+
+The vast majority of optical light from clusters comes from stars within the component galaxies.
+While incredibly informing about the stars and galaxies themselves, in the context of minihalos,
+optical light has limited use. Optical observations are useful in determining the component
+galaxies of a cluster, alongside investigating the radial velocities of galaxies. Since the radial
+velocity is dependent on the gravitational potential of the cluster, the distribution allows us to
+estimate the clusters mass (Voit, 2005). This analysis is difficult for more distant clusters and
+disturbed clusters, as the dynamical state will affect the radial velocities and skew the resulting
+mass.
+
+1.1.2
+
+X-ray
+
+The hot gas of the intracluster medium forms an optically thin plasma, which has a degree of
+ionisation that depends on the temperature and density. We observe an X-ray spectrum from this
+gas with both continuum and line characteristics, and photon energies between 0.1 keV and 100
+keV.6 The energy of the photons is dependent on the temperature of the ICM, resulting in most
+emissions being in the narrower range of 1 to 10 keV (Schneider, 2014).
+Line emission occurs due to electron transitions between orbitals within an atom. The
+temperature and density of the ICM changes the measured rate of this line emission, however,
+this becomes limited at higher temperatures as the ionisation fraction increases. The distribution
+of line emissions can also be an indicator of abundance of elements such as C, N, Ne, Mg, Si,
+S, Ar, Ca, and Fe. This is particularly evident at lower temperatures (≲ 2 keV) where the total
+emissions can be dominated by line emission (Voit, 2005; Schneider, 2014).
+Continuum radiation is due to brehmsstrahlung, or free-free radiation, which is where
+electrons are deflected via Coulomb interaction with nearby nuclei. This deflection is an
+6X-ray emission is historically measured in kilo-electron volts (energy) rather than frequency or wavelength.
+
+3
+
+CHAPTER 1. INTRODUCTION
+acceleration which induces a change in kinetic energy that is emitted as a photon. The spectral
+energy distribution of these emissions is related to the kinetic energy of the particles and,
+therefore, the temperature 𝑇 of the ICM. The scale of emissions is similarly impacted by the
+electron number density 𝑛𝑒 , which traces the gas density of the ICM. This gives rise to the
+following relationship to total continuum emissivity 𝜖 𝑐 (Schneider, 2014).
+1
+
+𝜖 𝑐 ∝ 𝑇 2 𝑛2𝑒
+
+(1.1)
+
+X-ray spectroscopy is a powerful tool to measure the temperature and density of the ICM and,
+therefore, a clusters dynamical state.
+In general, telescopes trade off between high spatial or spectral resolutions, for example,
+between detecting exactly where a photon originated from or an accurate measurement of
+the photon energy. This becomes somewhat of a constraint when observing galaxy clusters
+reasonable spatial and spectral resolutions for these large objects are required. One common
+Cite/footnote instrument is the space telescope Chandra X-ray Observatory launched in 1999 . Many studies
+telescopes
+
+of minihalos use Chandra observations to map the structure of the cool core and investigate
+potential relationships to the radio emission (e.g. Giacintucci et al., 2024). However, due to
+the aging detectors and contaminant build up on Chandra, the sensitivity of the telescope is
+decreasing. This is particularly bad at low energies (< 2 keV), where sensitivity is below 10% of
+where it was two decades ago (Grant et al., 2024). A new telescope XRISM was launched in late
+2023 and was designed as a successor to Chandra. Over the last year researchers have begun to
+utilise the greater resolution to more deeply probe the dynamics of the ICM in some clusters
+(Sarkar et al., 2025; XRISM Collaboration et al., 2025). Although not the focus of this thesis,
+X-ray observations provide key ancillary data in investigating the processes involved.
+
+1.1.3
+Actually 1.1.4
+
+SZ
+Radio
+
+write this you
+idiot Radio observations cover several orders of magnitude in wavelength, with frequencies from 10
+
+MHz to over 100 GHz. This massive range comes with several difficulties for astronomers, with
+the primary one being the angular resolution of the telescope. Angular resolution 𝜃 defines the
+smallest area that can be resolved given an aperture and the observing wavelength.7 Equation
+1
+1.2 gives the formula for angular resolution in arcseconds, or 3600
+th of a degree, for an aperture
+
+of diameter 𝐷 and observing wavelength 𝜆.8
+𝜃 = 2.5 × 105
+
+𝜆
+𝐷
+
+(1.2)
+
+7The angular resolution of a human eye (with 20/20 vision) is 1 arcminute. See note 7
+8Arcseconds (”), arcminutes (1′ = 60”), and degrees are common units in astrophysics as most angles are
+
+measured with this unit.
+
+4
+
+1.1. OBSERVATIONS OF GALAXY CLUSTERS
+Radio waves range from 3 cm to 3 km, orders of magnitude larger than optical (∼ 1𝜇m) and
+X-ray (0.01–10 nm). It is then clear that to resolve the same object at radio frequencies as X-ray
+or optical, vastly larger telescopes would be necessary. In order to observe over this range several
+types of telescopes have been developed, including single dish telescopes, interferometer arrays,
+and very long baseline interferometer arrays (VLBI).
+
+The size of a single dish antenna is limited by both practical construction and from scientific
+usability. The largest dish is the Five-hundred-meter Aperture Spherical Telescope (FAST)
+located in Guizhou China, though of the 500 metre diameter only a 300 metre area is usable at a
+time. Furthermore, as an immovable dish, it is limited in its view of the sky, with a maximum
+angle of 40 degrees from zenith. Several smaller 100 metre diameter dishes exist such as
+the Green Bank Telescope in West Virginia United States, and the Effelsburg Telescope near
+Bonn, Germany. These dishes also have a limited view of the sky and variable amounts of Cite/footnote
+steerability due to their size, alongside worsening resolution at increasing frequencies. These telescopes
+restrictions developed into interferometry, which uses an array of single dish telescopes in
+tandem to simulate a larger dish. The Karl G. Jansky Very Large Array (VLA) in New Mexico
+United States, is comprised of 28 fully steerable 25-metre radio telescopes mounted on railway
+tracks in a Y-shaped array, observing between 73 MHz and 50 GHz. The MeerKAT telescope in
+the Meerkat National Park of South Australia contains 64 13.5-metre telescopes and operates
+between 1000 MHz and 10 GHz. These arrays can simulate observations by dishes several
+kilometres in diameter, while simultaneously able to track objects across the entire observable
+sky. VLBI takes this concept even further by using radio telescopes across different continents,
+synchronised by atomic clocks, to simulate dishes comparable to the size of the Earth. This
+thesis uses observations taken by the VLA, and the underlying physics of these telescopes is
+discussed in more detail in Chapter 2.
+
+Radio emission detected by these telescopes from clusters falls into the category of ‘synchrotron’ emission. This synchrotron emission is produced by particles travelling at relativistic
+velocities through a magnetic field, emitting photons at radio energies characterised by their
+velocity and the magnetic field strength (Feretti et al., 2012; Schneider, 2014). This is due to the
+𝐹 = 𝑣 × 𝐵 ) perpendicular to their direction of motion, which induces a helical path
+Lorentz force (𝐹
+through the field and, therefore, constant acceleration. This is analagous to brehmsstrahlung radiation, but occurs due to a magnetic interaction instead of electric, which is why it is uncommonly
+called ‘magnetobrehmsstralung’. A more detailed discussion of the types of radio emission is
+given in Section 1.2. A review of the physical processes that give rise to this emission, and the
+processes spectral and spatial markers is given in Chapter 2.
+5
+
+CHAPTER 1. INTRODUCTION
+
+1.1.5
+
+Gamma
+
+The last region of interest for minihalo research is in detecting gamma radiation, or gamma-rays.
+This is the high energy limit for astronomy, where telescopes are designed to detect photons with
+energies in the MeV and GeV range.9 These prove difficult to not only detect, due to the majority
+of rays being absorbed in the atmosphere, but also to accurately describe their origin (Schneider,
+2014). The Fermi Gamma-ray Space Telescope was built specifically for this research and was
+launched in 2008 carrying the Large Area Telescope (LAT), with an energy range between 30
+MeV and 300 GeV.
+There are various sources for gamma-rays, such as Gamma Ray Bursts (GRB), which are
+extremely short and intense flashes. Many of these have been spatially located to coincide with
+bright AGNS called blazars, and rapidly spinning magnetised neutron stars called pulsars. Another source is from gamma-ray background radiation, which is expected via neutral pion decays
+resulting from proton-proton collisions. Attempts to detect gamma-ray emissions connected to
+a clusters ICM have been ongoing as they allow us to put limits on effectiveness of proposed
+mechanisms to create radio halos (e.g. Reimer et al., 2003; Ackermann et al., 2010; Zandanel and
+Ando, 2014). Though progress has been made for giant radio halos, in particular firm constraints
+for the Coma cluster (Brunetti et al., 2012), minihalos have a smaller spatial extent and are much
+fainter, with no conclusive studies. The role of gamma rays in determining the processes creating
+minihalos is detailed in Chapter 2.
+
+1.2
+
+Diffuse Radio Emission
+
+It has long been known that some clusters exhibit diffuse radio synchrotron emission that cannot
+be directly associated with radio galaxies within the cluster. This synchrotron emission can
+take many spatial arrangements, with the primary categories being radio halos, radio relics, and
+revived AGN sources. Radio halos are extended sources that trace the ICM distribution and
+operate at the scales of giant radio halos, matching the full ICM extent, and minihalos that are
+contained within a clusters cool core. Relics instead reflect particles that have been reaccelerated
+to relativistic energies by shock waves travelling through the ICM, such as the violent energies
+released during merger events. Relics tend to be elongated and irregularly shaped, located at the
+clusters periphery instead of the centre. Revived AGN sources are radio plasma that has been
+emitted from an AGN and re-energised similarly to the radio relics. From this point, this thesis
+will focus on radio emission in the context of halos and, in particular, minihalos. Several types
+of diffuse radio emission are shown in Figure 1.1.
+9 Like X-ray, gamma-rays are measured by their energy rather than frequency.
+
+6
+
+1.2. DIFFUSE RADIO EMISSION
+
+Figure 1.1: Left panel: Merging galaxy cluster A2744, VLA 1-4 GHz image (red) and Chandra
+X-ray contours (white) overlaid on Subaru BRz optical image. X-ray surface brightness contour
+are drawn proportional to [1, 4, 16, 64, ...]. The luminous giant radio halo and a cluster radio
+shock (relic) are labelled. Right panel: Relaxed cool core Perseus cluster, VLA 230-470 MHz
+image (red) and XMM-Newton X-ray contours (white) in the 0.4-1.3 keV band are overlaid on
+an optical image. X-ray contours have same spacing as the left image. The Perseus cluster hosts
+a radio mini-halo as well as two head-tail radio galaxies. (Figure 3 of (van Weeren et al., 2019))
+
+1.2.1
+
+Production
+
+A key question in relation to the radio halos is how they are produced. The relativistic particles
+producing this emission have a characteristic lifetime due to the energy losses as they travel
+through space and, therefore, a limited diffusion length-scale in which we should be able to
+observe them. Within a weak magnetic field (∼ 10−7 G) these distances are about 10 pc, which
+even accounting for bulk motion of the ICM and more favourable diffusion environments are
+well below the Mpc scales observed in many clusters (Bagchi et al., 2002). Two primary theories
+have been brought forward to explain this phenomenon, one being turbulence in the ICM causing
+‘reacceleration’ of once relativistic particles (e.g. Brunetti et al., 2001; Gitti et al., 2002; ZuHone
+et al., 2013; Zandanel et al., 2014). The other is inelastic collisions between relativistic cosmic
+ray protons and thermal protons, termed ‘hadronic’ or secondary production (e.g. Dennison,
+1980; Dolag and Enßlin, 2000; Keshet and Loeb, 2010; ZuHone et al., 2015; Ignesti et al., 2020).
+Both of these mechanisms produce similar observable features, which makes disentangling
+the true source much more challenging. Investigation into spatial extents and spectral features of
+giant radio halos has given the reacceleration theory more credence than hadronic production
+(Brunetti et al., 2012), however, the debate is still ongoing for minihalos. A detailed explanation of these processes is provided in Section 2.3. Due to their faint nature and smaller size,
+observations require high sensitivity and resolution in order to accurately capture an image.
+7
+
+CHAPTER 1. INTRODUCTION
+
+1.2.2
+
+Minihalo detections
+
+Much effort has been devoted towards detection and validation of minihalos in order to build
+a comprehensive sample. Over the last two decades the number of detected minihalos has
+increased substantially, from 10 minihalos and minihalo candidates in 2011 (Feretti et al., 2012),
+to 22 in 2017 (Giacintucci et al., 2014b), and 40 in 2024 (Giacintucci et al., 2024).
+One of the major issues with detection is in separating the minihalo emission from the much
+brighter sources embedded within and nearby it. Alongside the minihalo in the core is the
+brightest cluster galaxy (BCG), generally the most radio-loud AGN within the cluster. Minihalos
+typically have a surface brightness of 1 ∼ 5 𝜇Jy arcsec−2 , while the BCG can have a flux 1000
+times higher.10 The BCG must then be masked or subtracted away from an observation to reveal
+the minihalo, but this requires the observation to have good resolution of point sources as well as
+the larger spatial minihalos. This requirement makes current general sky surveys insufficient for
+detecting minihalos, with some studies suggesting that next generation radio telescopes could
+reveal thousands more minihalos due to improved capabilities (Gitti et al., 2018).
+
+1.3
+
+This Thesis
+
+1.3.1
+
+Aims
+
+The primary goal of this thesis is to calibrate, image, and analyse new radio observations of 12
+minihalos at 10 GHz. These observations were performed by the VLA in C and D configuration
+over two periods in early 2024 and early 2025. This data constitutes the first broad survey of
+minihalos at high radio frequencies.
+This data will complement previous surveys at lower frequencies taken by the Low-Frequency
+Array (LOFAR) at 140 MHz and MeerKAT at 1.3 GHz (Riseley et al., 2022). Processing this
+data will allow measurements of the minihalo flux to investigate if steepening of the spectrum
+occurs at higher frequency, which will assist in differentiating between the reacceleration and
+hadronic scenarios.
+
+1.3.2
+
+Work
+
+In pursuing these aims, I downloaded the raw interferometric data from the National Radio
+Astronomy Observatory (NRAO) Archive11 and documented the calibration and imaging process.
+I then performed various analyses on the final images for each minihalo to evaluate the limits and
+usefulness of 10 GHz observations for characterising the production mechanisms of minihalos.
+10The Jansky (Jy) is a unit measurement of spectral flux density common in radio astronomy. It measures the
+
+rate of energy received per square meter per hertz, or 10−26 W m−2 Hz−1 in SI units.
+11 https://data.nrao.edu/portal/
+
+8
+
+1.3. THIS THESIS
+This work was done in a source controlled repository12 so that the results are reproducible
+and documented. Due to the size of the datasets, (uncalibrated ∼ 1.4 TB compressed, calibrated
+∼ 2.5 TB, imaging ∼? TB), this is stored on the Storage fOr Learning And Research (SOLAR) Add final size
+large scale storage provided by Te Herenga Waka—Victoria University of Wellington.
+The repository is split into two primary sections, Data Processing and Image Processing.
+The first section follows the calibration of the raw data and separation from observation runs into
+cluster specific datasets, split by observation ID. The following image processing includes the
+cleaning and creation of the images from the trimmed datasets and the associated analysis and is
+split by cluster.
+
+1.3.3
+
+Cosmology
+
+Several physical values depend on the constants chosen for the cosmological model of the
+universe. This work assumes a flat ΛCDM model with Hubble’s constant 𝐻0 = 70 km s−1 Mpc−1 ,
+fractional density of dark energy ΩΛ = 0.7, and fractional density of matter Ω𝑚 = 0.3.
+
+1.3.4
+
+Layout
+
+The introduction has given a brief overview on several concepts necessary for understanding
+what minihalos are. The remainder of the thesis is organised as follows.
+Chapter 2 provides deeper explanation of synchrotron radiation, the hadronic and turbulent
+reacceleration processes, and a summary of previous research into minihalos.
+Chapter 3 introduces the collected data and explains the calibration and imaging process
+used.
+Chapter 4 explains the tools and techniques used in the analysis of the final images.
+Chapter 5 details the results found for each cluster, with the context of previous studies.
+Chapter 6
+Chapter 7
+
+12 https://github.com/MoonlitMoo/Masters-2025
+
+9
+
+Chapter 2
+
+Radio Halos
+2.1
+
+Synchrotron emission
+
+Since the first discoveries of diffuse radio emission, much research has been devoted towards
+understanding the mechanisms behind the production of synchrotron-emitting electrons. These
+electrons are also known as ‘cosmic ray’ electrons (CRe) or non-thermal electrons to differentiate
+them from the thermal electrons of the ICM. The CRe have an individual energy 𝐸 = 𝛾𝑚 𝑒 𝑐2
+dependent on their Lorentz factor 𝛾.
+𝑣2
+𝛾 = 1− 2
+𝑐
+
+
+ − 12
+(2.1)
+
+In the case of radio halos we can expect 𝛾 ≳ 104 which corresponds to velocities within 99.9999%
+the speed of light. Throughout their radiative lifetime CRe produce radio synchrotron emission
+with power dependent on the magnetic field 𝐵 and their energy 𝐸. This is broadly a continuum
+radiation with the synchrotron power loss described by the following equation, where 𝜎𝑇 is the
+Tompson cross-section, and 𝑈𝐵 = 𝐵2 /(8𝜋) is the energy density of the magnetic (Sarazin, 1999).
+
+
+𝑑𝐸
+4 𝜎𝑇 2
+−
+=
+𝛾 𝑈𝐵
+(2.2)
+𝑑𝑡 𝑠𝑦𝑛 3 𝑚 𝑒 𝑐
+They also interact with thermal protons in the ICM via inverse Compton (IC) scattering,1 of
+which the dominant proton population originates from the Cosmic Microwave Background
+(CMB). The scattered photon has a boosted energy that is proportional to its original energy. In
+units of frequency this relation is:
+
+3
+𝜈 𝑝 = 𝛾 2 𝜈 𝑝,0
+(2.3)
+4
+For the CRe under consideration this results in a boosting factor ∼ 106 . For thermal photons
+sourced from the CMB, they move through the cluster with a temperature of T = 2.73 K, to
+1 Standard Compton scattering has ultrarelativistic photons interacting with thermal electrons, the opposite to
+
+what we are considering.
+
+11
+
+CHAPTER 2. RADIO HALOS
+which the Planck function peaks at 𝜈 ≈ 1.6 × 1011 Hz. This interaction causes emission at
+𝜈 ≈ 1017 Hz or 𝜆 ≈ 1 nm, corresponding to high energy X-rays (Sarazin, 1999; Govoni and
+Feretti, 2004). The energy losses due to IC scattering with CMB photons can be expressed
+as the CMB energy density 𝑈𝐶 𝑀 𝐵 = 𝐵𝐶2 𝑀 𝐵 /(8𝜋), and an equivalent magnetic field strength
+𝐵𝐶 𝑀 𝐵 = 3.25(1 + 𝑧) 2 [𝜇G]. This magnetic field isn’t real, but results in equivalent energy losses
+as if electrons were interacting with a real magnetic field within the cluster.
+
+
+𝑑𝐸
+4 𝜎𝑇 2
+−
+=
+𝛾 𝑈𝐶 𝑀 𝐵
+𝑑𝑡 𝐼𝐶 3 𝑚 𝑒 𝑐
+
+(2.4)
+
+These mechanisms are then highly dominated by the synchrotron and IC losses, which scale
+∝ 𝛾 2 , at high Lorentz factors and so can be neglected. The combined synchrotron and IC losses
+can then be written as a single loss equation where the magnetic fields are measured in 𝜇G.
+Further losses due to Coulomb and brehmsstrahlung interactions are possible, but scale with 𝛾 as
+follows (Sarazin, 1999).
+
+
+
+𝑑𝐸
+∝ ln 𝛾,
+−
+𝑑𝑡 𝐶𝑜𝑢𝑙
+
+
+
+
+𝑑𝐸
+−
+∝ 𝛾 ln(𝛾)
+𝑑𝑡 𝑏𝑟𝑒ℎ𝑚
+
+These mechanisms are naturally highly dominated by the synchrotron and IC losses, which scale
+∝ 𝛾 2 , at high Lorentz factors and so can be neglected. The combined synchrotron and IC losses
+can then be written as a single loss equation where the magnetic fields are measured in 𝜇G.
+−
+
+
+𝑑𝐸
+1 𝜎𝑇 2  2
+=
+𝛾 𝐵 + 𝐵𝐶2 𝑀 𝐵
+𝑑𝑡 6𝜋 𝑚 𝑒 𝑐
+
+(2.5)
+
+The standard assumptions regarding the population of CRe within the ICM are that it is
+homogeneous, isotropic, and follows a power-law energy distribution 𝑛(𝐸) = 𝑛0 𝐸 −𝛿 . The total
+synchrotron emissivity 𝜖 𝑠 at a given frequency 𝜈 is dependent on the CRe number density, the
+strength of the ICM magnetic field, and the spectral index of the CRe distribution.
+𝜖 𝑠 (𝜈) ∝ 𝑛0 𝐵 (𝛿+1)/2 𝜈 −(𝛿−1)/2
+
+(2.6)
+
+This can be rewritten in terms of 𝛼 = (𝛿 − 1)/2, the spectral index of the synchrotron emission.
+𝜖 𝑠 (𝜈) ∝ 𝑛0 𝐵𝛼+1 𝜈 −𝛼
+
+(2.7)
+
+This relation shows a degeneracy between the magnetic field strength and the CRe number
+density, hence, the synchrotron radiation alone is insufficient to directly measure the magnetic
+field. Estimates of the magnetic field are generally found by minimising the total energy
+contributed by the relativistic electrons (1 + 𝑘)𝑈𝑒 , where 𝑘 is the ratio of energy of relativistic
+protons to the electrons, and the magnetic field 𝑈𝐵 .
+𝑈𝑡𝑜𝑡 = (1 + 𝑘)𝑈𝑒 + 𝑈𝐵
+12
+
+(2.8)
+
+2.2. LIFETIME OF SYNCHROTRON EMISSION
+This occurs when the total energy of the relativistic particles is close to equilibrium with the total
+magnetic field energy 𝑈𝐵 = 43 (1 + 𝑘)𝑈𝑒 and, therefore 𝑈𝑚𝑖𝑛 = 37 𝑈𝐵 , and is often referred to as
+the equipartition value (Govoni and Feretti, 2004). This allows the calculation of the minimum
+energy density 𝑢 𝑚𝑖𝑛 which can be used to derive the associated equipartition field 𝐵𝑒𝑞 .
+ 12
+24𝜋
+𝐵𝑒𝑞 =
+𝑢 𝑚𝑖𝑛
+7
+
+
+(2.9)
+
+However, the IC emission is independent of the magnetic field, meaning that comparisons
+between these fluxes would allow direct measurement of the magnetic field strength (Govoni and
+Feretti, 2004; Wik et al., 2014). Unfortunately, detection of the X-ray IC component is difficult
+as low X-ray energies are dominanted by the thermal ICM emission, while upper energies lack
+spatial resolution in current telescope instruments. An interesting topic in its own right, IC
+emission and numeric estimations of cluster magnetic fields are outside the scope of this thesis.
+
+2.2
+
+Lifetime of synchrotron emission
+
+The energy losses of the CRe as they interact with the electromagnetic fields and particles in the
+ICM eventually result in them no longer being energetic enough to produce observable radio
+emission. Considering losses due to synchrotron and IC processes, the lifetime of a CRe 𝜏 can
+be given as the following function of the magnetic field in the ICM 𝐵, the equivalent magnetic
+field of the CMB 𝐵𝐶 𝑀 𝐵 (both fields are measured in 𝜇G), the cluster redshift 𝑧, and the observed
+frequency of the particle 𝜈 (van Weeren et al., 2019).
+1
+1
+𝐵2
+[(1 + 𝑧)𝜈] − 2
+𝜏 = 32 2
+2
+𝐵 + 𝐵𝐶 𝑀 𝐵
+
+[Gyr]
+
+(2.10)
+
+As the majority of observed minihalos have redshifts in the range [0.1, 0.3] 2 and magnetic
+fields within the ICM are estimated at ≲ 𝜇G, the maximum expected lifetime of a CRe is about
+108 years (Sarazin, 1999; Feretti et al., 2012; Gitti et al., 2018).
+A basic check for the spatial extent for these particles, in absentia of external forces 𝑑 ≈ 𝑐𝜏,
+finds a distance of ∼ 1016 m or 1 pc from the source. This is orders of magnitude below the
+extents of observed diffuse radio emission, so we then consider the effect of the bulk motion and
+magnetic fields of the ICM on the CRe. By assuming that there is a strong enough turbulence
+𝐵𝑇
+to promote diffusion of CRe, we can use the Bohm approximation 𝐷 = 𝑘𝑒𝐵
+, which models
+
+the diffusion of plasma across a magnetic field. Bagchi et al. (2002) finds that the expected
+length-scale of this diffusion (at 𝑧 = 0.3) is that of a random walk across its lifetime with a
+2A handful minihalos are notably outside this range, with the Phoenix cluster at 𝑧 = 0.596 (van Weeren et al.,
+
+2014), ACTJ0022-0036 at 𝑧 = 0.8 (Knowles et al., 2019), and a recent candidate SpARCS1049+56 at 𝑧 = 1.709
+(HLavacek-Larrondo et al., 2025)
+
+13
+
+CHAPTER 2. RADIO HALOS
+diffusion coefficient 𝜅 and length-scale 𝐿 𝑑𝑖 𝑓 𝑓 ,3
+
+
+
+𝐸
+𝐵
+21
+𝜅 = 3.31 × 10
+m s−1
+GeV 10−1 𝜇G
+√
+
+
+
+𝐿 𝑑𝑖 𝑓 𝑓 = 𝜅𝜏 = 6.7
+
+𝐵
+
+(2.11)
+
+ − 12
+
+pc
+(2.12)
+10−1 𝜇G
+Once again, we find that the expected diffusion and halo produced by a point source is
+measured in the 10s of parsecs, far below the kiloparsec and megaparsec halos observed. It then
+seems a reasonable conclusion that these particles are instead reaccelerated or produced in-situ
+
+Flux density [arbitrary units]
+
+by a process that is extended over the kiloparsec scale and long-lived across the particle lifetime.
+
+Injection
+JP
+KP
+CI-on
+
+10 5
+10 6
+10 7
+10 8
+108
+
+109
+
+Frequency [arbitrary units]
+
+1010
+
+Figure 2.1: A representation of radio spectral shapes with 𝛼𝑖𝑛 𝑗 = −0.6. The injection spectrum
+depicts the shape prior to energy losses. The curves have been normalised to the injection
+spectrum at low wavelengths for better comparison.
+The spectral shape of synchrotron emission is also affected by the lifetime of the particles,
+1
+
+as higher energy particles have a shorter lifetime (𝜏 ∝ 𝜈 − 2 ), causing the population of CRe
+change over time from the initial power-law. Several models have been developed to describe
+the resulting spectra, depending on the initial injection spectrum 𝛼𝑖𝑛 𝑗 , break frequency, and
+any continuous injection after the initial state. The Jaffe-Perola (JP; Jaffe and Perola 1973)
+model assumes all CRe are created in a single burst, before aging with continuous scattering of
+electron pitch angles. This predicts that the pitch angle (between the electron velocity vector and
+local magnetic field vector) will be isotropic due to scattering. The Kardashev-Pacholczyk (KP;
+Kardashev 1962, Pacholczyk 1970) model is similar to the JP model as it uses the same initial
+3The length-scale diffusion is calculated as a random walk, scaling with the square root of time, rather than
+
+linearly.
+
+14
+
+2.3. PRODUCTION MECHANISMS
+conditions, but evolves without pitch angle scattering. Continuous injection (CI) models describe
+sources that exist for longer than a single burst of acceleration, such as until current time (CI-on;
+Kardashev 1962), or for a fixed amount of time 𝜏𝑜𝑛 (CI-off; Komissarov and Gubanov 1994). An
+example of how these models differ in their shape is provided in Figure 2.1. The initial burst
+models show extreme steepening towards high frequency. In contrast, the CI model offsets the
+losses at high energy due to newly injected particles, but still has a lower level of steepening due
+to the presence of aged particles alongside newer ones.
+The basic observables of synchrotron radiation can then be summarised in the following
+points:
+• The synchrotron emissivity is dependent on the number density of the CR electrons and the
+strength of the magnetic field (Equation 2.7). Assuming a constant magnetic field strength,
+the emissivity follows a power-law 𝜖 𝑠 (𝜈) ∝ 𝜈 −𝛼 which is related to the CRe energy spectral
+index 𝛿 by 𝛼 = (𝛿 − 1)/2. Typical minihalo spectral indices are steep with 𝛼 > 0.7.4
+• As the emitting particles lose energy the particle energy distribution changes and, therefore,
+the emitted radio spectrum changes. This appears as a steepening or curved spectrum at
+high frequencies, rather than a single power-law. The break frequency at which this occurs
+is related to the time since acceleration. This means that radio events that have stopped
+will show an aged spectrum with a characteristic break, i.e. radio relics. Ongoing events
+that are continually injecting new particles will not feature the same level of steepening.
+
+2.3
+
+Production mechanisms
+
+With this understanding of the spectrum of CRe, we now consider the methods that can produce
+them. This can be broken down into primary models involving first and second order Fermi
+acceleration, and secondary models where the electrons are a byproduct or resulting from decay.
+
+2.3.1
+
+Turbulent reacceleration
+
+This process takes a pre-existing lower energy CRe population of 𝛾 ∼ 100 and boosts it to the
+factors observed 𝛾 ≳ 1000. This occurs via interactions with plasma waves and shocks within
+the ICM which can be caused by several factors, such as violent cluster mergers and gas sloshing
+within the core (Brunetti et al., 2001; Fujita et al., 2004; Mazzotta and Giacintucci, 2008).
+Shocks within the ICM can cause first order Fermi acceleration (Fermi-I), also known as
+diffuse shock acceleration (DSA). As particles cross back and forward over the shock front,
+they can be reflected by magnetic instabilities upstream and downstream from the shock. Each
+crossing of the front increases the particle energy, raising trapped particles to relativistic levels
+4A typical radio galaxy emits synchrotron radiation with a spectral index ∼ 0.7.
+
+15
+
+CHAPTER 2. RADIO HALOS
+before they escape. The energy gained via Fermi-I acceleration from a shock with velocity 𝑣 𝑤𝑎𝑣𝑒
+scales, compared to the speed of light 𝑐 is given as,
+Δ𝐸 ∝
+
+𝑣 𝑤𝑎𝑣𝑒
+𝐸
+𝑐
+
+(2.13)
+
+Shocks are generally created due to merger activity in disturbed clusters, not relaxed clusters
+where minihalos are found. As such, it is not considered a major mechanism at play in the
+context of minihalos.
+Gas sloshing within the cool core of relaxed clusters has been shown as a natural consequence
+of the larger motions of the ICM (Fujita et al., 2004). This turbulent environment naturally
+allows for low relativistic ‘seed’ electrons to undergo second order Fermi (Fermi-II) acceleration.
+This type of acceleration is stochastic as particles are scattered by the magnetic instabilities from
+the randomly moving plasma waves. Particles meeting these waves head-on are reflected with an
+increased energy, while particles in a head-tail collision are reflected with a lower energy. The
+chance for a head-on collision is higher than that of a head-tail collision allowing for a net gain.
+The mean energy gained is dependent on the speed of the waves and energy of the seed particle,
+Δ𝐸 ∝
+
+𝑣
+
+
+𝑤𝑎𝑣𝑒 2
+
+𝐸
+(2.14)
+𝑐
+The random nature of Fermi-II acceleration makes for an inefficient process compared to the
+aligned shock fronts of Fermi-I. Since 𝑣 𝑤𝑎𝑣𝑒 ≪ 𝑐, Fermi-II scales far more slowly than Fermi-I
+(𝑣 𝑤𝑎𝑣𝑒 /𝑐) 2 ≪ 𝑣 𝑤𝑎𝑣𝑒 /𝑐.
+Brunetti and Lazarian (2007) show that reacceleration of relativistic particles moving through
+magnetohydrodynamic (MHD) turbulence are primarily accelerated by two Fermi-II type mechanisms.
+The first mechanism is the damping of fast magnetosonic waves due to resonant transit
+time damping (TTD). The compressible and low-frequency plasma waves can resonate with the
+naturally gyrating particles at the zeroth order, 𝜔 = 𝑣 ∥ 𝑘 ∥ , where 𝜔 is the frequency of the wave,
+𝑘 ∥ is the wavenumber, and 𝑣 ∥ is the speed of the particle along the axis of the magnetic field.
+The random accelerations can then be captured as a random walk in momentum space, giving
+rise to a momentum-diffusion coefficient 𝐷 𝑝 𝑝,𝑇𝑇 𝐷 . ZuHone et al. (2013) simulate this process
+numerically in the case of minihalos and simplify this diffusion coefficient to be proportional to
+the average wavenumber ⟨𝑘⟩, the turbulent velocity of the particle 𝑣 𝑡 ,5 and fraction of turbulent
+energy in compressible motion 𝑅𝑐 .
+𝐷 𝑝 𝑝,𝑇𝑇 𝐷 ∝ ⟨𝑘⟩𝑣 𝑡2 𝑅𝑐 𝑝 2
+
+(2.15)
+
+The second mechanism is through the non-resonant compression and expansion of the ICM.
+Adiabatic compression increases the particle momentum, while expansion reduces it. As with
+5This is essentially the instantaneous velocity of the particle due to turbulence.
+
+16
+
+2.3. PRODUCTION MECHANISMS
+collisions, the particle is more likely to experience compression than expansion, leading to a net
+gain in energy. Here ZuHone et al. (2013) take the fast diffusion limit, where particles escape the
+eddies of compression before they re-expand. This non-resonant momentum-diffusion coefficient
+scales as,
+𝑉𝑙2
+
+𝑝2
+(2.16)
+𝐷
+where 𝑉𝑙 is the compressive velocity at scale 𝑙, and 𝐷 ∝ 𝑐𝑙 𝑚 𝑓 𝑝 is the spatial diffusion rate for a
+𝐷 𝑝 𝑝,𝐶 ∝
+
+mean free path of 𝑙 𝑚 𝑓 𝑝 .
+The reacceleration efficiency is then given via 𝜒 =
+
+4𝐷 𝑝 𝑝
+, where 𝐷 𝑝 𝑝 is the sum of the prior
+𝑝2
+
+diffusion coefficients. The total rate of momentum increase for each particle can then be clearly
+written as the sum of two Fermi-II processes when compared to Equation 2.14.6
+𝑑𝑝
+= 𝜒𝑝
+𝑑𝑡
+
+(2.17)
+
+1
+𝑑𝑝
+(2.18)
+∝ ⟨𝑘⟩𝑅𝑐 𝑣 𝑡2 𝑝 + 𝑉𝑙2 𝑝
+𝑑𝑡
+𝐷
+One remaining loose thread in this explanation is the source of the seed electrons themselves.
+A possible explanation is that the seed population is provided from radio AGN and spread
+throughout the cluster core by the gas sloshing (Brunetti et al., 2001). The CRe from the central
+BCG lose energy and disappear out of our detectable range by the physics described earlier,
+however, they don’t stop existing after this timescale. These ‘relic‘ CRe are lower energy but still
+relativistic with 𝛾 ∼ 100, radiating at radio frequencies that we are unable to detect. In this state
+they still continue to move and disperse through the core, creating the seeds for the large-scale
+minihalos that we observe. The central BCG may not be the only source, other AGN within
+the cluster, galactic winds, supernovae, may all contribute relic CRe to be later reaccelerated.
+ZuHone et al. (2013) find that the sloshing should be sufficient to redistribute these particles to
+create a minihalo. Hadronic interactions as described in a later section could also contribute seed
+electrons.
+
+2.3.2
+
+Observables of turbulent reacceleration
+
+With this understanding we can now explore the spectral and spatial features that we expect to
+observe from emission resulting from the reacceleration scenario. Turbulence is an inherently
+transient and intermittent phenomenon. This spatial variance means that when we sample a given
+region of space, we may instead be observing several 3D components superimposed on our 2D
+image. Areas with higher turbulent velocity inspire greater magnetic fields and greater levels of
+emission (ZuHone et al., 2013). The lack of a steady state and variable components means that
+we might expect variation in the flux brightness and spectral index across different locations of
+6The factors of 𝑐 have been absorbed into the constants, with the main focus being the squared scaling with
+
+velocity and linear with momentum
+
+17
+
+CHAPTER 2. RADIO HALOS
+the minihalo (Riseley et al., 2022). However, due to the integration over the line of sight, these
+artefacts could be averaged and less visible in the 2D observation.
+The particles must also trace the distribution of turbulence within the ICM, leading to a spatial
+bounding of the minihalo within the gas sloshing of the core. The boundary of the cluster core is
+often associated with cold fronts visible in X-ray data, allowing comparison between X-ray and
+radio images. Cold fronts denote the boundary between cooler denser gas clouds moving through
+a hotter and more diffuse surrounding gas. These are notably different to shock fronts, where
+the boundary separates a hot and dense downstream region that the shock has passed through,
+from the cooler and less dense upstream region the shock is moving towards (Markevitch and
+Vikhlinin, 2007). ZuHone et al. (2013) find that simulated turbulent reacceleration is indeed
+bounded by the cold fronts (Figure 2.2), with a sharp steepening at the core radius. They also
+find that depending on the projection through the ICM, it may be difficult to locate the cold
+fronts in X-ray images due to the aforementioned line of sight integration.
+
+Figure 2.2: 2D projected gas temperature maps with overlaid radio contours at several simulation timesteps for frequencies 153, 327, and 1420 MHz. Radio emission contours begin
+at (1.0, 0.5, 0.125) × 10−3 mJy arcsec−2 and increase by a factor of 2. Image dimensions are
+750 × 750 kpc, with tick marks every 100 kpc. (Figure 10 of ZuHone et al. (2013))
+A spectral feature of the reacceleration model arises from the balancing of reacceleration
+and losses, creating a cutoff energy at which the population of CRe declines more sharply.
+This is indeed the logic behind the CI model visualised in Figure 2.1, with a steepening in the
+spectral index beyond the break frequency. ZuHone et al. (2013) note that as there is a range of
+magnetic field strengths within the core, this break frequency will change between CRe, causing
+a smearing of the break and a more gradual steepening towards high frequency.
+18
+
+2.3. PRODUCTION MECHANISMS
+
+2.3.3
+
+Hadronic Production
+
+For the secondary production we instead consider the protons within the ICM, rather than the
+electrons. We again separate them into a relativistic ‘cosmic ray’ proton (CRp) population and
+a thermal population and examine the resultant interactions. CRp have significantly longer
+radiative lifetimes than CRe, with 𝜏𝑝 ∼ 1010 yrs, allowing them to travel up to 1 Mpc (Dennison,
+1980). The spread out CRp (𝑝𝐶 𝑅 ) then collide inelastically with thermal protons (𝑝 𝑡ℎ ) to produce
+charged and neutral pions 𝜋,
+𝑝𝐶 𝑅 + 𝑝 𝑡ℎ → 𝜋 0 + 𝜋 + + 𝜋 −
+
+(2.19)
+
+The charged pions then decay into (anti)muons 𝜇± and muon (anti)neutrinos 𝜈 𝜇 ( 𝜈˜ 𝜇 ), while the
+neutral pions decay into gamma rays 𝛾,
+𝜋 ± → 𝜇± + 𝜈 𝜇 ( 𝜈˜ 𝜇 )
+
+(2.20)
+
+𝜋 0 → 2𝛾
+
+(2.21)
+
+The muons then decay into highly relativistic (positrons)electrons 𝑒 ± and electron (anti)neutrinos
+𝜈𝑒 ( 𝜈˜ 𝑒 ).
+𝜇± → 𝑒 ± + 𝜈𝑒 ( 𝜈˜ 𝑒 ) + 𝜈˜ 𝜇 (𝜈 𝜇 )
+
+(2.22)
+
+From this chain reaction we end up with two observables, CRes and gamma rays. Importantly,
+it is these secondary CRe products that are predicted to produce the minihalo emission. The
+emission in this model then traces the population of CRp producing the CRe, rather than the
+turbulence of the ICM. Due to our assumption of the long radiative lifetimes, we expect a
+continuous injection of CRe from the hadronic process.
+ZuHone et al. (2015) investigate the hadronic method via simulation and assume a power-law
+−𝛼
+
+momentum distribution for the CRp, 𝑛 𝑝 ( 𝑝 𝑝 ) = 𝐶 𝑝 𝑝 𝑝 𝑝 (where 𝐶 𝑝 is a normalisation constant),
+and estimate the CRp momentum distribution spectral index to be in the range 𝛼 𝑝 ∼ 2.0–2.5. They
+then derive a distribution for the produced CRe momentum 𝑝 based upon the CRp momentum
+distribution to be,
+4
+𝑄( 𝑝)𝑑𝑝 = 161−𝛼 𝑝 𝑐𝑛𝑡ℎ 𝐶 𝑝 𝜎𝑝 𝑝 (16𝑝) 𝑝 −𝛼 𝑝 𝑑𝑝
+(2.23)
+3
+with 𝑛𝑡ℎ the density of thermal protons, 𝜎𝑝 𝑝 (16𝑝) the proton-proton inelastic collision crosssection at 16 times the CRe momentum.7 Ignoring the numerical terms we can also write,
+𝑄( 𝑝)𝑑𝑝 ∝ 𝑛𝑡ℎ 𝜎𝑝 𝑝 𝑝 −𝛼 𝑝 𝑑𝑝
+
+(2.24)
+
+to clearly see that the efficiency of the hadronic method scales with the density of thermal protons,
+collision cross-section, and as a power-law in momentum. By approximating 𝜎𝑝 𝑝 as constant8
+7This is an approximation of the CRp momentum in the proton-proton collision, 𝑝
+
+𝑝 = 16𝑝.
+8There is a weak dependence on the CRp and thermal proton energies, which ZuHone et al. (2015) account for,
+
+resulting in a minor flattening effect on the synchrotron spectral index.
+
+19
+
+CHAPTER 2. RADIO HALOS
+we are able to find a steady state for the number density of CRe by equating the synchrotron
+𝑑
+2
+2
+and IC losses 𝑑𝑝
+𝑑𝑡 ∝ −𝑝 . This occurs when 𝑑𝑝 (−𝑝 𝑛 𝑒 ) + 𝑄( 𝑝) = 0, which following through by
+
+integrating for all particles 𝑝 → ∞,
+∫ ∞
+
+2
+
+−𝑝 𝑛𝑒 = −
+𝑄( 𝑝)
+𝑝
+∫ ∞
+2
+𝑝 𝑛𝑒 ∝
+𝑝 −𝛼 𝑝
+𝑛𝑒 ∝
+
+𝑝
+𝑝 −𝛼 𝑝 +1
+
+𝑝2
+
+𝑛𝑒 ∝ 𝑝 −(𝛼 𝑝 +1)
+This gives us a CRe density power-law with index 𝛿 = 𝛼 𝑝 + 1 and therefore a synchrotron spectral
+𝛼
+
+index of 𝛼 = 2𝑝 . Using the expected values for 𝛼 𝑝 we should then expect 𝛼 ∼ 1–1.25 which is
+similar to that of observed minihalos. However, this assumes steady state injection which is a
+somewhat idealised case for the intermittent and turbulent core of the cluster.
+
+2.3.4
+
+Observables of hadronic production
+
+This hadronic process predicts a flat spectral index extending into high frequencies, lacking the
+steepening observed in the reacceleration model. This also implies the spectral index will be
+constant throughout the spatial extent of the minihalo, rather than varying due to localised high
+amounts of turbulence. Keshet and Loeb (2010) show that changes in the magnetic field strength
+relative to 𝐵𝐶 𝑀 𝐵 can induce changes in the emissivity. For regions of the magnetic field where
+𝐵 < 𝐵𝐶 𝑀 𝐵 they predict a radio suppression ∝ (𝐵/𝐵𝐶 𝑀 𝐵 ) 2 . Assuming that the magnetic field
+inside a cluster has a radial steepening, there then exists a radius 𝑟 𝑏 where the magnetic field
+drops below 𝐵𝐶 𝑀 𝐵 and a radial break may be observed in the radio profile. As such, the extent
+of the minihalo would be more constrained via the strength of the magnetic field, than the cold
+fronts of the cool core.
+The simulation of hadronic production by ZuHone et al. (2015) find that the majority of
+particles have spectral indices close to that of steady state. As 𝐵 decreases towards 𝐵 ≪ 𝐵𝐶 𝑀 𝐵 the
+spread of spectral indices converges tightly. The opposite happens at 𝐵 ≫ 𝐵𝐶 𝑀 𝐵 with broadening
+and a small skew towards steeper indices. They attribute the broadening to sampling regions with
+rapidly decreasing magnetic fields (flatter index) and rapidly increasing magnetic fields (steeper
+index). They also note that the spatial bounding of the hadronic emission is less constraining
+than that of the reacceleration model. A drop in the emission across the cold front occurs due to
+a drop in the magnetic field strength and falls ∝ 𝐵2 , but they simultaneously observed emission
+extending outside of the cool core.
+Importantly, ZuHone et al. (2015) do not find evidence of a spectral flattening at high
+frequencies, showing that a simple power-law relationship holds to beyond 10 GHz. They
+20
+
+2.4. PREVIOUS MINIHALO STUDIES
+
+1026
+
+ν
+
+P (W/Hz)
+
+1025
+
+1024
+
+1023
+
+t = 2.50 Gyr, hadronic
+t = 3.00 Gyr, hadronic
+t = 3.50 Gyr, hadronic
+t = 4.00 Gyr, hadronic
+t = 2.75 Gyr, reacceleration
+t = 3.15 Gyr, reacceleration
+t = 3.55 Gyr, reacceleration
+t = 3.95 Gyr, reacceleration
+
+100
+
+ν
+
+(MHz)
+
+1000
+
+Figure 2.3: The total simulated radio spectrum within 300 kpc radius of the cluster centre,
+comparing the hadronic and reacceleration model at several timesteps. (Fig 8 of ZuHone et al.
+2015)
+compare the spectral distribution of the hadronic and reacceleration models and clearly show the
+difference in spectral shape (Figure 2.3).
+A final clear distinction from the reacceleration model is the emission of gamma rays with the
+hadronic model. This implies there will be a diffuse gamma emission aligned spatially with the
+minihalo. This would be a ‘smoking gun’ proof for the hadronic model, however, as mentioned
+earlier, current instruments do not have the spatial resolution to accurately detect diffuse gamma
+emission at minihalo scales.
+
+2.4
+
+Previous minihalo studies
+
+Minihalos are the most poorly understood class of diffuse radio emission, with few in-depth
+spectral studies to look at. For many minihalos we only have a couple of observations between
+144 MHz and 1.4 GHz taken by the Giant Metrewave Radio Telescope (GMRT) and VLA
+(Giacintucci et al., 2014b, 2019). This lack of data means that for many minihalos the spectral
+index is calculated from a few points, if it can be at all. Furthermore, the lack of high frequency
+data > 1.4 GHz makes detecting steepening from the reacceleration theory far more challenging,
+21
+
+CHAPTER 2. RADIO HALOS
+with both models resembling a power-law within this range (Figure 2.3).
+The most in-depth spectral study at a range of frequencies has been performed on
+RXJ1720+2638 (Mazzotta and Giacintucci, 2008; Giacintucci et al., 2014a; Perrott et al., 2021).
+This revealed a tail to the minihalo, with a steeper spectrum than the central region. Early
+analysis showed a potential for steepening at 5 GHz, however, later observations at 13-18 GHz
+were consistent with a power-law index 𝛼 = 1.0 (Perrott et al., 2021). These spectral features
+lend impetus towards the hadronic scenario for the core, while also suggesting that reacceleration
+might play a role within the tail. The tail of the minihalo also appears to be constrained by the
+Fix reference cold fronts of the core. More detailed analysis for this cluster is given in Section 5.1 , which
+once we get includes images produced as part of this thesis.
+there
+
+The recent LOFAR-meets-MeerKAT series of papers (Riseley et al., 2022, 2023, 2024) aims
+to perform a more uniform sample of minihalo observations to investigate the method of CRe
+production. These observations are performed at 145 MHz to 1.7 GHz with the aforementioned
+LOFAR and MeerKAT telescopes and used alongside archival Chandra X-ray data. These
+detailed analyses of MS1455+2232, A1413, and A2142 have revealed that the minihalo morphology generally contains multiple components, a single steep-spectrum power-law, and spatially
+homogeneous spectral index. They find that both scenarios can explain several observables,
+but not all, and suggest that both mechanisms might be at play. MS1455+2232 and A1413 are
+discussed in more detail, alongside images produced during this thesis, in sections ?? and ??
+Fix reference respectively.
+
+Another point of interest is the possible connection to giant radio halos. Although minihalos
+are found exclusively within cool-core clusters and giant radio halos are found almost entirely
+within disturbed clusters, they may have a physical relation to each other. The general consensus
+is that giant halos are formed by reacceleration due to merger-induced turbulence, evidenced bya
+lack of gamma emission at the larger cluster scale (Brunetti et al., 2012; Brunetti et al., 2017).
+These two phenomena may have a transitional state where a minihalo switches into a giant halo
+due to a merger, and the inverse as the cluster relaxes (Brunetti and Jones, 2014). An alternative
+scenario could be that mini-halos are produced via the hadronic process, which shifts towards
+turbulent reacceleration at larger scales (Zandanel et al., 2014).
+The cluster A2142 shows some evidence towards these theories, with a large-scale 2 Mpc
+halo comprised of two parts (Venturi et al., 2017). This cluster is undergoing a minor merger
+and has only small disturbances in the ICM. The brighter inner core component has a spectral
+index 𝛼𝑖 = 1.33 ± 0.08, which appears to be produced similarly to that of a minihalo. The outer
+component is fainter and somewhat steeper with 𝛼𝑜 ≈ 1.5, suggested to be from large-scale
+turbulence within the ICM. Clusters may also show evidence of a minihalo and giant halo
+existing simultaneously, with RXJ1720+2638 and PSZ139.61+24.20 both exhibiting large-scale
+steep spectrum emission outside the core region (Savini et al., 2018, 2019). Physical relations
+22
+
+2.5. INTERFEROMETRY
+to giant radio halos are useful in our understanding of how mergers change the behaviour of a
+cluster, but are outside the scope of this thesis.
+
+2.5
+
+Interferometry
+
+To better understand the reasoning behind the calibration and imaging processes, it is useful
+to first cover the basics of interferometry. Interferometer arrays consist of individual antennas
+that measure the amplitude and phase of incoming electromagnetic waves. These signals are
+then combined with each other to produce an interference pattern. The simplest example for
+this is an array of two antennas. Since each antenna has a small difference in distance from the
+source, there is a geometric time delay 𝜏𝑔 between each receiving a signal. By combining the two
+individual signals, the interference pattern is created due to the phase shift caused by the time
+delay. Given a cosinusoidal wave travelling at the speed of light 𝑐, from a source in the far field
+at 𝑠 , and the baseline distance between the two antennas 𝑏 , the geometric delay is 𝜏𝑔 = 𝑏 · 𝑠 /𝑐.
+The measured interference pattern is then the product of the individual fields 𝑉1 = 𝐸 cos(𝜔𝑡)
+
+2 
+and 𝑉2 = 𝐸 cos(𝜔(𝑡 − 𝜏𝑔 )), which can be written in the form 𝐸2 cos(𝜔𝜏𝑔 ) + cos(2𝜔𝑡 − 𝜔𝜏𝑔 )
+(Perley, 2018). The second term varies much faster than the first and can be averaged out, and
+2
+
+the prefactor can be shortened to 𝑃 = 𝐸2 . This gives the final cosine response as,
+𝑅𝐶 = 𝑃 cos(𝜔𝜏𝑔 )
+or written in terms of the signal wavelength 𝜆 = 2𝜋𝑐/𝜔 and the baseline,
+
+
+𝑏 ·𝑠
+𝑅𝐶 = 𝑃 cos 2𝜋
+𝜆
+
+(2.25)
+
+(2.26)
+
+The fringes of the interference pattern then sample the sky, with longer baselines corresponding to
+small spatial features, and small baselines mapping large spatial features. For the sky brightness
+map 𝐼𝜈 (𝑠𝑠 ) at the frequency 𝜈, the interferometer response is the spatial integral9 of the sky
+modified by the cosinusoidal fringe pattern.
+
+
+∬
+𝑏 ·𝑠
+𝑅𝐶 =
+𝐼𝜈 (𝑠𝑠 ) cos 2𝜋𝜈
+𝑑Ω
+𝑐
+
+(2.27)
+
+This response function is even due to the cosine term, resulting in any odd functions described
+by the intensity map being averaged out. By modifying the phase of one of the antennas by
+90 degrees, 𝑉2 = 𝐸 sin(𝜔(𝑡 − 𝜏𝑔 )), and applying the same processes as before, an odd response
+function is created 𝑅𝑆 = 𝑃 sin(𝜔𝜏𝑔 ). The two responses 𝑅𝐶 and 𝑅𝑆 can then be used to define
+the complex visibility function in terms of 𝑢 = 𝑏 /𝜆 (Perley, 2018).
+∬
+𝑉 (𝑏𝑏 ) = 𝑅𝐶 − 𝑖𝑅𝑆 =
+𝐼𝜈 (𝑠𝑠 )𝑒 −2𝜋𝑖𝑢𝑢 ·𝑠𝑠 𝑑Ω
+
+(2.28)
+
+9The spatial integral is in units of solid angle Ω, as the usual axes of the sky are given in arcseconds, or
+
+arcminutes.
+
+23
+
+CHAPTER 2. RADIO HALOS
+If the baselines lie on a flat plane, the complex visibility is then a 2D Fourier transform of
+the sky brightness at the observing frequency, allowing an inverse transform to be performed
+to reconstruct the sky given complete sampling. The baseline vectors 𝑢 = (𝑢, 𝑣, 𝑤) are defined
+in units of wavelength, with the flat uv-plane defined as a special case having 𝑤 = 0. In 3D
+coordinates, the unit vector 𝑢ˆ is aligned East-West, 𝑣ˆ is North-South, and 𝑤ˆ points towards the
+source (or phase centre). If the antenna array is not coplanar to the source, baselines may vary in
+𝑤, which invalidates the 2D Fourier transform. To solve this, many imaging packages project the
+visibilities onto the uv-plane (called 𝑤-projection) (Perley, 2018).
+An individual antenna pair only samples a single point in 𝑢 , so to maximise coverage of
+the uv-plane, interferometer arrays use 𝑁 antennas in tandem to achieve 𝑁 (𝑁 − 1)/2 unique
+pairs simultaneously. Similarly, the rotation of the Earth allows these baselines to move with
+respect to the source, sweeping through the uv-plane in an ellipse to increase coverage. As
+source declination approaches 0°, the ellipse flattens due to the source alignment with the Earth’s
+rotation, reducing effective coverage. The final coverage of the uv-plane then depends on the
+arrangement and number of antennas, the target location in the sky, and the length of time that
+the source is being observed.
+The incomplete coverage of the uv-plane results in a synthesised beam with radial spikes and
+periodics in image space, called the point spread function (PSF). The inverse transform of the
+sampled complex visibilities is then called the ‘dirty’ image, having the true sky convolved with
+the PSF. Several methods have been developed to deconvolve the PSF, with the most common
+method being the CLEAN algorithm (Högbom, 1974; Clark, 1980). This follows an iterative
+major-minor cycle to build a model of the sky brightness. Minor cycles operate in the image
+space, identifying source components in the residual image and adding to the sky model. The
+major cycle transforms the model image into visibilities and subtracts them from the observed
+visibilities. These residuals are then Fourier transformed to update the residual image. With
+tuned parameterisation, the CLEAN algorithm can successfully deconvolve the PSF and return
+an accurate image of the sky brightness.
+In practice, noise and calibration errors add further complexity to the observed complex
+visibilities. These can be delay errors, antenna-dependent gain and phase variations, atmospheric
+effects, and instrumental noise. This can be summarised via the Measurement Equation, which
+defines the observed visibilities 𝑉 𝑖 𝑗 between antennas 𝑖 and 𝑗 in terms of the ideal visibilities
+𝑉 𝑖𝐼𝑗𝐷𝐸 𝐴𝐿 and an accumulation of corrupting effects 𝐽 𝑖 𝑗 for that baseline (Hamaker et al., 1996;
+Sault et al., 1996).
+𝑉 𝑖 𝑗 = 𝐽 𝑖 𝑗 𝑉 𝑖𝐼𝑗𝐷𝐸 𝐴𝐿
+
+(2.29)
+
+The term 𝐽 𝑖 𝑗 can be factored into a sequence of individual effects applied to the incoming
+wave, with different physical origins and importances. Antennas measure the polarisation of
+the incoming wave, forming four correlations in a circular basis: LL, RR, LR, RL. As a result,
+24
+
+2.5. INTERFEROMETRY
+the matrices of the Measurement Equation are 2 × 2 to describe the polarisation response. In
+the context of minihalos, the cross-polarisations are not of scientific interest and are used only
+for calibration purposes. The specific calibration and imaging procedures applied to the data
+analysed in this thesis are presented in the following chapter.
+
+25
+
+Chapter 3
+
+Calibration and Imaging
+
+The observations to be calibrated are VLA X-band (8–12 GHz) data, taken in C and D configurations of 12 galaxy clusters hosting minihalos. VLA antennas may be arranged in four
+standard configurations, A through D. A has the longest baselines and best angular resolution, at
+the expense of lower brightness sensitivity. Baseline length decreases towards D-configuration,
+which has the poorest angular resolution, but greatest brightness sensitivity. D-configuration
+was chosen to maximise brightness sensitivity to detect the faint and extended minihalos. Cconfiguration observations were added to allow accurate imaging of compact AGN sources
+embedded within the minihalos.
+The C-configuration observations were performed between January and February 2024,
+under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken
+the following year during February and March 2025 under project code 25A-157 (PI: Yvette
+Perrott). The frequency range for X-band spans 7.977–12.025 GHz, with a total bandwidth
+of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz.
+Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels
+per window.The baselines for C-configuration cover approximately 1–135 k𝜆, while the more
+compact D-configuration has the range 1–34 klambda. For reference, an overview of the targeted
+clusters is given in Table 3.1, while details of the radio observations of each cluster are given in
+Table 3.2.
+To calibrate and image these observations, Common Astronomy Software Applications
+(CASA) has been developed by an international collaboration of scientists and software developers.1 This provides Python-based tools for the processing, analysis, and manipulation of
+observations from the VLA and the Atacama Large Millimeter/submillimeter Array (ALMA).
+Part of this software suite is the VLA pipeline, which is able to perform calibration and automated
+flagging of raw observations. The pipeline allows a streamlined process with reduced manual
+1 https://casa.nrao.edu/index.shtml
+
+27
+
+CHAPTER 3. CALIBRATION
+Cluster
+
+R.A.J2000
+(h, m, s)
+
+2A0335+096
+03 38 40.5
+A2626
+23 36 30.5
+A1795
+13 48 52.5
+A478
+04 13 25.3
+A1413
+11 55 18.0
+A2204
+16 32 47.0
+RXJ1720+2638
+17 20 10.0
+RXJ2129+0005
+21 29 39.9
+MS1455+2232
+14 57 15.1
+Z3146
+10 23 39.6
+a
+RXCJ1115+0129 11 15 52.0
+ACTJ0022-0036b 00 22 13.0
+
+DeclJ2000
+(deg, arcmin, arcsec)
+
+𝑧
+
+Scale
+(kpc arcsec−1 )
+
++09 58 12.4
++21 08 47.6
++26 35 34.0
++10 27 55.0
++23 24 19.0
++05 34 35.0
++26 37 32.0
++00 05 21.3
++22 20 34.0
++04 11 11.0
++01 29 54.0
+−00 36 33.0
+
+0.036
+0.055
+0.062
+0.086
+0.141
+0.152
+0.160
+0.234
+0.257
+0.288
+0.350
+0.804
+
+0.716
+1.069
+1.195
+1.612
+2.482
+2.643
+2.758
+3.722
+3.990
+4.329
+4.940
+7.521
+
+Notes. Right ascension and Declination values are taken from the observation phase centres.
+Redshifts are from the NASA/IPAC Extragalactic Database (NED). Values for kpc arcsec−1 are
+calculated using the Cosmology Calculator I (Wright, 2006).
+a Also known as ZwCl 1454.8+2233.
+b Also known as ZwCl 1113.8+0144.
+
+Table 3.1: List of observed clusters, sorted by redshift.
+intervention, while producing a final weblog detailing the applied steps for reproducibility.
+Flagging of data refers to the exclusion of problematic points, often due to the presence of
+radio frequency interference (RFI). For these observations, pipeline flagging did not sufficiently
+mitigate the RFI for accurate calibration, necessitating the development of a modified version. A
+description of the pipeline steps and calibration is provided in Section 3.2. The following section
+details the RFI present in the data and the measures taken to mitigate it.
+
+3.1
+
+Radio Frequency Interference
+
+An unavoidable consequence of ground-based antennas is that they can pick up spurious radio
+sources, broadly termed RFI. This can be attributed to internal mechanisms of the telescope, as
+well as external sources such as ground-based and satellite communications. With the increasing
+number of satellites in orbit, RFI is a growing problem, with only a few narrow frequency ranges
+protected for radio astronomy. RFI is particularly strong near the declination of 0°, as this aligns
+with the orbit of geostationary satellites, known as the Clarke Belt. RFI can be categorised as
+Image of
+
+intermittent or continuous in time, and as broadband or narrowband in frequency. Detecting
+
+interfernce
+
+and automatically removing these data can be difficult due to the wide range of forms RFI
+
+2D?
+
+can take. NRAO monitors RFI across the VLA frequency bands and provides descriptions of
+known sources to aid in cleaning the data. For observations at X-band,2 satellite and weather
+2 https://science.nrao.edu/facilities/vla/observing/RFI/X-Band
+
+28
+
+29
+
+C
+D
+D
+
+C
+D
+D
+
+A1413
+
+A1795
+
+2024-02-04 71.5
+2025-03-19 35.6
+2025-03-27 35.9
+
+2024-02-04 36.9
+2025-02-28 129.2
+2025-02-28 129.2
+
+2024-02-03 62.2
+2025-02-28 35.6
+2025-03-27 35.6
+
+2024-02-03 61.1
+2025-03-19 36.2
+2025-03-27 35.6
+
+2024-02-03 64
+2025-02-28 36.6
+2025-03-27 36.6
+
+2024-01-27 44.5
+2025-02-27 124.5
+2025-03-11 124.5
+J0424+0204
+
+J0321+1221
+
+Secondary
+Calib.
+
+3C286
+
+3C48
+
+J1330+2509
+
+3C286a
+
+J1150+2417
+
+3C286 J1719+1745
+
+3C286 J1436+2321
+
+3C286 J1616+0459
+
+3C48
+
+3C48
+
+Time Primary
+(min) Calib.
+
+2024-01-27 45.3
+2025-02-28 68.5
+2025-03-15 68.5
+
+Date
+
+C
+C
+D
+D
+C
+C
+D
+D
+
+RXJ2129+0005
+
+C
+C
+D
+D
+
+C
+D
+D
+
+C
+D
+D
+
+VLA
+Config.
+
+ACTJ0022-0036
+
+A2626
+
+Z3146
+
+RXCJ1115+0129
+
+Cluster
+
+41.5
+41.5
+41.5
+33.2
+
+2024-02-10 138.1
+2024-02-11 138.1
+2025-02-28 64.5
+2025-02-28 64.5
+
+2024-02-10 109.5
+2024-02-11 109.5
+2025-02-28 27.4
+2025-02-28 36.5
+
+2024-02-10
+2024-02-11
+2025-02-28
+2025-02-28
+
+2024-02-04 73.1
+2025-02-27 36.5
+2025-03-16 36.5
+
+a The C-configuration observation for A1795 reuses the primary calibrator for the secondary calibration.
+
+Secondary
+Calib.
+
+3C48
+
+3C48
+
+3C48
+
+3C48
+
+J2136+0041
+
+J0022+0014
+
+J2253+1608
+
+J1041+0610
+
+3C286 J1058+0133
+
+Time Primary
+(min) Calib.
+
+2024-02-04 73.1
+2025-02-27 36.5
+2025-03-16 36.5
+
+Date
+
+Notes. The primary calibrator was used for setting the flux scale and bandpass calibration. The secondary calibrator was used for phase calibration.
+
+C
+D
+D
+
+RXJ1720+2638
+
+C
+D
+D
+
+A2204
+
+C
+D
+D
+
+C
+D
+D
+
+A478
+
+MS1455+2232
+
+C
+D
+D
+
+VLA
+Config.
+
+2A0335+096
+
+Cluster
+
+Table 3.2: Summary of the VLA X-band observations and calibration sources used.
+
+3.1. RADIO FREQUENCY INTERFERENCE
+
+CHAPTER 3. CALIBRATION
+radars are an intermittent source between 9.3–9.9 GHz, continuous ground-based microwave
+links contaminate 10.7–11.5 GHz, and strong RFI exists between 11.7–12 GHz due to emission
+associated with the Clarke Belt.
+For the faint sources of minihalos (∼ 𝜇Jy), RFI signals can be orders of magnitude brighter
+(mJy). This smothers the signal and can bias calibration results. Sources of RFI may have
+different delays in reaching antenna compared to the science target, which can bias delay and
+phase calibrations and increase noise. This degrades the angular and brightness sensitivities.
+When imaging, RFI may appear as bright wave-like artefacts, arising from the Fourier transform
+of high-amplitude visibilities with random phase.
+Ref for
+
+The standard pipeline flagging uses a combination of the tfcrop and rflag algorithms to detect
+
+algorithms and remove RFI. tfcrop uses the visibility amplitudes to form an average time spectrum, and a
+
+polynomial model for the frequency bandshape. Using this model, it then flags outlier points
+beyond a given relative threshold. This is adept at flagging short-duration spikes of RFI in both
+narrowband and broadband ranges, as well as time-persistent RFI in the narrowband. rflag uses a
+sliding window to calculate the local visibility RMS, and flags points beyond a relative threshold.
+This operates on individual baselines over single frequencies (channels) with the sliding window
+over the time axis, followed by single time steps with the sliding window across channels. rflag
+is best at identifying weak and sparse RFI that may be affecting a subsection of antennas. The
+pipeline also extends the flags for each baseline, such that any channel or time step that is > 50%
+flagged will be entirely flagged. Flags are also propagated between polarisations, with all four
+correlations flagged if any individual polarisation is flagged.
+To improve upon the results from the algorithms implemented in CASA, I tested AOFLAGGER,
+which was originally designed for LOFAR but has since expanded for use with several other
+telescopes (Offringa et al., 2010, 2012, 2023).3 This is implemented via a flexible Lua script,
+allowing customisation in algorithms to each telescope and observation setup. The default VLA
+script performs RMS-based time step and channel flagging, high-pass filtering, and morphological filtering. The morphological analysis is performed via the SumThreshold algorithm,
+which uses several decreasing thresholds to evaluate a sequence of samples. Points exceeding the
+highest threshold are marked for flagging, after which next lower threshold is evaluated, and the
+process is repeated. This works well for broadband and peaked RFI. This script has two primary
+parameters, base threshold and transient threshold factor which define the thresholds
+to use for flagging. Lower thresholds correspond to increased sensitivity and, therefore, more
+aggressive flagging. For frequent but intermittent RFI bursts, transient threshold factor
+can be used to tune detection separately to the main threshold. The script was altered to preserve
+any pre-existing flags applied by the pipeline.
+Based on the NRAO description of RFI in the X-band, the script is configured to do three
+3 https://aoflagger.readthedocs.io/en/latest/index.html
+
+30
+
+3.2. CALIBRATION PIPELINE
+passes with separate parameters for each. The first two passes flag only 9.3–9.5 GHz (weather
+radar) and 10.7–12 GHz (ground communications), before a final full frequency range pass. This
+allows for tuning of aggression based upon the RFI present in each observation. The higher
+angular resolution C-configuration observations had a much lower amount of RFI compared
+to the D-configuration, where many datasets were sufficiently contaminated by the ground
+communications that these spectral windows were completely removed. A summary of the
+flagging for datasets used in final imaging is provided in Figure 3.1. Scripts were tuned for
+each source and observation independently using a manual and iterative testing process. An
+example Lua script is given Appendix A. This process was incorporated into a copy of the VLA
+Pipeline version 6.6.1 as a custom step hifv aoflagger with three arguments: the source target
+to be flagged flag target, the lua script aoflagger file, and the data column to use (raw
+or corrected). If the corrected data column is selected, this first subtracts the model from the
+corrected data to estimate the residual spectrum. Given an accurate source model, these residuals
+are expected to be closer to a Gaussian noise distribution, improving RMS-based RFI detection.
+This provides flexibility per observed source with customisable parameters per source and region
+of RFI. The implementation of this custom pipeline step is available in a separate repository.4
+
+3.2
+
+Calibration pipeline
+
+All observations were calibrated using a single Python file, casa pipescript.py. An example
+pipeline script is given in Listing 3.1. The following descriptions are written with reference to
+the Pipeline Tasks Reference Manual and CASA docuumentation.5,6 .
+The first stage hifv importdata is to load the data, in the format of a Measurement Set
+(MS), with the associated metadata. This context is used throughout the pipeline to determine
+which scans, sources, and spectral windows are evaluated.
+Listing 3.1: Example CASA pipeline script.
+1
+
+hifv_importdata ( vis =[ " DATASET " ])
+
+2
+
+hifv_flagdata (
+
+3
+
+hm_tbuff = ’ 1.5 int ’ , fracspw =0.01 , intents = ’* POINTING * ,
+
+4
+
+* FOCUS * ,* ATMOSPHERE * ,* SIDEBAND_RATIO * , * UNKNOWN * ,
+
+5
+
+* SYST E M _ C O N F I G U R A T I O N * , * UNSPECIFIED # UNSPECIFIED * ’)
+
+6
+
+hifv_vlasetjy ()
+
+7
+
+hifv_priorcals ( show_tec_maps = False )
+
+8
+
+hifv_aoflagger (
+4 https://github.com/MoonlitMoo/casa-pipeline/tree/main/hifv
+5 https://almascience.eso.org/processing/documents-and-tools/cycle12/
+
+reference-manual-2025
+6 https://casadocs.readthedocs.io/en/stable/index.html
+
+31
+
+CHAPTER 3. CALIBRATION
+flag_target = ’ PRIMARY ’ , aoflagger_file = ’ PRIMARY . lua ’)
+
+9
+10
+
+hifv_testBPdcals ()
+
+11
+
+h ifv_ semi F i n a l B P d c a l s ()
+
+12
+
+hifv_aoflagger (
+flag_target = ’ SECONDARY ’ , aoflagger_file = ’ SECONDARY . lua ’)
+
+13
+14
+
+hifv_solint ()
+
+15
+
+hifv_fluxboot ()
+
+16
+
+hifv_aoflagger (
+
+17
+
+flag_target = ’ CALIBRATORS ’ , aoflagger_file = ’ CALIBRATORS . lua ’ ,
+
+18
+
+use_corrected = True )
+
+19
+
+hifv_finalcals ()
+
+20
+
+hifv_applycals ()
+
+21
+
+hifv_aoflagger (
+
+22
+
+flag_target = ’ SCIENCE_TARGET ’ , aoflagger_file = ’ SCIENCE . lua ’ ,
+
+23
+
+use_corrected = True )
+
+24
+
+hifv_statwt ()
+
+25
+
+hifv_plotsummary ()
+
+26
+
+hifv_exportdata ()
+
+27
+
+h_save ()
+
+3.2.1
+
+Initial Flagging
+
+The hifv flagdata task is used to perform deterministic (apriori) flagging. These flagging
+categories include antenna shadowing, unwanted intents, autocorrelation, edge channels, clipping,
+quacking, and basebands. Antenna shadowing occurs when the target is close to the horizon, as
+antennas may block the field of view of antennas behind them. CASA automatically models the
+positioning of antennas against the source in order to remove shadowed antennas. Unwanted
+intents are scans in the MS that are not science targets or necessary for calibration. In Listing 3.1,
+these can be seen to primarily system configuration related or unspecified scans. Auto-correlation
+is the correlation of the antenna to itself, these zero distance baselines are removed. Edge channel
+flagging removes the first and last channel of each spectral window, as the interferometer is least
+sensitive at these boundaries. Clipping removes any visibility amplitudes below zero. Quacking
+flags a short period at the start and end of each scan. Since the antenna physically moves (slews)
+between scans, this eliminates data measured while the antennas may still be settling. Baseband
+flagging removes ten channels at the start and end of each baseband, analagous to the spectral
+window flagging. For these observations, there are two basebands covering 8–10 GHz and 10–12
+GHz.
+32
+
+3.2. CALIBRATION PIPELINE
+
+3.2.2
+
+Primary calibrator flux scale
+
+The visibilities measured by each antenna have a direction-dependent gain and phase scale. These
+relative amplitudes and phases must then be corrected in order to measure the correct flux from a
+source. Primary calibrators are unresolved point sources with high flux densities (typically >> 10
+Jy at 𝜆 = 1 m) and stable over long timescales (years). CASA implements the Perley–Butler flux
+density scale, spanning the frequency range 50 MHz to 50 GHz (Perley and Butler, 2017). This
+scale contains polynomial flux models of several primary calibrators, allowing the visibilities
+to be scaled to minimise errors to the model. This assumes an accurate model and low timevariability of the primary calibrator between the modelling and observation. The Perley–Bulter
+scale quotes accuracy to 3–5% over the full frequency range. CASA recommends observations
+of 3C286, 3C48, 3C147, or 3C138 to set the absolute flux scale. For the observed clusters, the
+nearest primary calibrators were 3C286 or 3C48 (see Table 3.2). Scans of the primary calibrators
+were performed at the start or end of each observing block.
+Due to the small number of primary calibrators, the likelihood of a science target lying in
+close proximity to one is low. This necessitates the use of secondary calibrators, which are
+also unresolved compact sources but may exhibit significant time variability on the timescale of
+months to years. At 5 GHz, observations have shown a median variability of 4.3% over 60–260
+days, increasing to 5.3% over the same time period at 33 GHz (Kurinsky et al., 2013). The list
+of VLA calibrators is an inexhaustive list of approximately 1862 usable sources.7 The absolute
+flux density scale obtained from the primary calibrator is used to scale the flux density of the
+secondary sources, as precise emission values are difficult to estimate due to the time-variability.
+These closer sources then allow for more accurate direction-dependent gain and phase solutions
+for the science targets.
+
+3.2.3
+
+Prior calibrations
+
+Several deterministic calibrations are monitored and saved during the observations or defined
+by the instrument setup. Those applied during hifv priorcals include gain curves, atmospheric opacity, antenna position corrections, and requantisation gains. Gain curves account
+for elevation-dependent gains, where the angle of the antenna causes gravitational deformation
+of the dish surface. Changes in elevation also alter the atmospheric path-length, which is not
+entirely transparent to radio emission. The atmospheric opacity correction adjusts for this attenuation, while other atmospheric effects (re-emitted radio emission, delay errors due to density
+fluctuations) are corrected by later fitted calibrations. The geographical coordinates of antennas
+may have small time-dependent errors over the course of the observation, which result in delay
+and baseline errors when correlated. This calibration references an online database of antenna
+7 https://science.nrao.edu/facilities/vla/observing/callist
+
+33
+
+CHAPTER 3. CALIBRATION
+position corrections to apply adjustments. Requantiser gains are amplitude offsets introduced
+when visibilities are re-quantised to a lower bit size to reduce data rates. These effects are
+antenna and time-dependent and estimated during the observation.
+
+3.2.4
+
+Calibrator flagging
+
+Before using the primary calibrator observation to fit calibrations, it is flagged for RFI using the
+custom step hifv aoflagger discussed previously. This step is the first flagging applied to this
+source and operates on the uncalibrated visibilities. This may share a script and parameter set
+with other calibrators or science targets, depending on the similarity of the RFI present. These
+parameters were tested prior to running the full calibration pipeline to optimise the mitigation of
+RFI signals and preservation of source data. A second round of flagging is performed prior to
+the hifv finalcals step, described in a following section. The second flagging step operates
+on the corrected data, which provides the closest representation to the true source. These two
+passes improve the RFI detection as the quality of the visibilities increase, resulting in cleaner
+gain and phase solutions during the final calibration stage.
+Similarly to the primary calibrators, the secondary calibrators are flagged prior to fitting any
+calibrations. A first flagging run is performed prior to setting the flux density scale on the raw
+visibilities. A second pass is performed prior to creating the final calibrators on the corrected
+visibilities.
+
+3.2.5
+
+Delay and Bandpass calibrations
+
+Errors in antenna position and time measurements cause systematic errors in the measured delay
+and phases between antennas. These effects are antenna-dependent and can be corrected using
+observations of the primary calibrator. This assumes one antenna as the reference with zero
+delay, and calibrates the relative delays of all other antennas. This provides one solution per
+antenna, per spectral window, and per parallel correlation (LL, RR). To mitigate time-dependent
+phase errors, a test phase calibration is fitted per integration interval and applied prior to the
+delay calibration. Following the delay calibration, residual frequency-dependent errors in the
+phase and gain remain. This is correlated with the spectral window subbands and the basebands,
+resulting in a total bandpass response. These errors are also corrected using observations of the
+primary calibrator. To reduce time-dependent amplitude errors, a test complex gain calibration is
+created over the integration timescales. The test amplitude, test phase, and delay calibrations
+are then used to construct the bandpass calibration. The step hifv testBPdcals iteratively
+constructs a self-consistent delay and bandpass calibration for the primary calibrator. The prior,
+delay, and initial bandpass calibrations are then applied to the primary calibrator visibilities. The
+following step hifv semiFinalBPdcals recalculates these calibrations and applies them to the
+34
+
+3.2. CALIBRATION PIPELINE
+primary and secondary calibrator data.
+
+3.2.6
+
+Secondary calibrator flux scale
+
+With the base calibrations completed, the flux density scale can now be transferred from the
+primary calibrator to the secondary calibrator. In order to accurately transfer a known scale
+to a source of unknown flux, a well-constrained complex gain calibration is necessary. This
+uses a default 1 Jy point source model at the phase centre, as a model is not known for the
+secondary calibrator at this point. To reduce the time-variability in the complex gain of the
+secondary calibrator, a minimal time solution interval is found using the hifv solint task.
+The minimum possible interval is the integration timescale, however, a high flagging fraction
+may make this infeasible. This is then used during the hifv fluxboot task to create a shorttimescale phase solution. These corrections are used to fit a complex gain solution with outlier
+solutions flagged during the fit. This normalised model of the source amplitude is then scaled
+using the absolute flux density scale of the primary calibrator, and a polynomial model is fit
+to the resulting spectrum. This scaled model then represents the predicted true spectrum of
+the secondary calibrator and added to the dataset. Note that any missing spectral windows
+or antennas in the primary calibrator solutions are propagated to the secondary calibrator and
+subsequent calibrations.
+
+3.2.7
+
+Final calibration
+
+With flux density models established for the calibrators and flagging performed on the corrected
+visibilities, the final calibrations can be fitted using the hifv finalcals task. This step first
+refits the delay and bandpass calibrations using the primary calibrator. An average phase solution
+is then computed over all scans to normalise the time-dependent phase errors. The short-timescale
+phase corrections are then computed for all calibrators and used to derive the final complex gain
+and phase solutions. The final calibration list then consists of the prior, delay, bandpass, average
+phase, complex gain, and phase calibrations. These calibrations are then applied to obtain the
+final corrected visibilities. This includes applying the calibrations from the secondary calibrators
+to the science targets. These solutions are more accurate than those derived from the primary
+calibration, as the smaller angular seperation reduces interpolation errors in the gain and phase.
+Once again, any missing spectral windows or antennas in the secondary calibrator solutions are
+propagated to the science targets to maintain consistency.
+
+3.2.8
+
+Science target processing
+
+The science targets then undergo a single flagging run performed on the corrected visibilities.
+Ideally, this would occur without the model subtraction, but this was not implemented in the
+35
+
+CHAPTER 3. CALIBRATION
+pipeline step. The default model column of a Measurement Set is a 1 mJy point source located
+at the phase centre. Subtracting this is equivalent to offsetting the visibilities by a constant, to
+which RMS-based detection is insensitive to. As the science targets are primarily comprised of
+faint and diffuse emission, the visibilities are visually similar to noise, and fluctuations can be
+attributed to RFI. The benefits gained in using the corrected data, rather than the raw visibilities,
+for flagging were considered to outweigh the risk of erroneous flagging. The variance of the
+unflagged visibilities is then weighted per baseline based on the resulting exposure time and the
+number of unflagged points. This improves the sensitivity of the observations by down-weighting
+baselines that have less data and, therefore, a lower signal-to-noise ratio.
+
+3.2.9
+
+Pipeline outputs
+
+The hifv plotsummary task produces several plots to check the quality of the final calibration.
+This includes phase-vs-frequency and amplitude-vs-frequency of the raw and calibrated visibilities for each calibrator and science target. These, alongside reports produced by the previous
+pipeline tasks, are collected into a weblog and exported alongside the final calibrated datasets as
+a single product by hifv exportdata.
+The calibrated science fields were split from the full dataset, trimming the polarisation
+products to the parallel correlations and averaging over frequency and time bins. Averaging over
+frequency alters the uv distribution since 𝑢 = 𝑏 /𝜆, which results in radial smearing. A typical
+maximum limit for frequency bin size Δ𝜈 can be found in terms of the antenna diameter 𝐷 and
+the maximum baseline 𝐵, observing frequency 𝜈, and sensitivity 𝑥 (in the range 1–4, where lower
+values are stricter limits). For high frequency VLA data, the sensitivity was set to 4.
+Δ𝜈 = 𝑥
+
+𝜈𝐷
+4𝐵
+
+(3.1)
+
+For VLA dishes of diameter 25 m, maximum baselines ∼ 1.25×105 m, and a minimum observing
+frequency of 8 GHz, this gives Δ𝜈 ≈ 57 MHz. For channels of width 2 MHz, this corresponds
+channel averaging by a factor of 28.5. Erring on the side of caution, frequency averaging was
+decided over 16 channels. Time averaging can also cause smearing due to the Earth’s rotation,
+with an analogous time bin limit Δ𝑡 in terms of antenna diameter 𝐷, maximum baseline 𝐵,
+sensitivity 𝑥 (in the range 1–3.7), and the angular frequency of Earth’s rotation 𝜔. The maximum
+value for the sensitivity 𝑥 = 3.7 was chosen to match the spectral averaging.
+Δ𝑡 = 𝑥
+
+𝐷
+4𝜔𝐵
+
+(3.2)
+
+With 𝜔 ≈ 7.27 × 10−5 rad s−1 , the maximal time bin is Δ𝑡 ≈ 91 s. The time averaging was chosen
+at 60s based upon this limit. Since these values are independent of a specific observation, the
+Ref eqs same averaging was applied to all datasets.
+(slides
+somewhere?)
+
+36
+
+3.3. CALIBRATION EXCEPTIONS
+
+3.3
+
+Calibration exceptions
+
+Two observing runs, ID 25A-157.sb47856643.eb48084985.60734.6548690162 and
+25A-157.sb47896788.eb48078564.60733.06076180555, required manual intervention during calibration. This was due to noisy and inconsistent amplitude and phase solutions for a
+secondary calibrator, in both datasets, affecting spectral windows 22–31. This resulted in an
+antenna-dependent spread of amplitudes and phases over these spectral windows following the
+final calibration. This was caused by the pipeline selecting a long solution interval despite the
+presence of short-timescale phase variations. This was likely due to high RFI in these spectral
+windows inflating the minimum timescale estimated during hifv solint. To resolve this, a
+short-timescale phase calibration was fitted while excluding spectral windows contaminated with
+RFI to produce a single time-dependent solution per antenna, per correlation. A residual phase
+and amplitude gradient across the spectral windows remained following this correction. A linear
+bandpass solution was iteratively fit to this gradient, excluding outlying points until convergence.
+This phase and bandpass solution was then applied in place of the final complex gain and phase
+solutions to the affected secondary calibrator and science field. This solution was sufficient to
+correct the phase issues in both datasets.
+The observation 25A-157.sb47856643.eb48084985.60734.6548690162 also contained
+a mislabelled secondary calibrator scan. This scan was labelled with the intent for bandpass
+calibration, which caused it to be handled alongside the primary calibrator data. This was fixed
+using the CASA defintent task to set the intent to the correct values.
+
+3.4
+
+Imaging
+
+The collated calibrated datasets were then imaged using CASA’s tclean task. This implements
+the CLEAN algorithm discussed in Section 2.5. There are several important imaging parameters
+that are independent of the source properties, but depend on the instrument configuration and
+scientific objective. For the calibrated observations, test imaging revealed a synthesised elliptical
+beam with a Full Width at Half Maximum (FWHM), defined as the beam width at half the
+peak sensitivity, of approximately 2.7 × 2.2 arcsec. To achieve sufficient spatial sampling, 3–5
+pixels across the beam are recommended. Accordingly, a cell size of 0.5 × 0.5 arcsec was chosen
+for all imaging. The total image size was set to 28 × 32 = 2304 pixels per side to achieve an
+angular diameter of 19.2 × 19.2 arcminutes.8 To prevent radial clipping due to the primary beam
+truncation, the fractional limit pblimit was set to −1 × 10−6 . This angular size captures the full
+minihalo region for all clusters and was sufficiently wide to image any nearby sources causing
+PSF artefacts in the central region.
+8 Imaging is most efficient when the image size is even and factorisable into combinations of 2, 3, and 5 only.
+
+37
+
+CHAPTER 3. CALIBRATION
+These observations require continuum (8–12 GHz) imaging at several angular scales due
+to the relative sizes of AGN and minihalos. As such, the spectral definition mode set to multifrequency synthesis mfs, the deconvolder (minor cycle algorithm) to multi-term (i.e. multi-scale
+when provided scales) multi-frequency synthesis mtmfs (Rau and Cornwell, 2011), and the
+gridder was left as standard due to negligible widefield effects. As the total intensity is of
+interest, Stokes I imaging was used, which averages the two parallel polarisations 𝐼 = 𝑅𝑅+𝐿𝐿
+2
+for an intensity measurement. The gain, or fraction of source flux subtracted from the residual
+during CLEAN cycles, was left at the default of 0.1. These parameters, summarised in Table
+3.3, define the general spatial and spectral sampling and deconvolution methods necessary for
+imaging minihalos.
+Table 3.3: General imaging parameters for tclean used for all imaging.
+Parameter
+Value
+imsize
+2304 × 2304 pixels
+cell
+0.5 × 0.5 arcsec
+pblimit
+−1 × 10−6
+specmode
+mfs
+deconvolver mtmfs
+gridder
+standard
+stokes
+I
+gain
+0.1
+The imaging can be further tuned by changing the weighting of visibilities. Natural
+weighting applies the baseline visibility weights determined during the calibration statwt task.
+This results in a weighting grid across the uv-plane that follows the sampling density. This
+maximises the beam sensitivity, but negatively impacts the PSF. This can result in brighter
+and more widely spread sidelobes convolved into the image, influencing the cleaning process.
+In contrast, uniform weighting normalises the base weights by the total weight of all data at
+each uv coordinate. This results in a close to uniform weighting across the uv plane which
+suppresses PSF sidelobes at the cost of decreased sensitivity. Briggs weighting creates smoothly
+varying scale between the natural and uniform schemes using a robust parameter 𝑟. For 𝑟 = −2
+briggs weighting matches uniform, while 𝑟 = 2 corresponds to natural weighting. This flexibility
+meant that briggs weighting was chosen, and the robust parameter was altered depending on the
+intention of the image. Positive robust values of 0.5 and 1 were used to image the minihalo by
+maximising the synthesised beam sensitivity. Negative robusts of -0.5 and -1 were used when
+imaging AGN.
+To model emission at different angular scales with the mtmfs deconvolver, a list of CLEAN
+scales can be provided. These scales correspond to possible pixel diameters of Gaussian components added to the model. This allows a more complex image to be modelled and is especially
+important to model the extended emission of minihalos. The scales used during imaging were
+38
+
+3.5. SELF-CALIBRATION
+determined based upon the observed scale of emissions, but in general corresponded to zero
+(point source) and powers of two, [0, 2, 4, 8...]. Point sources are a recommended scale to use,
+with the next smallest corresponding to the beam size, which is approximately four pixels for
+these images. Intermediate scales were used during exploratory imaging for some clusters when
+improvements in model quality were observed. The selection of different scales can also be
+adjusted using the smallscalebias, which biases the scale selection towards larger (-1) or
+smaller scales (1). This was occasionally used to assist in modelling compact sources and set to
+0.5.
+The final cleaning parameter is the threshold, which defines the minimum residual level to
+clean to. This was altered depending on the RMS 𝜎 of the residual image and the lower limit was
+set in the range 3–5𝜎 for automated cleaning (∼ 10 𝜇Jy), and close to 𝜎 (∼ 3 𝜇Jy) for manual
+cleaning. For limits close to 𝜎, spurious noise peaks may be incorporated into the model which
+can negatively impact the resulting image. To prevent this masking is usually used to define
+regions of true emission that are then cleaned.
+Masking can be performed manually and interactively, however, automasking is implemented
+for tclean. This has several thresholds (with CASA default), including noisethreshold (5) to
+prevent masking emission near the current residual RMS, sidelobethreshold (1.25) to prevent
+adding bright sidelobes into the mask, negativethreshold (0) to mask negative features, and
+lownoisethreshold (2) to grow the current mask border using binary dilation. Automatic
+masking was generally well-behaved with these parameters, however, the sidelobethreshold
+was increased to values of 2.5 and 5 for some clusters that featured a PSF with bright and frequent
+sidelobes.
+
+3.5
+
+Self-calibration
+
+With this understanding of imaging, the angular resolution and noise levels are then limited by
+residual antenna-based phase and gain errors. These arise from the interpolation from solutions
+at the secondary calibrator sky position to the science target position. The brightness model
+created during the cleaning can be used to fit solutions and improve the calibration model. This is
+called self-calibration as it is an iterative and self-consistent calibration method. Several rounds
+of phase-only calibration is performed for each cluster, which improves the spatial resolution of
+the emission.
+Self-calibration was performed on the joint image produced by all datasets for a cluster. This
+combines higher angular resolution modelling of compact sources from the C-configuration data,
+with the more sensitive flux detection of D-configuration visibilities. The combined model is
+then used to fit phase solutions over the scan interval per antenna, per spectral window, and per
+correlation. This assumes that short time dependencies have already been corrected during the
+39
+
+CHAPTER 3. CALIBRATION
+secondary calibrator. This calibrated data is then used for imaging and a new model is created
+and the process is repeated until the phase solutions converge. This was done in several stages
+for each cluster, with initial images using a negative robust 𝑟 = −0.5, small scales [0, 2], and
+high thresholds 0.1–0.05 mJy to create accurate models of bright and compact sources. Once a
+desirable model was achieved, the robust was swapped to positive 𝑟 = 0.5, larger scales were
+added [0, 2, 4, 8], and the threshold was lowered towards 3𝜎. This process assisted in preventing
+prematurely deep cleaning, which can create model artefacts such as negative point sources
+and virtual sidelobe emission. The parameters discussed in the prior section were adjusted on
+a per-cluster basis in order to obtain physical and accurate models for self-calibration. The
+notes taken and parameters for each cluster are available in the associated repository under
+Image-Processing/<cluster name>/full image.
+
+Between self-calibration rounds, the datasets were assessed for highly flagged spectral
+windows, remaining RFI in visibility amplitudes, and inconsistent phase solutions. Spectral
+windows where less than ∼ 25% of data remained were flagged as they decreased the signalto-noise ratio. Spectral windows where phase solutions did not converge were flagged as
+this indicated that solutions were dominated by noise. The visibilities were also clipped to a
+maximum value to remove remaining spikes, with the threshold in the range 0.1–0.5 mJy based
+on the observed visibilities.
+
+Time variability of AGN was an issue noticed during calibration of some clusters. Due to the
+year offset between the C and D-configuration observations, several bright AGN were observed to
+have significantly different peak fluxes (≈ 20–40%). This resulted in deep negative point sources
+around these AGN as the two flux levels were inconsistent within a single brightness model. Two
+methods were used to correct for this, individual modelling or flux scaling, depending on the
+improvement in imaging obtained. The first method modelled each dataset individually alongside
+the joint image. The individual model of the variable source was then spliced into the joint
+image and applied to the dataset. This allowed the benefits of the joint image to persist for the
+majority of the image, while correcting the model for the variable source. This was best applied
+to localised sources where the boundaries of the splice did not cause spatial discontinuities in
+the model. For variable sources embedded in larger scale emission, such as the minihalo, flux
+scaling was used instead. This also produced an individual model, but fit the peak brightness
+of the variable source. This was then used to scale the emission of the joint image in a region
+around the variable source. This mitigated large discontinuities in the model, but preserved any
+existing negative pixels. This is noted during the results section for clusters that required these
+methods.
+40
+
+3.6. FINAL IMAGING DATASETS
+
+3.6
+
+Final imaging datasets
+
+The calibrated datasets exhibit varying levels of flagging, with D-configuration observations
+most effected. This is worst at frequencies > 10.7 GHz due to broadband ground-based communications create broadband interference, and at ∼ 9.3 GHz from narrowband weather radars. An
+average exposure time of 22% was lost for C-configuration observations, while an average of
+32% was lost for D-configuration. Per cluster losses are summarised in Table 3.4.
+The effective exposure time 𝑇𝑒 𝑓 𝑓 is calculated as the sum of exposure times per integration
+time 𝑇𝑖 , weighted by the unflagged fractional bandwidth 𝑓𝑖, 𝑗 of each polarisation correlation 𝑗
+(normalised by the number of correlations per integration time 𝑐𝑖 ), and the maximum number of
+baselines 𝑁 𝑏 = 𝑁 (𝑁 − 1)/2 for 𝑁 antenna.
+
+
+1 ∑︁ ∑︁ 𝑓𝑖, 𝑗
+𝑇𝑖
+𝑇𝑒 𝑓 𝑓 =
+𝑁𝑏 𝑖
+𝑛𝑖
+𝑗
+
+!
+(3.3)
+
+The single C-configuration observation of A1413 is a notable outlier, with the majority of
+spectral windows completely flagged. This occurred during self-calibration, rather than the
+pipeline, and may be represent the removal of residual RFI. This observation was taken in the
+same block as A1795, Z3146, and RXCJ1115+0129, which do not exhibit the same level of
+flagging. However, it is also 50% shorter in base exposure time to the other clusters, which
+decreases the signal-to-noise ratio. The lack of C-configuration data for A1413 means that
+point source estimates and source subtraction should be interpreted with caution, as flux may be
+missing.
+
+41
+
+1.0
+
+2A0335+096
+A2626
+A1795
+A478
+A1413
+A2204
+RXJ1720+2638
+RXJ2129+0005
+MS1455+2232
+Z3146
+RXCJ1115+0129
+ACTJ0022-0036
+
+Retained fraction
+
+0.8
+0.6
+0.4
+0.2
+0.0
+
+8.0
+4
+8.2
+9
+8.5
+5
+8.8
+1
+9.0
+6
+9.3
+2
+9.5
+7
+9.8
+10 3
+.0
+10 4
+.2
+10 9
+.5
+10 5
+.8
+11 1
+.0
+11 6
+.3
+11 2
+.5
+11 7
+.83
+
+Cluster
+
+CHAPTER 3. CALIBRATION
+
+Frequency (GHz)
+
+1.0
+
+2A0335+096
+A2626
+A1795
+A478
+A1413
+A2204
+RXJ1720+2638
+RXJ2129+0005
+MS1455+2232
+Z3146
+RXCJ1115+0129
+ACTJ0022-0036
+
+Retained fraction
+
+0.8
+0.6
+0.4
+0.2
+0.0
+
+8.0
+4
+8.2
+9
+8.5
+5
+8.8
+1
+9.0
+6
+9.3
+2
+9.5
+7
+9.8
+10 3
+.0
+10 4
+.2
+10 9
+.5
+10 5
+.8
+11 1
+.0
+11 6
+.3
+11 2
+.5
+11 7
+.83
+
+Cluster
+
+(a) C configuration
+
+Frequency (GHz)
+
+(b) D configuration
+
+Figure 3.1: Summary of retained data per cluster following the calibration pipeline and selfcalibration. The results are separated for C-configuration and D-configuration. The fraction
+of retained data is shown as a function of frequency. Binning is done per spectral window and
+averaged with multiple observations weighted by exposure time.
+
+42
+
+3.6. FINAL IMAGING DATASETS
+
+Cluster
+
+Config
+
+Total
+Effective Reduced
+Time (min) Time (min)
+(%)
+
+2A0335+096
+
+C
+D
+
+45.3
+137.0
+
+43.4
+68.8
+
+4.1
+49.8
+
+A1413
+
+C
+D
+
+36.9
+258.4
+
+6.8
+116.3
+
+81.5
+55.0
+
+A1795
+
+C
+D
+
+71.5
+71.5
+
+70.8
+72.3
+
+1.0
+0.0
+
+A2204
+
+C
+D
+
+64.0
+73.2
+
+49.3
+46.0
+
+23.0
+37.2
+
+A2626
+
+C
+D
+
+83.0
+74.7
+
+67.8
+57.1
+
+18.3
+23.6
+
+A478
+
+C
+D
+
+44.5
+249.0
+
+41.9
+174.8
+
+5.9
+29.8
+
+ACTJ0022-0036
+
+C
+D
+
+219.0
+63.9
+
+171.7
+39.1
+
+21.6
+38.8
+
+MS1455+2232
+
+C
+D
+
+61.1
+71.8
+
+57.5
+67.3
+
+5.9
+6.3
+
+RXCJ1115+0129
+
+C
+D
+
+73.1
+73.0
+
+61.4
+49.0
+
+16.0
+32.9
+
+RXJ1720+2638
+
+C
+D
+
+62.2
+71.2
+
+26.5
+36.0
+
+57.3
+49.4
+
+RXJ2129+0005
+
+C
+D
+
+276.2
+129.0
+
+207.7
+79.7
+
+24.8
+38.2
+
+Z3146
+
+C
+D
+
+73.1
+73.0
+
+68.2
+60.4
+
+6.7
+17.2
+
+Table 3.4: Effective exposure time following calibration pipeline and self-calibration. The total
+raw observation time, effective time, and percent lost is given per cluster and configuration.
+
+43
+
+Chapter 4
+
+Analysis Methods
+
+The primary goal of this thesis is to extract reliable flux density measurements of the minihalo
+emisssion. These values are then able to be compared with previous works to estimate the
+spectral index of the emission. With the calibrated datasets, several further steps in the image
+domain are necessary to isolate the diffuse emission from point sources, define the spatial region
+of the emission, and estimate the associated uncertainties. This chapter details the methods used
+to reach a total flux measurement for the minihalo, with the following chapter presenting the
+results per cluster.
+
+4.1
+
+Removal of contaminating sources
+
+Contamination of the minihalo emission can occur in several ways, such as AGN embedded
+within the spatial region of the minihalo and positive or negative radial artefacts from the convolution of the PSF with poorly modelled sources. These bias the total minihalo flux, necessitating
+the removal of contaminating sources. This was achieved by forming a sky model of the emission
+and using the Fourier transformed model to subtract from the observed visibilities. The resulting
+source-subtracted images then depict the minihalo emission without contamination. Unstable
+sources were primarily attributed to time-variability between observation dates, resulting in an
+unphysical model and imaging artefacts. Independent models of the source were created for
+each dataset and subtracted individually, so that the joint image no longer contained the variable
+source. An accurate model of the source is necessary for subtraction, since if the model contains
+minihalo emission, the resulting image will feature a negative bowl where it was removed.
+Conversely, if the model underestimates the flux, the minihalo flux will be artificially peaked and
+the total flux density will be boosted.
+To ensure that the subtraction model does not include diffuse emission, it is desirable to
+remove flux corresponding to large-scale emission. Since baseline length corresponds to spatial
+45
+
+CHAPTER 4. ANALYSIS TOOLS
+scale in the image, removing short baselines will cause the large scale minihalo emission to
+be strongly suppressed in the image. This was achieved by specifying a uvrange in tclean,
+which allows specification of a baseline cutoff. To determine an optimal uv value to perform the
+cutoff, testing was performed on the observations of RXJ1720+2368. The spatial region of this
+minihalo is contaminated with the bright BCG, while a variable AGN to the south west caused
+negative radial spikes that in proximity to the minihalo emission (see Figure 4.1).
+
+26°40'00"
+
+1.00
+
+0.10
+
+Declination
+
+BCG
+
+0.05
+
+36'00"
+
+S1
+
+mJy beam 1
+
+38'00"
+
+0.50
+
+34'00"
+
+0.01
+
+17h20m20s
+
+10s
+
+Right ascension
+
+00s
+
+0.00
+
+Figure 4.1: Calibrated image of RXJ1720+2368, showing minihalo contamination from the
+central unresolved BCG and radial PSF artefacts from a variable AGN (S1). The image has a
+restoring beam of 2.79”×2.51” at a position angle of -25.6° (shown in grey at bottom left). The
+noise RMS is 3.49 𝜇Jy beam−1 and the image was cleaned to a threshold of 3𝜎.
+To evaluate an appropriate cutoff, the lower uv bound was varied and a Gaussian point source
+was fitted to the BCG using the imfit task for each dataset. As this region contains the sum
+of the minihalo and BCG fluxes, there exists a cutoff value for which the BCG emission alone
+remains, and the peak flux will converge to a constant value. The peak flux was used instead
+of the integrated flux as the BCG represents an unresolved point source, though these values
+will also converge as extended emission is removed. Figure 4.2 shows the results of the testing,
+with convergence at baselines > 10 k𝜆.1 The peak values for the D-configuration datasets are
+inconsistent at low cutoffs due to the greater minihalo contamination (from higher brightness
+1As 𝑢 = 𝑏 /𝜆, baseline lengths are often expressed in units of the observing wavelength.
+
+46
+
+4.2. MINIHALO SPATIAL EXTENT
+
+C-config
+
+Peak (mJy beam 1)
+
+1.15
+
+D-config
+
+1.10
+1.05
+1.00
+0.95
+0.90
+0.85
+0.80
+
+0
+
+5
+
+10
+
+15
+
+uv min cut (k )
+
+20
+
+Relative peak flux (D - C) / C (%)
+
+Absolute
+
+1.20
+
+Relative
+
+5
+0
+5
+10
+15
+20
+
+0
+
+5
+
+10
+
+15
+
+uv min cut (k )
+
+20
+
+Figure 4.2: Flux density fit for RXJ1720+2638 BCG as a function of minimum uvrange used
+during imaging. The black vertical line indicates the adopted minimum uvcut. Left Panel:
+Absolute peak flux with 1𝜎 error for each dataset. Right Panel: Relative peak flux density of
+D-configuration to C-configuration.
+sensitivity). This caused the fitted Gaussian to exhibit a low peak and wide spread, boosting the
+integrated flux over the extended region. A minimum cutoff was chosen at 12 k𝜆 to ensure no
+minihalo remained, while minimising the effect on the signal-to-noise ratio.
+A clear difference of approximately 10% in the measured AGN flux exists between the
+D-configuration observations. This may be due to calibration error or true variability. This
+important distinction is discussed in more detail in Section 4.3. The models for AGN subtraction
+used a 12 k𝜆 minimum uv cut, and all models were subtracted on an individual dataset basis to
+prevent under- or over-subtraction due to time-variability.
+
+4.2
+
+Minihalo spatial extent
+
+To estimate the total minihalo flux density, the individual fluxes within the spatial extent of the
+minihalo must be integrated. For valid comparisons with previous studies, the ideal approach
+would use an identical spatial mask. However, these masks are often not available or lack detailed
+information. For these clusters, the spatial extent is instead estimated as the sum of pixels with
+flux > 3𝜎, where the noise 𝜎 was determined from the RMS per beam across the residual image.
+The initial binary selection mask was segmented into separate emission structures. The minihalo
+region was identified and confirmed to be isolated from other discrete sources prior to final
+summation.
+One exception was RXJ1720+2638, as Giacintucci et al. (2014a) defined a mask used for
+calculation of the minihalo emission (see Figure 2b). Furthermore, they categorise a central and
+tail region. This allowed the reconstruction of the mask, which was used in results of this thesis.
+47
+
+CHAPTER 4. ANALYSIS TOOLS
+
+4.3
+
+Total flux density uncertainity
+
+There are three primary sources of error for estimations in the total flux density of minihalo
+emission, due to AGN subtraction 𝜎𝐴𝐺 𝑁 , spatial image noise 𝜎𝑛𝑜𝑖𝑠𝑒 , and calibration error 𝜎𝑐𝑎𝑙 .
+The total uncertainity is then the RMS of the components,
+√︃
+2
+2
+2
+𝜎 = 𝜎𝐴𝐺
+𝑁 + 𝜎𝑛𝑜𝑖𝑠𝑒 + 𝜎𝑐𝑎𝑙
+
+(4.1)
+
+Secondary calibrators and compact AGN used for amplitude and phase calibration can show
+flux density fluctuations between 5–10% at month to year timescales (Kurinsky et al., 2013).
+This is additional to the 3–5% intrinsic uncertainity in the primary calibrators Perley and Butler
+(2017). Any variation in a target source is then the conflation of potential variations in the
+calibrators and errors during calibration. This motivates the inclusion of a systematic calibration
+uncertainty to quantify for fluctuations in the primary and secondary calibrators.
+The error from the subtraction of AGN can be attributed to errors in the imaging. This
+corresponds to the residual RMS per beam during AGN modelling 𝜎𝑟𝑚𝑠,𝐴𝐺 𝑁 , weighted by the
+number of beams covering the AGN. Since these are compact sources, there is only a single
+beam, and the error is simply 𝜎𝐴𝐺 𝑁 = 𝜎𝑟𝑚𝑠,𝐴𝐺 𝑁 . This differs to the estimate used by Giacintucci
+2
+2
+et al. (2014a), where 𝜎𝐴𝐺
+𝑁 = ( 𝐴 𝐴𝐺 𝑁 × 𝐼 𝑀 𝐻 ) with 𝐴 𝐴𝐺 𝑁 the area of the radio galaxy and 𝐼 𝑀 𝐻
+
+the average surface brightness of the minihalo near the source. This makes the conservative
+assumption that the flux of the minihalo is entirely erroneous at the location of the subtraction.
+For a clean subtraction, the former method is more realistic, and was used.
+The image noise from the spatial sum over the minihalo region is calculated as the residual
+RMS per beam of the minihalo image, weighted by the beams in spatial region. The number of
+beams is given by 𝑁 𝑏𝑒𝑎𝑚 = 𝐴 𝑀 𝐻 /𝐴𝑏𝑒𝑎𝑚 , where 𝐴 𝑀 𝐻 is the area of the minihalo and 𝐴𝑏𝑒𝑎𝑚 is
+√
+2
+the restoring beam area. This gives the total image noise as 𝜎𝑛𝑜𝑖𝑠𝑒
+= (𝜎𝑟𝑚𝑠 𝑁 𝑏 𝑒𝑎𝑚 ) 2 .
+Justify
+
+The calibration error 5%
+
+4.4
+
+Sample completion
+
+The completeness of analysis for the observed clusters is provided in 4.1. All calibration has been
+completed, alongside the majority of self calibration. Estimates of the minihalo flux are obtained
+for X clusters. The corresponding results are presented in the following chapter, with a seperate
+section describing the status of clusters where self calibration was not achieved. Incompleteness
+is primarily attributed to time constraints and challenges in the modelling of more complex
+Update after cluster morphology.
+results
+
+48
+
+4.4. SAMPLE COMPLETION
+
+Cluster
+2A0335+096
+A1413
+A1795
+A2204
+A2626
+A478
+ACTJ0022-0036
+MS1455+2232
+RXCJ1115+0129
+RXJ1720+2638
+RXJ2129+0005
+Z3146
+
+Calibration
+
+Self-calibration
+
+Minihalo flux
+
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+Done
+
+Partial
+Done
+No
+Done
+No
+Done
+Done
+Done
+Done
+Done
+Pending
+Pending
+
+No
+Pending
+No
+Pending
+No
+Done
+Pending
+Pending
+Pending
+Done
+Pending
+Pending
+
+Table 4.1: Processing completeness for each cluster, showing the
+status of calibration, self-calibration, and final minihalo flux measurement.
+
+49
+
+Chapter 5
+
+Results
+
+5.1
+
+RXJ1720+2638
+
+RXJ1720+2638 (also known as RXJ1720.1+2638) is a cool core galaxy cluster at 𝑧 = 0.160
+(Owers et al., 2011). Early observations detected the presence of two cold fronts, an edge to the
+southeast and a plateau to the northwest (Mazzotta et al., 2001). This suggested the presence
+of a core dense cold gas cloud (𝑇 ≈ 4 keV) embedded in the outer diffuse and hot ICM (𝑇 ≈ 10
+keV), with the cold fronts likely arising via a minor merger. Weak gravitational lensing studies
+(Okabe et al., 2010) and galaxy density mapping (Owers et al., 2011) revealed the presence of a
+substructure ∼ 550 kpc north of the cluster core. Owers et al. (2011) suggest that a northward
+passage of this structure passing the core to the east, providing the perturbations to the core and
+inducing large scale gas sloshing. RXJ1720+2638 was one of the first two clusters where cold
+fronts and minihalos were found to have a spatial correlation, with minihalo emission bounded
+by the cold fronts of the ICM (Mazzotta and Giacintucci, 2008).
+A detailed spectral study was performed by Giacintucci et al. (2014a), which analysed
+observations at six frequencies from 317 MHz to 8.4 GHz taken by the GMRT and VLA. To
+perform accurate comparison between these frequencies, the baselines range was limited to 1–50
+k𝜆, to enforce a unified sampling of the uv plane. to This noted three primary sources of minihalo
+emission in the core region, the central radio galaxy (BCG, single power-law 𝛼 = 0.87 ± 0.03),
+a head-tail radio galaxy to the northeast with the tail to the south (𝛼 = 1.05 ± 0.04, steepening
+down the tail), and the minihalo emission. The BCG was noted to be unresolved with no jets
+or lobes detected at scales > 1.4 kpc. Higher angular resolution observations by the extended
+Multi-Element Radio Linked Interferometer Network (e-MERLIN) at 4.76 GHz found the BCG
+to exhibit sub-kpc jets (Perrott et al., 2023). The jets extend 0.8 kpc to the east and west, though
+uncertainty in the recovered flux may indicate further undetected extent. Giacintucci et al.
+(2014a) separate the emission into a 160 kpc central region and tail region extending 200 kpc
+to the south. These were found to have spectral indices of 𝛼𝑐 = 1.0 ± 0.1 and 𝛼𝑡 = 1.5 ± 0.1,
+51
+
+CHAPTER 5. RESULTS
+respectively. The core region exhibits a relatively flat spectral index across the extent, while
+spectral steepening is observed along the tail. LOFAR images at 144 MHz support the flat
+spectral index in the core, with steepening across the cold fronts Savini et al. (2019). The spectral
+index for the core is consistent to 4.86 GHz, however, the 8.44 GHz measurement was lower
+than predicted by the single power-law. Although this indicated possible steepening, the 4.86
+GHz and 8.44 GHz observations had much poorer uv sampling, which may have caused flux
+losses from the filtering of large-scale emission. Perrott et al. (2021) perform a high-frequency
+measurement of the central region of the minihalo was made at 15.5 GHz, using the Arcminute
+Microkelvin Imager (AMI). They construct a model of the minihalo in the uv plane to account
+for the spatial filtering, finding the single power-law 𝛼 = 1.0 is consistent to 15.5 GHz.
+
+5.1.1
+
+10 GHz observation
+
+In processing the observations for imaging, two contaminating sources were identified prior to
+minihalo flux estimation. This included the BCG within the minihalo emission and a variable
+AGN to the southwest. These were modelled individually per dataset with a uvcut of 15 k𝜆
+and subtracted. The head-tail source was sufficiently cleaned and tail emission isolated from
+that of the minihalo. A balance of beam sensitivity and PSF suppression was obtained using
+a robust of 1. Scales were set to [0, 4, 8, 16, 32] with a smalscalebias of −0.5. Giacintucci
+et al. (2014a) supply details of the masking region, including the separation of centre and tail
+regions. This allowed a reproduction of these regions for analysis and accurate comparison to
+I also have a previous studies.
+1–50
+klambda
+
+The total minihalo flux was measured as 8.72 ± 0.44 mJy, with the majority 7.76 ± 0.39
+
+image mJy attributed to the central region and only 0.96 ± 0.08 mJy from the tail. The measured flux
+
+densities for relevant sources and regions are provided in Table 5.1. The 10 GHz image is shown
+in Figure 5.1. The spectral index is fit for the total flux, centre, tail, and BCG using values
+measured from Giacintucci et al. (2014a) (excluding 8.46 GHz) and shown in Figure 5.2. The
+spectral index of the central minihalo region was 𝛼𝑐 = 1.07 ± 0.06, with a steeper tail region of
+1.26 ± 0.06. The central results agree well with the previous result, with the tail found to be
+slightly flatter on average.
+The BCG was measured to vary ∼20% over one year (between C and D-configuration
+runs) and ∼10% over one month (subsequent D-configurations). This degree of variation may
+suggest a systematic calibration error between the D-configuration observations. A systematic
+offset of 0.7% was observed in the flux density models of the secondary calibrator for these
+observations, other point sources in the image were measured and no systematic offsets were
+observed. Because of this, and the presence active jets from the BCG, the variation is likely real.
+52
+
+5.2. A478
+Source
+
+Minihalo
+
+Minihalo (Centre) Minihalo (Tail)
+
+Flux (mJy) 8.77 ± 0.44
+
+7.76 ± 0.39
+
+0.96 ± 0.08
+
+BCG
+1.27 ± 0.2
+
+Table 5.1: Flux density obtained for sources in RXJ1720+2638 at 10 GHz. The value for the
+BCG is given as the average of the observed fluxes, with error corresponding to the maximum
+and minimum obtained.
+
+26°39'00"
+
+50.0
+
+37'00"
+
+25.0
+
+Jy beam 1
+
+Declination
+
+38'00"
+
+37.5
+
+36'00"
+
+12.5
+
+17h20m16s
+
+12s
+
+08s
+
+Right ascension
+
+04s
+
+0.0
+
+Figure 5.1: RXJ1720+2638. Point source subtracted 10 GHz observation with restoring beam
+3.52” × 3.17” at position angle -34° and noise 1𝜎 = 3.12 𝜇Jy beam−1 . Contour levels (white)
+are spaced in factors of two starting from 3𝜎. The masks used for flux estimation is shown in
+red, marking the centre (solid) and tail (dotted) regions. The green cross marks the location of
+the subtracted BCG.
+
+5.2
+
+A478
+
+A478 is a nearby cool core cluster at a redshift of 𝑧 = 0.88 (Liu et al., 2024) . Chandra
+observations reveal a relaxed and highly elliptically symmetrical structure, with a central doublelobe BCG (Sun et al., 2003; Bourdin and Mazzotta, 2008). The core temperature is 𝑇 ≈ 1.54 keV,
+increasing to 𝑇 ≈ 7.6 keV at a radius of 260 kpc (Ng and Ueda, 2024). Two small (∼ 10 kpc)
+X-ray cavities to the northeast and southwest are spatially aligned with the lobes of the BCG,
+indicating interaction between the BCG and ICM (Sun et al., 2003). A cold front is located 60
+kpc to the southwest of the cluster (Markevitch et al., 2003).
+53
+
+CHAPTER 5. RESULTS
+
+103
+
+Flux (mJy)
+
+103
+102
+
+minihalo
+fit = 1.09 ± 0.06
+
+102
+
+central part
+fit = 1.07 ± 0.06
+
+101
+
+101
+
+tail
+BCG
+fit = 0.85 ± 0.03
+
+100
+10 2
+
+10 1
+
+100
+
+100
+101
+
+Frequency (GHz)
+
+102
+
+10 2
+
+fit = 1.26 ± 0.06
+
+10 1
+
+100
+
+101
+
+Frequency (GHz)
+
+102
+
+Figure 5.2: RXJ1720+2368 radio spectra between 317 MHz and 10 GHz. Left Panel: Spectrum
+of total minihalo (filled circles) and BCG (empty circles), red diamond denotes the 10 GHz
+measurement. The dotted line represents the minihalo power-law fit, solid line is BCG power-law
+spectrum, neither include the 8.44 GHz value. Grey shading as 1𝜎 error, slope and error are
+given in panel. Right Panel: Spectrum of central (circles) and tail (squares) components. Dashed
+lines are are power-law fits over same range as left panel, grey shading indicates 1𝜎 confidence,
+and slopes are reported.
+In the initial detection of minihalo emission, Giacintucci et al. (2014b) note four several
+nearby radio sources to the minihalo. At 1.4 GHz, this includes the central BCG (S1), a head-tail
+to the east with a tail to the northwest (S4), a second head-tail within the tail of S4 with a tail to
+the northeast, and an unresolved source (S3) to the north of S2 and S4. The last source, S3, is
+likely to be a background source due to lacking optical correlations. Giacintucci et al. (2014b)
+find the minihalo to be slightly extended more to the northeast (𝑅𝑚𝑎𝑥 ∼ 150), compared to the
+other directions (𝑅𝑚𝑖𝑛 ∼ 150 kpc). This blends with the tail of S4, resulting in a large uncertainity
+in the flux estimate, due to difficulty in separating the tail and minihalo emission. They find the
+minihalo emission to be roughly constrained to the southwest cold front and a total flux 16.6 ± 3
+mJy. LOFAR imaging at 144 MHz does not detect the diffuse minihalo emission, putting an
+upper bound on the spectral index of 𝛼 < 1 (Savini et al., 2019). Using archival GMRT data,
+Savini et al. (2019) finds S1 and S4 to have a spectral indices of ∼ 1.1 and ∼ 0.6, respectively,
+between 144 and 610 MHz.
+
+5.2.1
+
+10 GHz observation
+
+The observed minihalo region was much smaller than observed at 1.4 GHz, as to be expected.
+This resulted in only two contaminating sources, S1 and S4. The head-tail AGN doubled in
+brightness in the month between the D-configuration observations, causing severe PSF artefacts
+in the joint image. As such, this source was modelled on a per-dataset basis for the final selfcalibration rounds. This variation was not observed in other point sources and could be attributed
+54
+
+5.3. END
+
+10°29'00"
+
+50.0
+
+26'00"
+
+4h13m32s
+
+28s
+
+24s
+
+Right ascension
+
+20s
+
+Jy beam 1
+
+28'00"
+
+12.5
+
+Declination
+
+25.0
+
+27'00"
+
+37.5
+
+0.0
+
+Figure 5.3: RXJ1720+2638. Point source subtracted 10 GHz observation with restoring beam
+5.55” × 4.96” at position angle -9.7° and noise 1𝜎 = 1.88 𝜇Jy beam−1 . Contour levels (white)
+are spaced in factors of two starting from 3𝜎. The mask used for flux estimation is shown in by
+the dotted red line. The green cross marks the location of the subtracted BCG.
+to a flare. The BCG exhibited time-variability within calibration error over all observations. The
+sources S2 and S3 are detected, but outside the radius of the observed minihalo. Three faint
+compact sources are located between S2 and the minihalo, but were spatially separate from the
+minihalo emission at the 3𝜎 level. Point subtraction was then limited to S1 and S4 (including the
+tail) and used the standard 15 k𝜆 uv cut. The uv cut resulted in some emission remaining from
+S4, but as it was spatially distinct and the artefacts were successfully suppressed, this was left.
+The minihalo was modelled with scales [0, 2, 4, 8, 16], smallscalebias of -0.5, and a robust
+of 1. The masking region was not clearly defined in (Giacintucci et al., 2014b), so the mask used
+for flux estimation was determined by the 3𝜎 region.
+The total minihalo flux was measured as 0.31 ± 0.02 mJy. The flux density of the BCG is
+5.41 ± 0.13 mJy.
+
+5.3
+
+End
+
+Stick one big table of sources here? Ala Table 4 of G14 or Table 9 G19.
+55
+
+

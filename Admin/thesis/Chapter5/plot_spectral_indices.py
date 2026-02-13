@@ -312,15 +312,15 @@ def plot_rxj1720_seds(
 def rxj1720():
     mh_freq = np.array([0.317, 0.617, 1.28, 1.48, 4.86, 8.44, 10])
     mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.50])
-    mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.42])
+    mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.44])
     bcg_flux = np.array([24, 11, 6.9, 6.7, 2.3, 1.4, 1.27])
     bcg_err  = np.array([2, 1, 0.4, 0.3, 0.1, 0.1, 0.2])
     central_freq = mh_freq
     central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.54])
-    central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.38])
+    central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.39])
     tail_freq = mh_freq
     tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 0.96])
-    tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.06])
+    tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.11])
 
     fig, axs = plot_rxj1720_seds(
         minihalo=(mh_freq, mh_flux, mh_err),
