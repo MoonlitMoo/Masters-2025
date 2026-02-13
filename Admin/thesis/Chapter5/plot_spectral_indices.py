@@ -117,33 +117,6 @@ def prepare_plot_band(fit: PowerLawFit,
     return nu_grid, S_fit, S_lower, S_upper
 
 
-def point_deviation_from_fit(fit: PowerLawFit,
-                             nu_meas: float,
-                             S_meas: float,
-                             sigma_meas: float) -> Tuple[float, float, float, float]:
-    """
-    Compare a single measurement against the fit at nu_meas.
-
-    Returns
-    -------
-    S_pred : float
-        Predicted flux from the fit.
-    sigma_pred : float
-        1σ uncertainty from the fit at nu_meas.
-    z_fit : float
-        (S_meas - S_pred) / sigma_pred      — deviation vs. fit uncertainty only.
-    z_combined : float
-        (S_meas - S_pred) / sqrt(sigma_pred^2 + sigma_meas^2) — combined uncertainty.
-    """
-    S_pred = float(fit.predict_S(nu_meas))
-    sigma_pred = float(fit.sigma_S_at(nu_meas))
-    delta = S_meas - S_pred
-    z_fit = delta / sigma_pred if sigma_pred > 0 else np.nan
-    sigma_combined = math.sqrt(sigma_pred**2 + sigma_meas**2)
-    z_combined = delta / sigma_combined if sigma_combined > 0 else np.nan
-    return S_pred, sigma_pred, z_fit, z_combined
-
-
 # --- Helpers ---
 def _scatter_with_errors(ax, f, s, e, *, label=None, facecolor="k", edgecolor="k", marker="o", star_color="r", star_marker="d", star_ms=4.5):
     if f.size > 1:
@@ -265,8 +238,8 @@ def plot_rxj1720_seds(
     # axA.set_title("Total flux of minihalo and BCG")
     axA.set_xlim(0.01, 100)
     axA.set_ylim(0.3, 5000)
-    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
-    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.65, 0.70, "minihalo", transform=axA.transAxes)
+    axA.text(0.63, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
     axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
     axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
 
@@ -297,7 +270,6 @@ def plot_rxj1720_seds(
     axB.text(0.18, 0.28, "tail", transform=axB.transAxes)
     axB.text(0.18, 0.22, _alpha_text(fit_t.alpha, fit_t.sigma_alpha), transform=axB.transAxes)
 
-    # Cosmetics to echo the paper’s feel
     for ax in (axA, axB):
         ax.minorticks_on()
         ax.grid(True)
@@ -311,16 +283,17 @@ def plot_rxj1720_seds(
 # --- RXJ1720+2638 ---
 def rxj1720():
     mh_freq = np.array([0.317, 0.617, 1.28, 1.48, 4.86, 8.44, 10])
-    mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.50])
-    mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.44])
+    mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.61])
+    mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.56])
+    bcg_freq = mh_freq
     bcg_flux = np.array([24, 11, 6.9, 6.7, 2.3, 1.4, 1.27])
     bcg_err  = np.array([2, 1, 0.4, 0.3, 0.1, 0.1, 0.2])
     central_freq = mh_freq
-    central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.54])
-    central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.39])
+    central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.60])
+    central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.52])
     tail_freq = mh_freq
-    tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 0.96])
-    tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.11])
+    tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 1.01])
+    tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.35])
 
     fig, axs = plot_rxj1720_seds(
         minihalo=(mh_freq, mh_flux, mh_err),

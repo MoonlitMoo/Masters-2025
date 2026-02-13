@@ -47,7 +47,7 @@ tail_region = rg.fromtext(tail_region, shape=shape, csys=coords)
 tail_region = rg.difference(tail_region, centre_region)  # Remove centre
 full_region = rg.makeunion(regions={"c": centre_region, "t": tail_region})
 
-sel_region = centre_region
+sel_region = full_region
 os.system(f"cp -r {images[0]}.mask g14_mask.mask")
 ia.open("g14_mask.mask")
 ia.set(0.0, region=rg.complement(sel_region))

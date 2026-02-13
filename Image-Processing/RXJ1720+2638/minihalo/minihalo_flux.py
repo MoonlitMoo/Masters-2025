@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 @dataclass(frozen=True)
 class PowerLawFit:
     """
@@ -41,16 +40,15 @@ class PowerLawFit:
         return 10.0 ** y
 
     def sigma_y_at(self, nu: np.ndarray | float) -> np.ndarray | float:
-        """Uncertainty of y=log10(S) at frequency nu."""
+        """Uncertainty of y=log10(S) at frequency nu. (Logspace)"""
         x = np.log10(nu)
-        # var(y) = [x, 1] @ cov @ [x, 1]^T
         v = np.vstack([np.atleast_1d(x), np.ones_like(np.atleast_1d(x))])  # shape (2, N)
         var_y = (v * (self.cov @ v)).sum(axis=0)
         sig_y = np.sqrt(var_y)
-        return sig_y if np.ndim(x) else float(sig_y)
+        return sig_y if np.ndim(x) else sig_y.item()
 
     def sigma_S_at(self, nu: np.ndarray | float) -> np.ndarray | float:
-        """Uncertainty of S at frequency nu via error propagation."""
+        """Uncertainty of S at frequency nu via error propagation. (Linear space)"""
         S = self.predict_S(nu)
         sig_y = self.sigma_y_at(nu)
         sig_S = np.log(10.0) * S * sig_y
@@ -124,12 +122,14 @@ def point_deviation_from_fit(fit: PowerLawFit,
         (S_meas - S_pred) / sqrt(sigma_pred^2 + sigma_meas^2) — combined uncertainty.
     """
     S_pred = float(fit.predict_S(nu_meas))
-    sigma_pred = float(fit.sigma_S_at(nu_meas))
-    delta = S_meas - S_pred
-    z_fit = delta / sigma_pred if sigma_pred > 0 else np.nan
-    sigma_combined = math.sqrt(sigma_pred**2 + sigma_meas**2)
-    z_combined = delta / sigma_combined if sigma_combined > 0 else np.nan
-    return S_pred, sigma_pred, z_fit, z_combined
+    sigma_y_pred = float(fit.sigma_y_at(nu_meas))
+    sigma_y_meas = float(S_sigma) / (float(S_meas) * math.log(10.0)) 
+    # Logspace uncertainty
+    sigma_y_comb = math.hypot(sigma_y_pred, sigma_y_meas)
+    # Logspace difference
+    y_diff = (math.log10(S_meas) - math.log10(S_pred))
+    # 
+    return 
 
 
 # --- Helpers ---
@@ -250,8 +250,8 @@ def plot_rxj1720_seds(
 
 # --- Data ---
 mh_freq = np.array([0.317, 0.617, 1.28, 1.48, 4.86, 8.44, 10])
-mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.50])
-mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.44])
+mh_flux = np.array([365,   170,   65,    68,    20.3,  6.6, 8.61])
+mh_err  = np.array([58,    12,    4,     5,     1.5,   0.7, 0.56])
 
 bcg_freq = mh_freq
 # Estimated own points now
@@ -259,12 +259,12 @@ bcg_flux = np.array([24, 11, 6.9, 6.7, 2.3, 1.4, 1.27])
 bcg_err  = np.array([2, 1, 0.4, 0.3, 0.1, 0.1, 0.2])
 
 central_freq = mh_freq
-central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.54])
-central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.39])
+central_flux = np.array([286, 144, 59, 60, 18.7, 6.2, 7.60])
+central_err  = np.array([38, 11, 3, 5, 1.3, 0.6, 0.52])
 
 tail_freq = mh_freq
-tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 0.96])
-tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.11])
+tail_flux = np.array([79, 26, 6, 8, 1.6, 0.2, 1.01])
+tail_err  = np.array([6, 2, 1, 1, 0.5, 0.2, 0.35])
 
 # --- Recreate G14 plot with our points ---
 plot_rxj1720_seds(
@@ -276,36 +276,38 @@ plot_rxj1720_seds(
 )
 
 
-# --- Total minihalo only ---
-fit = fit_powerlaw(mh_freq, mh_flux, mh_err)
+# --- Check our point against previous spectral index ---
+for flux, err, label in zip([mh_flux, central_flux, tail_flux], [mh_err, central_err, tail_err], ["Total", "Centre", "Tail"]):
+    # Fit the power law excluding 8.44 GHz and ours
+    fit = fit_powerlaw(mh_freq[:-2], flux[:-2], err[:-2])
 
-# Prepare a plotting band (extend a touch below min for nicer look)
-nu_min = 10 ** (np.log10(mh_freq.min()) - 0.1)
-nu_max = 12.0
-nu_grid, S_fit, S_lower, S_upper = prepare_plot_band(fit, nu_min, nu_max, n_points=400)
+    # Prepare a plotting band (extend a touch below min for nicer look)
+    nu_min = 10 ** (np.log10(mh_freq.min()) - 0.1)
+    nu_max = 12.0
+    nu_grid, S_fit, S_lower, S_upper = prepare_plot_band(fit, nu_min, nu_max, n_points=400)
 
-# Example single-point comparison @ 10 GHz
-nu_meas = mh_freq[-1]
-S_meas = mh_flux[-1]
-sigma_meas = mh_err[-1]
-S_pred, sigma_pred, z_fit, z_combined = point_deviation_from_fit(fit, nu_meas, S_meas, sigma_meas)
+    # Single-point comparison @ 10 GHz
+    nu_meas = mh_freq[-1]
+    S_meas = flux[-1]
+    sigma_meas = err[-1]
+    S_pred, sigma_pred, = fit.predict_S(nu_meas), fit.sigma_S_at(nu_meas)
 
-# Plot
-plt.figure(figsize=(7.5, 5.5))
-plt.errorbar(mh_freq[:-1], mh_flux[:-1], yerr=mh_err[:-1], fmt='o', label="G14 + 1σ", capsize=3)
-plt.plot(nu_grid, S_fit, '-', label="Weighted fit (power law)")
-plt.fill_between(nu_grid, S_lower, S_upper, alpha=0.25, label="Fit 1σ band")
-plt.errorbar(nu_meas, S_meas, yerr=sigma_meas, fmt='*', c='r', ecolor='k', label="Us =)", capsize=3)
-plt.xscale('log')
-plt.yscale('log')
-plt.xlabel("Frequency (GHz)")
-plt.ylabel("Flux density (mJy)")
-plt.title("RX J1720.1+2638 Total Minihalo Flux\nWeighted power-law fit (G14) and 10 GHz measurement")
-plt.legend()
-plt.tight_layout()
-plt.savefig("minihalo_fit.png")
+    print(f"Minihalo {label}")
+    print(f"alpha (<8.44 Ghz) = {fit.alpha:.3f} ± {fit.sigma_alpha:.3f}")
+    print(f"S_10GHz(pred) = {S_pred:.3f} ± {sigma_pred:.3f} mJy")
+    print(f"S_10GHz(meas) = {S_meas:.3f} ± {sigma_meas:.3f} mJy mJy  →  Δ = {S_meas - S_pred:.4f} mJy")
 
-# Console summary
-print(f"alpha = {fit.alpha:.3f} ± {fit.sigma_alpha:.3f}")
-print(f"S_10GHz(pred) = {S_pred:.3f} ± {sigma_pred:.3f} mJy")
-print(f"S_10GHz(meas) = {S_meas:.3f} mJy  →  Δ = {S_meas - S_pred:.4f} mJy,  z_fit = {z_fit:.2f},  z_combined = {z_combined:.2f}")
+    # Plot
+    plt.figure(figsize=(7.5, 5.5))
+    plt.errorbar(mh_freq[:-1], flux[:-1], yerr=err[:-1], fmt='o', label="G14 + 1σ", capsize=3)
+    plt.plot(nu_grid, S_fit, '-', label="Weighted fit (power law)")
+    plt.fill_between(nu_grid, S_lower, S_upper, alpha=0.25, label="Fit 1σ band")
+    plt.errorbar(nu_meas, S_meas, yerr=sigma_meas, fmt='*', c='r', ecolor='k', label="10 GHz Meas.", capsize=3)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel("Frequency (GHz)")
+    plt.ylabel("Flux density (mJy)")
+    plt.title("RX J1720.1+2638 Total Minihalo Flux\nWeighted power-law fit (G14) compared to 10 GHz measurement")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f"minihalo_fit_{label.lower()}.png")
