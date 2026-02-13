@@ -1,0 +1,31 @@
+# Input flux measurements
+# -----------------------
+ Dataset     Position  Flux (mJy)  Error (mJy)
+ cconfig Minihalo AGN      3.0940       0.0210
+ cconfig           S2      0.3160       0.0450
+ cconfig           S3      0.1350       0.0150
+ cconfig           S4      0.1570       0.0210
+dconfig1 Minihalo AGN      3.1750       0.0360
+dconfig1           S2      0.1830       0.0190
+dconfig1           S3      0.1174       0.0037
+dconfig1           S4      0.2170       0.0120
+dconfig2 Minihalo AGN      2.6220       0.0360
+dconfig2           S2      0.3930       0.0250
+dconfig2           S3      0.0920       0.0110
+dconfig2           S4      0.0440       0.0160
+
+# Calculated statistics 
+# -----------------------
+    Position  N  S_mean_mJy  sigma_final_mJy  sigma_formal_mJy  rms_scatter_mJy
+Minihalo AGN  3    3.014831         0.176181          0.016199         0.305154
+          S2  3    0.265584         0.065316          0.014339         0.113130
+          S3  3    0.115864         0.012504          0.003415         0.021657
+          S4  3    0.155114         0.051929          0.008731         0.089944
+
+# Per-source flux summary
+# Weighted mean with conservative uncertainty
+# --------------------------------------------
+Minihalo AGN : 3.0148 ± 0.1762 mJy (N=3)
+        S2 : 0.2656 ± 0.0653 mJy (N=3)
+        S3 : 0.1159 ± 0.0125 mJy (N=3)
+        S4 : 0.1551 ± 0.0519 mJy (N=3)

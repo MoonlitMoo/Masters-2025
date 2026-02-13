@@ -1,0 +1,31 @@
+# Input flux measurements
+# -----------------------
+ Dataset     Position  Flux (mJy)  Error (mJy)
+ cconfig    Head-Tail      0.5900       0.0730
+ cconfig            M      0.1700       0.0210
+ cconfig Minihalo AGN      5.3420       0.0130
+ cconfig           TL      0.2880       0.0110
+dconfig1    Head-Tail      0.6193       0.0056
+dconfig1            M      0.1577       0.0021
+dconfig1 Minihalo AGN      5.4710       0.0140
+dconfig1           TL      0.2646       0.0019
+dconfig2    Head-Tail      1.1580       0.0210
+dconfig2            M      0.2208       0.0026
+dconfig2 Minihalo AGN      5.4120       0.0120
+dconfig2           TL      0.3742       0.0029
+
+# Calculated statistics 
+# -----------------------
+    Position  N  S_mean_mJy  sigma_final_mJy  sigma_formal_mJy  rms_scatter_mJy
+   Head-Tail  3    0.654709         0.207663          0.005396         0.359683
+           M  3    0.182536         0.019314          0.001629         0.033452
+Minihalo AGN  3    5.405699         0.037331          0.007461         0.064659
+          TL  3    0.297322         0.034322          0.001573         0.059447
+
+# Per-source flux summary
+# Weighted mean with conservative uncertainty
+# --------------------------------------------
+ Head-Tail : 0.6547 ± 0.2077 mJy (N=3)
+         M : 0.1825 ± 0.0193 mJy (N=3)
+Minihalo AGN : 5.4057 ± 0.0373 mJy (N=3)
+        TL : 0.2973 ± 0.0343 mJy (N=3)

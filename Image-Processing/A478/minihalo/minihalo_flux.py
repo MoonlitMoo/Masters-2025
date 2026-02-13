@@ -60,7 +60,7 @@ def plot_seds(
 # --- Data ---
 mh_freq = np.array([1.40, 10])
 mh_flux = np.array([16.6, 0.31])
-mh_err  = np.array([3, 0.018])
+mh_err  = np.array([3, 0.029])
 
 bcg_freq = np.array([1.4, 4.9, 10])
 bcg_flux = np.array([31, 9.6, 5.41])

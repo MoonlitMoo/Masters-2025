@@ -71,3 +71,5 @@
 **/*.fits
 /Admin/thesis/Chapter5/vla_images/rxj1720_masks/
 /Admin/thesis/Chapter4/fluxboot_secondary_fits/
+/Image-Processing/RXJ1720+2638/Lband/
+**/*.pbcor.workdirectory/

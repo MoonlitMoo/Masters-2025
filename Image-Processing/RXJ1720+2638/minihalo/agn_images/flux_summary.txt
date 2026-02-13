@@ -1,0 +1,26 @@
+# Input flux measurements
+# -----------------------
+ Dataset  Position  Flux (mJy)  Error (mJy)
+ cconfig       agn      1.1350       0.0200
+ cconfig head-tail      0.5660       0.0350
+ cconfig     right      0.5590       0.0210
+dconfig1       agn      1.2710       0.0350
+dconfig1 head-tail      0.6410       0.0350
+dconfig1     right      1.0918       0.0050
+dconfig2       agn      1.3870       0.0190
+dconfig2 head-tail      0.6950       0.0290
+dconfig2     right      0.9802       0.0051
+
+# Calculated statistics 
+# -----------------------
+ Position  N  S_mean_mJy  sigma_final_mJy  sigma_formal_mJy  rms_scatter_mJy
+      agn  3    1.267932         0.072867          0.012818         0.126209
+head-tail  3    0.642058         0.037835          0.018825         0.065532
+    right  3    1.023673         0.192550          0.003520         0.333506
+
+# Per-source flux summary
+# Weighted mean with conservative uncertainty
+# --------------------------------------------
+       agn : 1.2679 ± 0.0729 mJy (N=3)
+ head-tail : 0.6421 ± 0.0378 mJy (N=3)
+     right : 1.0237 ± 0.1925 mJy (N=3)
