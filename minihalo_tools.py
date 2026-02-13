@@ -110,13 +110,15 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, agn_err
     Parameters
     ----------
     image : str
-        The image to use (without .image.tt0 suffix)
+        The PB-corrected image to use (without pbcor..image.tt0 suffix)
     output_image : str
         The path to use for the masked image (without .image.tt0 suffix).
     mask : ndarray, default = None
         An optional mask to use instead of calculating the contour.
     agn_err : int, default = None
         The error per beam of the agn subtraction.
+    agn_region : str or list of str
+        The regions where subtraction was performed.
     cleanup : bool, default=False
         Whether to remove the masked image at the end.
     verbose : bool, default=False
@@ -131,19 +133,17 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, agn_err
     sigma : float
         The sigma used for the thresholding of the minihalo in Jy
     """
-    image_file = f"{image}.image.tt0"
+    image_file = f"{image}.pbcor.image.tt0"
     residual_file = f"{image}.residual.tt0"
     output_file = f"{output_image}.image.tt0"
-
+    pixel_area = 0.5 ** 2  # Pixel size is const 0.5" sq
+    
     # Get data from the image file. We need the raw data, beam area (in arcsec2), and the intensity around the agn.
     ia.open(image_file)
     beam_area = ia.beamarea()['arcsec2']
     pix = ia.getchunk()
-    if agn_err is None:
-        # Get the average value from the image of the minihalo and assume it's all bad
-        # Estimate the region as a square the same area as the beam.
-        agn_region = f"centerbox [[{agn_region}], [{np.sqrt(beam_area)}arcsec, {np.sqrt(beam_area)}arcsec]]"
-        agn_err = np.average(ia.getregion(region=agn_region))
+    ia_shape = shape=ia.shape()
+    ia_csys = csys=ia.coordsys().torecord()
     ia.close()
 
     # Get the RMS using the residuals.
@@ -167,17 +167,25 @@ def get_minihalo_flux_density(image: str, output_image: str, mask: None, agn_err
     res = imstat(output_file)
     flux = res["flux"][0]
 
-    # Calculate the error following G14.
+    # Calculate the total error following G14.
     # Calibration error is ~5%, multiply that to result to get effect on the flux
     cal_error = 0.05 * flux
     # Noise per beam weighted by number of beams. Pixel size is constant, but we need to calculate the area of the mask.
-    pixel_area = 0.5 ** 2
     n_beams = (np.sum(mask) * pixel_area) / beam_area
     noise_error = sigma * np.sqrt(n_beams)
-    # AGN subtraction error and the approximate area.
-    # Using the G14 agn size as <1.4 kpc this is ~0.5", amusing same as pixel. Maybe use beam size instead?
-    n_beams_agn = (0.5 ** 2) / beam_area
-    sub_error = agn_err * np.sqrt(n_beams_agn)
+    # AGN subtraction error. Sum of the average value per region, times the number of beams
+    sub_regions = agn_region if isinstance(agn_region, list) else [agn_region]  # Cast to list
+    ia.open(image_file)
+    sub_error = 0
+    for r in sub_regions:
+        reg = rg.fromtext(r, shape=ia_shape, csys=ia_csys)
+        res = ia.statistics(region=reg, list=False)
+        npix, avg = res['npts'][0], res['mean'][0]
+        n_beams = npix * pixel_area / beam_area
+        sub_error += n_beams * avg
+        if verbose:
+            print(f"Error of region {r} was {avg * n_beams:1.2e} Jy from {avg:1.2e} Jy/beam for {n_beams:1.2g} beams ")
+    ia.close()
     error = np.sqrt(cal_error ** 2 + noise_error ** 2 + sub_error ** 2)
     if verbose:
         print(f"Flux {flux:1.2e} +/- {error:1.2e}")
@@ -302,10 +310,7 @@ def _get_flux_from_log(log):
     with open(log, "r") as f:
         for l in f.readlines():
             if "Integrated:" in l:
-            # if "flux density" in l:
                 return _read_log_value(l)
-            # elif "Integrated:" in l:
-            #     return read_log_value(l)
     return np.nan, np.nan
 
 
@@ -449,8 +454,8 @@ def check_point_flux(datasets, regions, labels, clean_params: dict = {},
             ax.errorbar(group["Position"], group["Flux (mJy)"], yerr=group["Error (mJy)"],
                         fmt='o-', capsize=4, label=dataset)
         ax.set_xlabel("Position")
-        ax.set_ylabel("Flux (mJy)")
-        ax.set_title("Flux Comparison by Dataset and Position")
+        ax.set_ylabel("Integrated Flux (mJy)")
+        ax.set_title("Flux Comparison by Dataset and Source")
         ax.legend(title="Dataset")
         ax.tick_params(axis='x', rotation=45)
 
@@ -482,7 +487,7 @@ def check_point_flux(datasets, regions, labels, clean_params: dict = {},
             ax2.set_title('Relative Difference vs "cconfig"')
             ax2.tick_params(axis='x', rotation=45)
             ax2.legend(title="Dataset")
-            plt.suptitle("Integrated Flux for point sources between datasets (5.5 arcsec diameter)")
+            plt.suptitle("Point source flux variability by observation")
 
             plt.tight_layout()
             plt.show()
@@ -519,13 +524,13 @@ class PowerLawFit:
     sigma_alpha: float
     sigma_b: float
 
-    def predict_S(self, nu: np.ndarray | float) -> np.ndarray | float:
+    def predict_S(self, nu: np.ndarray) -> np.ndarray:
         """Predict S(nu) in mJy."""
         x = np.log10(nu)
         y = self.b + self.a * x
         return 10.0 ** y
 
-    def sigma_y_at(self, nu: np.ndarray | float) -> np.ndarray | float:
+    def sigma_y_at(self, nu: np.ndarray) -> np.ndarray:
         """Uncertainty of y=log10(S) at frequency nu."""
         x = np.log10(nu)
         # var(y) = [x, 1] @ cov @ [x, 1]^T
@@ -534,7 +539,7 @@ class PowerLawFit:
         sig_y = np.sqrt(var_y)
         return sig_y if np.ndim(x) else float(sig_y)
 
-    def sigma_S_at(self, nu: np.ndarray | float) -> np.ndarray | float:
+    def sigma_S_at(self, nu: np.ndarray) -> np.ndarray:
         """Uncertainty of S at frequency nu via error propagation."""
         S = self.predict_S(nu)
         sig_y = self.sigma_y_at(nu)
