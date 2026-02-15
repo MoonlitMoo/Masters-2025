@@ -4,6 +4,7 @@ from typing import Callable, Tuple, Optional
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator, NullLocator, ScalarFormatter
 from dataclasses import dataclass
 
 f_scale = 1.0
@@ -118,8 +119,8 @@ def prepare_plot_band(fit: PowerLawFit,
 
 
 # --- Helpers ---
-def _scatter_with_errors(ax, f, s, e, *, label=None, facecolor="k", edgecolor="k", marker="o", star_color="r", star_marker="d", star_ms=4.5):
-    if f.size > 1:
+def _scatter_with_errors(ax, f, s, e, *, label=None, do_star=True, facecolor="k", edgecolor="k", marker="o", star_color="r", star_marker="d", star_ms=4.5):
+    if do_star:
         ax.errorbar(
             f[:-1], s[:-1], yerr=e[:-1],
             fmt=marker, mec=edgecolor, mfc=facecolor,
@@ -127,13 +128,20 @@ def _scatter_with_errors(ax, f, s, e, *, label=None, facecolor="k", edgecolor="k
             label=label  # keep the legend on the bulk points
         )
 
-    # Last point is own
-    ax.errorbar(
-        f[-1], s[-1], yerr=e[-1],
-        fmt=star_marker, mec=star_color, mfc=star_color,
-        ecolor=edgecolor, elinewidth=1.0, ms=star_ms, lw=0.0, capsize=3,
-        label=None  # avoid duplicate legend entry
-    )
+        # Last point is own
+        ax.errorbar(
+            f[-1], s[-1], yerr=e[-1],
+            fmt=star_marker, mec=star_color, mfc=star_color,
+            ecolor=edgecolor, elinewidth=1.0, ms=star_ms, lw=0.0, capsize=3,
+            label=None  # avoid duplicate legend entry
+        )
+    else:
+        ax.errorbar(
+            f, s, yerr=e,
+            fmt=marker, mec=edgecolor, mfc=facecolor,
+            ecolor=edgecolor, elinewidth=1.0, ms=4.5, lw=0.0, capsize=3,
+            label=label  # keep the legend on the bulk points
+        )
 
 
 def _fit_line(ax, fit: PowerLawFit, fmin: float, fmax: float, *, ls="--", color="k", lw=1.0, n=200):
@@ -303,4 +311,120 @@ def rxj1720():
         savepath="rxj1720_seds.pdf",
     )
 
-rxj1720()
+def plot_a478_seds(
+    *,
+    # Panel (a)
+    minihalo: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    bcg: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    # Panel (b)
+    subband: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    subband_agn: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    fig_size=(9, 4),
+    savepath: Optional[str] = None,
+):
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=fig_size)
+
+    # ---------- Panel (a): minihalo + BCG + power-laws ----------
+    f_mh, s_mh, e_mh = minihalo
+    f_bcg, s_bcg, e_bcg = bcg
+
+    fit_mh = fit_powerlaw(f_mh, s_mh, e_mh)
+    fit_bcg = fit_powerlaw(f_bcg, s_bcg, e_bcg)
+
+    _scatter_with_errors(axA, f_mh, s_mh, e_mh, facecolor="k", edgecolor="k")
+    _scatter_with_errors(axA, f_bcg, s_bcg, e_bcg, facecolor="w", edgecolor="k")
+    
+    # Fit lines (dashed) spanning the panel’s frequency range
+    fmin_a = 0.025  # in GHz
+    fmax_a = 30
+    _fit_with_band(axA, fit_mh, fmin_a, fmax_a)
+    _fit_with_band(axA, fit_bcg, fmin_a, fmax_a, ls="-", lw=1.0)
+    # Add alpha = 1 upper limit from Savini
+    x_points = np.logspace(np.log10(fmin_a), np.log10(fmax_a), 400)
+    axA.plot(x_points, f_mh[0]*s_mh[0] * x_points ** -1, c='r')
+    
+    axA.set_xscale("log")
+    axA.set_yscale("log")
+    axA.set_xlabel("Frequency (GHz)")
+    axA.set_ylabel("Flux (mJy)")
+    # axA.set_title("Total flux of minihalo and BCG")
+    axA.set_xlim(1, 20)
+    axA.set_ylim(0.2, 1000)
+    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
+    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
+    axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
+
+    # ---------- Panel (b): Subbands ----------
+    fit_sb = fit_powerlaw(*subband)
+    fit_sb_agn = fit_powerlaw(*subband_agn)
+    _scatter_with_errors(axB, *subband, facecolor="k", edgecolor="k", do_star=False)
+    _scatter_with_errors(axB, *subband_agn, facecolor="w", edgecolor="k", do_star=False)
+    
+    # Fits
+    _fit_with_band(axB, fit_mh, fmin_a, fmax_a, ls="--")
+    _fit_with_band(axB, fit_bcg, fmin_a, fmax_a, ls='-')
+    _fit_with_band(axB, fit_sb, fmin_a, fmax_a, ls="-.")
+    _fit_with_band(axB, fit_sb_agn, fmin_a, fmax_a, ls="-.")
+    axB.plot(x_points, f_mh[0]*s_mh[0] * x_points ** -1, c='r')
+
+    # Values
+    axB.text(0.25, 0.50, "sub-band", transform=axB.transAxes)
+    axB.text(0.23, 0.44, _alpha_text(fit_sb.alpha, fit_sb.sigma_alpha), transform=axB.transAxes)
+    axB.text(0.65, 0.75, "sub-band BCG", transform=axB.transAxes)
+    axB.text(0.63, 0.69, _alpha_text(fit_sb_agn.alpha, fit_sb_agn.sigma_alpha), transform=axB.transAxes)
+
+    axB.set_xscale("log")
+    axB.set_yscale("log")
+    axB.set_xlabel("Frequency (GHz)")
+    axB.set_ylabel("")
+    # axB.set_title("Sub-band flux of minihalo and BCG")
+    axB.set_xlim(7, 13)
+    axB.set_ylim(0.1, 10)
+    
+    # Cosmetic
+    for ax in (axA, axB):
+        ax.grid(True)
+    fig.tight_layout(w_pad=1.5)
+    axA.xaxis.set_major_locator(FixedLocator([1, 2, 5, 10, 20]))
+    axA.xaxis.set_major_formatter(ScalarFormatter())
+    axA.xaxis.set_minor_locator(NullLocator())
+    axB.xaxis.set_major_locator(FixedLocator([8, 10, 12]))
+    axB.xaxis.set_major_formatter(ScalarFormatter())
+    axB.xaxis.set_minor_locator(NullLocator())
+
+    if savepath:
+        fig.savefig(savepath, dpi=300, bbox_inches="tight")
+    return fig
+
+# --- A478 ---
+def a478():
+    mh_freq = np.array([1.40, 10])
+    mh_flux = np.array([16.6, 0.31])
+    mh_err  = np.array([3, 0.029])
+
+    bcg_freq = np.array([1.4, 4.9, 10])
+    bcg_flux = np.array([31, 9.6, 5.41])
+    bcg_err  = np.array([1.6, 0.5, 0.13])
+
+    subband_freq = np.array([8.5, 9.5, 10.5, 11.5])
+    subband_flux = np.array([0.52, 0.35, 0.26, 0.17])
+    subband_err = np.array([0.06, 0.03, 0.03, 0.08])
+
+    subband_agn_freq = np.array([8.5, 9.5, 10.5, 11.5])
+    subband_agn_flux = np.array([6.03, 5.53, 5.15, 4.75])
+    subband_agn_err = np.array([0.02, 0.02, 0.02, 0.02])
+
+    # --- Plot SED ---
+    plot_a478_seds(
+        minihalo=(mh_freq, mh_flux, mh_err),
+        bcg=(bcg_freq, bcg_flux, bcg_err),
+        subband=(subband_freq, subband_flux, subband_err),
+        subband_agn=(subband_agn_freq, subband_agn_flux, subband_agn_err),
+        savepath="a478_seds.pdf",
+    )
+
+
+
+# rxj1720()
+a478()

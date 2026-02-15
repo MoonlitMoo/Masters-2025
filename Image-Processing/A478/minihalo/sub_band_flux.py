@@ -10,7 +10,7 @@ from matplotlib.lines import Line2D
 OUTPUT_DIR = "subband/flux_images"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-images = [im.split('.image.tt0')[0] for im in os.listdir("subband/images") if ".image.tt0" in im]
+images = [im.split('.pbcor.image.tt0')[0] for im in os.listdir("subband/images") if ".pbcor.image.tt0" in im]
 masks = []
 
 # Get all the different masks
@@ -43,8 +43,7 @@ error = []
 sigma = []
 for im in images:
     out_img = f'{OUTPUT_DIR}/{im.split(".image.")[0]}_masked'
-    agn_reg = ["circle[[4h13m38.37s, 10d28m08.54s], 1.25arcsec]",
-           "circle[[4h13m25.28s, 10d27m54.5s], 5arcsec]"]
+    agn_reg = ["circle[[4h13m25.28s, 10d27m54.5s], 2.5arcsec]"]
     f, e, s = get_minihalo_flux_density(f"subband/images/{im}", out_img, mask=base_mask, agn_err=1.56e-5, agn_region=agn_reg, verbose=True)
     flux.append(f)
     error.append(e)

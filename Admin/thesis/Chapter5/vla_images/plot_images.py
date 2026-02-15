@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
 from matplotlib.colors import FuncNorm
 from matplotlib.ticker import MaxNLocator, AutoMinorLocator
-from matplotlib.patches import Ellipse
+from matplotlib.patches import Ellipse, Circle
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
@@ -500,15 +500,23 @@ def twoA0335():
     # export_fits(full_img, fits_file)
     sigma = 2.52e-06  # get_threshold(full_img)
     fig, ax, wcs = plot_fits(  # 4.14x3.32 arcsec, -9.9
-        fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.001, 
+        fits_file, rms=sigma, zoom=4.5, scale="mjy", colour_scale="asinh", alpha=0.001, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=0.716, length=50)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=0.716, length=40)
     annotate_arrow_label_pixel(ax, 1150, 1145, "S1", text_offset_pix=(-10, -60))
     annotate_arrow_label_pixel(ax, 1164, 1164, "S2", text_offset_pix=(30, 0))
     annotate_arrow_label_pixel(ax, 1070, 1115, "S3", text_offset_pix=(-40, -40))
-    annotate_arrow_label_pixel(ax, 1120, 1167, "E Lobe", text_offset_pix=(-80, 20))
-    annotate_arrow_label_pixel(ax, 1175, 1137, "W Lobe", text_offset_pix=(80, -20))
+    annotate_arrow_label_pixel(ax, 1120, 1167, "NE Lobe", text_offset_pix=(-80, 20))
+    annotate_arrow_label_pixel(ax, 1175, 1137, "SW Lobe", text_offset_pix=(80, -20))
+    # Annotate fossil + relic lobes
+    def annotate_circle(ax, x_pix, y_pix, radius_pix, **kwargs):
+        circle = Circle((x_pix, y_pix), radius_pix, fill=False, **kwargs)
+        ax.add_patch(circle)
+    rad_px = 35 / 0.716  # 35 kpc diam / kpc per " * 2 px per " / 2 = rad
+    annotate_circle(ax, 1070, 1110, rad_px, color='r')
+    annotate_circle(ax, 1230, 1190, rad_px, color='r')
+    annotate_circle(ax, 1320, 1280, rad_px*1.4, color='r')
     plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
     
     # Make subtracted image
@@ -520,13 +528,16 @@ def twoA0335():
         fits_file, rms=sigma, colour_scale="asinh", alpha=0.3, zoom=6, beam_detail="flat")
     # Annotate mask
     # export_fits(mask_img, mask_file)
-    annotate_mask_contour(ax, wcs, mask_file)
+    # annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=0.716, length=25)
     annotate_cross(ax, "3h38m41.4s", "9d58m17.5s")
     annotate_cross(ax, "3h38m40.6s", "9d58m11.6s")
     annotate_cross(ax, "3h38m39.9s", "9d58m07.3s")
     annotate_cross(ax, "3h38m40.3s", "9d58m17.9s")
+    # Annotate fossil lobes
+    annotate_circle(ax, 1070, 1110, rad_px, color='r')
+    annotate_circle(ax, 1230, 1190, rad_px, color='r')
     annotate_arrow_label_pixel(ax, 1070, 1120, "S3", text_offset_pix=(-40, 20))
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
@@ -545,7 +556,7 @@ def a478():
         fits_file, rms=sigma, zoom=2, scale="mjy", colour_scale="asinh", alpha=0.001, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=150)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.646, length=150)
     annotate_arrow_label_pixel(ax, 1165, 1165, "S1", text_offset_pix=(60, 60))
     annotate_arrow_label_pixel(ax, 970, 1250, "S2", text_offset_pix=(60, 60))
     annotate_arrow_label_pixel(ax, 850, 1340, "S3", text_offset_pix=(-60, 60))
@@ -562,7 +573,7 @@ def a478():
     # export_fits(f"{BASE_MASTERS_DIR}/Image-Processing/A478/minihalo/significance.mask", mask_file)
     annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.612, length=50)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.646, length=50)
     annotate_cross(ax, "4h13m25.29s", "10d27m54.6s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 

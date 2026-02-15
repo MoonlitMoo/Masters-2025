@@ -545,7 +545,29 @@ class PowerLawFit:
         sig_y = self.sigma_y_at(nu)
         sig_S = np.log(10.0) * S * sig_y
         return sig_S
+    
+    @staticmethod
+    def from_existing(alpha, sigma_alpha, nu0, S0, sigma_S0=None):
+         # log10(S) = a*log10(nu) + b, and S = beta * nu^{-alpha}
+        a = -alpha
+        x0 = np.log10(nu0)
+        y0 = np.log10(S0)
+        b = y0 - a * x0
+        beta = 10 ** b
+        
+        if sigma_S0 is None:
+            var_logS0 = 0.0
+        else:
+            # propagate to log10: sigma_log10(S) = (sigma_S / S) / ln(10)
+            var_logS0 = (sigma_S0 / S0 / np.log(10.0)) ** 2
+        
+        var_a = sigma_alpha**2
+        var_b = var_logS0 + (x0**2) * var_a
+        sigma_b = np.sqrt(var_b)
+        cov_ab = -x0 * var_a
+        cov = np.array([[var_a,  cov_ab], [cov_ab, var_b]], dtype=float)
 
+        return PowerLawFit(a=a, b=b, cov=cov, alpha=alpha, beta=beta, sigma_alpha=sigma_alpha, sigma_b=sigma_b)
 
 def fit_powerlaw(freq: np.ndarray, flux: np.ndarray, flux_err: np.ndarray) -> PowerLawFit:
     """

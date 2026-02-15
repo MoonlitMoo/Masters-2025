@@ -11,43 +11,41 @@ import matplotlib.pyplot as plt
 def plot_seds(
     *,
     # Panel (a)
-    minihalo: Tuple[np.ndarray, np.ndarray, np.ndarray],
     bcg: Tuple[np.ndarray, np.ndarray, np.ndarray],
-    # Panel (b)
-    fig_size=(11.5, 5.0),
+    comp: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    fig_size=(8, 5.0),
     savepath: Optional[str] = None,
 ):
     fig, axA = plt.subplots(1, 1, figsize=fig_size)
 
-    # ---------- Panel (a): minihalo + BCG ----------
-    f_mh, s_mh, e_mh = minihalo
+    # ---------- Panel (a): minihalo + BCG + power-laws ----------
     f_bcg, s_bcg, e_bcg = bcg
 
-    fit_mh = fit_powerlaw(f_mh, s_mh, e_mh)
     fit_bcg = fit_powerlaw(f_bcg, s_bcg, e_bcg)
+    fit_comp = fit_powerlaw(*comp)
 
-    _scatter_with_errors(axA, f_mh, s_mh, e_mh, facecolor="k", edgecolor="k")
     _scatter_with_errors(axA, f_bcg, s_bcg, e_bcg, facecolor="w", edgecolor="k")
+    _scatter_with_errors(axA, *comp, facecolor="k", edgecolor="k")
 
     # Fit lines (dashed) spanning the panel’s frequency range
     fmin_a = 0.025  # in GHz
     fmax_a = 30
-    _fit_with_band(axA, fit_mh, fmin_a, fmax_a)
     _fit_with_band(axA, fit_bcg, fmin_a, fmax_a, ls="-", lw=1.0)
-
+    _fit_with_band(axA, fit_comp, fmin_a, fmax_a, ls="--", lw=1.0)
+    
     axA.set_xscale("log")
     axA.set_yscale("log")
     axA.set_xlabel("Frequency (GHz)")
     axA.set_ylabel("Flux (mJy)")
-    axA.set_title("Total flux of minihalo and BCG")
-    axA.set_xlim(0.01, 100)
-    axA.set_ylim(0.3, 5000)
-    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
-    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.set_title("Total flux of BCG and companion galaxy")
+    # axA.set_xlim(1, 20)
+    # axA.set_ylim(0.2, 1000)
+    axA.text(0.55, 0.70, "comp", transform=axA.transAxes)
+    axA.text(0.53, 0.64, _alpha_text(fit_comp.alpha, fit_comp.sigma_alpha), transform=axA.transAxes)
     axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
     axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
-
-    # Cosmetics to echo the paper’s feel
+    
+    # Cosmetics
     axA.minorticks_on()
     axA.grid(False)
     fig.tight_layout(w_pad=1.5)
@@ -57,54 +55,62 @@ def plot_seds(
     return fig
 
 
-# --- Data ---
-mh_freq = np.array([1.40, 10])
-mh_flux = np.array([16, 3.01])
-mh_err  = np.array([1, 0.18])
+# 1.4 from G19, 144 from Benzin (offset-5), 144 from Ignesti2022. Both 144 incl S2 + lobes. Unsure about G19
+# second 10 GHz (offset by -5) includes the estimated flux for agn lobes
+bcg_freq = np.array([0.139, 0.144, 1.4, 10, 10.05])
+bcg_flux = np.array([852, 750, 16, 3.01, 3.01+0.26+0.12])
+bcg_err  = np.array([135, 150, 1, 0.17, 0.2])
 
-bcg_freq = np.array([1.4, 10])
-bcg_flux = np.array([16, 3.01])
-bcg_err  = np.array([1, 0.18])
-
-# --- Recreate G14 plot with our points ---
+comp_freq = np.array([1.4, 10])
+comp_flux = np.array([1, 0.15])
+comp_err  = np.array([0.1, 0.05])
+# --- Plot SED ---
 plot_seds(
-    minihalo=(mh_freq, mh_flux, mh_err),
     bcg=(bcg_freq, bcg_flux, bcg_err),
-    savepath="A2204_seds.png",
+    comp=(comp_freq, comp_flux, comp_err),
+    savepath="2a0335_seds.png",
 )
 
+# Estimate the fossil lobe flux from ~1.5 found by Igensti2022 and the points found by G19
+arcsec_kpc_area = 0.716 ** 2  # kpc^2 / arcsec^2
+beam_area = 6.68 * 5.14 * np.pi  # arcsec^2
+lobe_area = (35/2) ** 2 * np.pi  # kpc^2
+n_beams_lobe = lobe_area / (beam_area * arcsec_kpc_area)
+print(f'Beams per lobe: {n_beams_lobe} and {n_beams_lobe*1.4} for the relic')
+fit_se = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=4.1, sigma_S0=0.2)
+print(f"Estimated flux of south east lobe: {fit_se.predict_S(10):1.2e} +/- {fit_se.sigma_S_at(10):1.2e} mJy " + 
+    f"or {fit_se.predict_S(10)/n_beams_lobe:1.2e} mJy per beam") 
 
-# --- Total minihalo only ---
-fit = fit_powerlaw(mh_freq, mh_flux, mh_err)
+fit_nw = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=2.7, sigma_S0=0.1)
+print(f"Estimated flux of south east lobe: {fit_nw.predict_S(10):1.2e} +/- {fit_nw.sigma_S_at(10):1.2e} mJy " + 
+    f"or {fit_nw.predict_S(10)/n_beams_lobe:1.2e} mJy per beam") 
 
-# Prepare a plotting band (extend a touch below min for nicer look)
-nu_min = 10 ** (np.log10(mh_freq.min()) - 0.1)
-nu_max = 12.0
-nu_grid, S_fit, S_lower, S_upper = prepare_plot_band(fit, nu_min, nu_max, n_points=400)
+fit_relic = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=3.1, sigma_S0=0.1)
+print(f"Estimated flux of south east lobe: {fit_relic.predict_S(10):1.2e} +/- {fit_relic.sigma_S_at(10):1.2e} mJy " + 
+    f"or {fit_relic.predict_S(10)/(n_beams_lobe*1.4):1.2e} mJy per beam")
 
-# Example single-point comparison @ 10 GHz
-nu_meas = mh_freq[-1]
-S_meas = mh_flux[-1]
-sigma_meas = mh_err[-1]
-S_pred, sigma_pred, z_fit, z_combined = point_deviation_from_fit(fit, nu_meas, S_meas, sigma_meas)
 
-# Plot
-plt.figure(figsize=(7.5, 5.5))
-plt.errorbar(mh_freq[:-1], mh_flux[:-1], yerr=mh_err[:-1], fmt='o', label="G14 + 1σ", capsize=3)
-plt.plot(nu_grid, S_fit, '-', label="Weighted fit (power law)")
-plt.fill_between(nu_grid, S_lower, S_upper, alpha=0.25, label="Fit 1σ band")
-plt.errorbar(nu_meas, S_meas, yerr=sigma_meas, fmt='*', c='r', ecolor='k', label="Us =)", capsize=3)
-plt.xscale('log')
-plt.yscale('log')
-plt.xlabel("Frequency (GHz)")
-plt.ylabel("Flux density (mJy)")
-plt.title("A478 Total Minihalo Flux\nWeighted power-law fit (G14) and 10 GHz measurement")
-plt.legend()
-plt.tight_layout()
-plt.savefig("minihalo_fit.png")
+# Plot the normalised per beam
+fit_se = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=4.1/n_beams_lobe, sigma_S0=0.2/np.sqrt(n_beams_lobe))
+fit_nw = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=2.7/n_beams_lobe, sigma_S0=0.1/np.sqrt(n_beams_lobe))
+fit_relic = PowerLawFit.from_existing(alpha=1.5, sigma_alpha=0.1, nu0=1.4, S0=3.1/n_beams_lobe, sigma_S0=0.1/np.sqrt(n_beams_lobe))
 
-# Console summary
-print(f"alpha = {fit.alpha:.3f} ± {fit.sigma_alpha:.3f}")
-print(f"S_10GHz(pred) = {S_pred:.3f} ± {sigma_pred:.3f} mJy")
-print(f"S_10GHz(meas) = {S_meas:.3f} mJy  →  Δ = {S_meas - S_pred:.4f} mJy,  z_fit = {z_fit:.2f},  z_combined = {z_combined:.2f}")
+print(f"Southeast lobe: {fit_se.predict_S(10):1.2e} +/- {fit_se.sigma_S_at(10):1.2e} mJy/beam")
+print(f"Northwest lobe: {fit_nw.predict_S(10):1.2e} +/- {fit_nw.sigma_S_at(10):1.2e} mJy/beam")
+print(f"Relic lobe: {fit_relic.predict_S(10):1.2e} +/- {fit_relic.sigma_S_at(10):1.2e} mJy")
 
+fig, ax = plt.subplots(1, 1)
+fmin_a = 0.025
+fmax_a = 30
+_fit_with_band(ax, fit_se, fmin_a, fmax_a, ls="-", lw=1.0)
+_fit_with_band(ax, fit_nw, fmin_a, fmax_a, ls="--", lw=1.0)
+_fit_with_band(ax, fit_relic, fmin_a, fmax_a, ls="-.", lw=1.0)
+plt.axhline(2.56e-3 * 3, c='k')
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlabel("Frequency (GHz)")
+ax.set_ylabel("Flux (mJy)")
+ax.minorticks_on()
+ax.set_xlim(8, 12)
+ax.set_ylim(1e-3, 1e-1)
+    
