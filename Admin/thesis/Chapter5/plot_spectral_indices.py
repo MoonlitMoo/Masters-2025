@@ -143,7 +143,6 @@ def _scatter_with_errors(ax, f, s, e, *, label=None, do_star=True, facecolor="k"
             label=label  # keep the legend on the bulk points
         )
 
-
 def _fit_line(ax, fit: PowerLawFit, fmin: float, fmax: float, *, ls="--", color="k", lw=1.0, n=200):
     g = np.logspace(np.log10(fmin), np.log10(fmax), n)
     ax.plot(g, fit.predict_S(g), ls=ls, color=color, lw=lw)
@@ -154,59 +153,10 @@ def _fit_with_band(ax, fit, fmin, fmax, *, color="k", ls="--", lw=1.0, alpha=0.1
     ax.fill_between(nu, S_lo, S_up, alpha=alpha, linewidth=0, color=color)
     ax.plot(nu, S_fit, ls=ls, lw=lw, color=color)
 
-
 def _alpha_text(alpha: float, sigma: float) -> str:
     return rf"$\alpha_{{\rm fit}}={alpha:.2f}\pm{sigma:.2f}$"
 
 # --- Plotting ---
-def plot_seds(
-    *,
-    # Panel (a)
-    minihalo: Tuple[np.ndarray, np.ndarray, np.ndarray],
-    bcg: Tuple[np.ndarray, np.ndarray, np.ndarray],
-    # Panel (b)
-    fig_size=(11.5, 5.0),
-    savepath: Optional[str] = None,
-):
-    fig, axA = plt.subplots(1, 1, figsize=fig_size)
-
-    # ---------- minihalo + BCG ----------
-    f_mh, s_mh, e_mh = minihalo
-    f_bcg, s_bcg, e_bcg = bcg
-
-    fit_mh = fit_powerlaw(f_mh, s_mh, e_mh)
-    fit_bcg = fit_powerlaw(f_bcg, s_bcg, e_bcg)
-
-    _scatter_with_errors(axA, f_mh, s_mh, e_mh, facecolor="k", edgecolor="k")
-    _scatter_with_errors(axA, f_bcg, s_bcg, e_bcg, facecolor="w", edgecolor="k")
-
-    # Fit lines (dashed) spanning the panel’s frequency range
-    fmin_a = 0.025  # in GHz
-    fmax_a = 30
-    _fit_with_band(axA, fit_mh, fmin_a, fmax_a)
-    _fit_with_band(axA, fit_bcg, fmin_a, fmax_a, ls="-", lw=1.0)
-
-    axA.set_xscale("log")
-    axA.set_yscale("log")
-    axA.set_xlabel("Frequency (GHz)")
-    axA.set_ylabel("Flux (mJy)")
-    axA.set_title("Total flux of minihalo and BCG")
-    axA.set_xlim(0.01, 100)
-    axA.set_ylim(0.3, 5000)
-    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
-    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
-    axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
-    axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
-
-    # Cosmetics to echo the paper’s feel
-    axA.minorticks_on()
-    axA.grid(False)
-    fig.tight_layout(w_pad=1.5)
-
-    if savepath:
-        fig.savefig(savepath, dpi=300, bbox_inches="tight")
-    return fig
-
 def plot_rxj1720_seds(
     *,
     # Panel (a)
@@ -311,6 +261,7 @@ def rxj1720():
         savepath="rxj1720_seds.pdf",
     )
 
+# --- A478 ---
 def plot_a478_seds(
     *,
     # Panel (a)
@@ -397,7 +348,6 @@ def plot_a478_seds(
         fig.savefig(savepath, dpi=300, bbox_inches="tight")
     return fig
 
-# --- A478 ---
 def a478():
     mh_freq = np.array([1.40, 10])
     mh_flux = np.array([16.6, 0.31])
@@ -425,6 +375,70 @@ def a478():
     )
 
 
+# --- RXJ2129+0005 ---
+def plot_rxj2129_seds(
+    *,
+    # Panel (a)
+    minihalo: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    bcg: Tuple[np.ndarray, np.ndarray, np.ndarray],
+    # Panel (b)
+    fig_size=(8, 4.0),
+    savepath: Optional[str] = None,
+):
+    fig, axA = plt.subplots(1, 1, figsize=fig_size)
+
+    # ---------- Panel (a): minihalo + BCG + power-laws ----------
+    f_mh, s_mh, e_mh = minihalo
+    f_bcg, s_bcg, e_bcg = bcg
+
+    fit_mh = fit_powerlaw(f_mh, s_mh, e_mh)
+    fit_bcg = fit_powerlaw(f_bcg, s_bcg, e_bcg)
+
+    _scatter_with_errors(axA, f_mh, s_mh, e_mh, facecolor="k", edgecolor="k")
+    _scatter_with_errors(axA, f_bcg, s_bcg, e_bcg, facecolor="w", edgecolor="k")
+    
+    # Fit lines (dashed) spanning the panel’s frequency range
+    fmin_a = 0.025  # in GHz
+    fmax_a = 30
+    _fit_with_band(axA, fit_mh, fmin_a, fmax_a)
+    _fit_with_band(axA, fit_bcg, fmin_a, fmax_a, ls="-", lw=1.0)
+    
+    axA.set_xscale("log")
+    axA.set_yscale("log")
+    axA.set_xlabel("Frequency (GHz)")
+    axA.set_ylabel("Flux (mJy)")
+    # axA.set_title("Total flux of minihalo and BCG")
+    axA.set_xlim(0.1, 20)
+    axA.set_ylim(0.1, 1000)
+    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
+    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
+    axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
+    
+    # Cosmetics
+    axA.minorticks_on()
+    axA.grid()
+    fig.tight_layout(w_pad=1.5)
+
+    if savepath:
+        fig.savefig(savepath, dpi=300, bbox_inches="tight")
+    return fig
+
+def rxj2129():
+    mh_freq = np.array([0.235, 0.610, 1.3, 1.4, 10])
+    mh_flux = np.array([21, 8, 2.5, 2.4, 0.360])
+    mh_err  = np.array([1.6, 0.7, 0.2, 0.2, 0.1])
+
+    bcg_freq = np.array([0.235, 0.610, 1.3, 1.4, 4.86, 8.46, 10])
+    bcg_flux = np.array([87, 48.9, 25.3, 24, 8.6, 5.6, 5.36])
+    bcg_err  = np.array([5, 2.5, 1.3, 1.2, 0.3, 0.2, 0.25])
+
+    plot_rxj2129_seds(
+    minihalo=(mh_freq, mh_flux, mh_err),
+    bcg=(bcg_freq, bcg_flux, bcg_err),
+    savepath="rxj2129_seds.pdf",
+)
 
 # rxj1720()
-a478()
+# a478()
+rxj2129()

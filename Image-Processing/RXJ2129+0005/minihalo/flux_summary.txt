@@ -1,0 +1,26 @@
+# Input flux measurements
+# -----------------------
+ Dataset Position  Flux (mJy)  Error (mJy)
+cconfig2       S1      4.7950       0.0210
+cconfig2       S2      0.0281       0.0092
+cconfig2       S3      0.0590       0.0170
+dconfig1       S1      5.5730       0.0120
+dconfig1       S2      0.0390       0.0110
+dconfig1       S3      0.1090       0.0240
+dconfig2       S1      5.2750       0.0240
+dconfig2       S2      0.0480       0.0140
+dconfig2       S3      0.0620       0.0170
+
+# Calculated statistics 
+# -----------------------
+Position  N  S_mean_mJy  sigma_final_mJy  sigma_formal_mJy  rms_scatter_mJy
+      S1  3    5.364605         0.250302          0.009557         0.433536
+      S2  3    0.035709         0.006302          0.006302         0.010483
+      S3  3    0.070227         0.016818          0.010748         0.029130
+
+# Per-source flux summary
+# Weighted mean with conservative uncertainty
+# --------------------------------------------
+        S1 : 5.3646 ± 0.2503 mJy (N=3)
+        S2 : 0.0357 ± 0.0063 mJy (N=3)
+        S3 : 0.0702 ± 0.0168 mJy (N=3)

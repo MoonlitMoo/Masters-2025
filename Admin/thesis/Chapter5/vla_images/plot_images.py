@@ -837,13 +837,13 @@ def rxj2129():
     # export_fits(full_img, fits_file)
     sigma = 2.24e-06  # get_threshold(full_img)
     fig, ax, wcs = plot_fits(  # 2.53x2.23 arcsec, -15.4
-        fits_file, rms=sigma, zoom=5, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        fits_file, rms=sigma, zoom=7, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.722, length=150)
     annotate_arrow_label_pixel(ax, 1134, 1143, "S1", text_offset_pix=(-40, -20))
     annotate_arrow_label_pixel(ax, 1181, 1130, "S2", text_offset_pix=(20, -10))
-    annotate_arrow_label_pixel(ax, 973, 1230, "S3", text_offset_pix=(20, -10))
+    # annotate_arrow_label_pixel(ax, 973, 1230, "S3", text_offset_pix=(20, -10))
     # annotate_arrow_label_pixel(ax, 455, 462, "S2", text_offset_pix=(20, 0))
     # annotate_arrow_label_pixel(ax, 485, 489, "S3", text_offset_pix=(15, -15))
     plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
@@ -876,4 +876,4 @@ def rxj2129():
 # A1795
 # A2626
 # actj0022()
-# rxj2129()
+rxj2129()
