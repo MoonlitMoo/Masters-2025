@@ -236,18 +236,77 @@ This becomes particularly evident following the subtraction of S1 and S2. Imperf
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a2204_sub.pdf}
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/ms1455_sub.pdf}
     \caption{MS1455+2232. Point source subtracted 10 GHz image with a restoring beam $3.02"\times2.80"$ at a position angle of -25.1\textdegree{} and an rms noise of $2.85$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, with negative contours at $-3\sigma$ shown as white dotted lines. The green cross marks the locations of the subtracted sources.}
     \label{fig:ms1455_sub_image}
 \end{figure}
 
 \section{A1413}
-A1413 is an non-cool core galaxy cluster ($M_{500}=5.95\times10^14$ \Msun{}, $R_{500}=1.22$ Mpc \citep{Planck2016}) located at a redshift of $z=0.139$ \citep{Wen2015}. As of this moment, it is the only non-cool core cluster known to host a minihalo. The dynamical state of this cluster has some disagreement in previous literature, with earlier minihalo studies noting a relaxed morphology \citep{Govoni2009,Giacintucci2017}. Newer \textit{Chandra} observations depict an elongation in the north-south axis, resulting in a somewhat elliptical shape and borderline relaxed state \cite{Botteon2018}. Following XMM-Newton observations confirm this, but noted the lack of a sharp decline in temperature in the core, uncharacteristic of a cool core system \citep{Lusetti2024}. This is argued to be a weak cool core system, potentially stabilising after a past merger. This consensus states A1413 features neither a completely relaxed nor a highly disturbed morphology \citep{Riseley2023, Trehaeven2023, Lusetti2024}.
+A1413 is an non-cool core galaxy cluster ($M_{500}=5.95\times10^14$ \Msun{}, $R_{500}=1.22$ Mpc \citep{Planck2016}) at redshift $z=0.139$ \citep{Wen2015}. It is currently the only known non-cool core cluster to host a minihalo. The dynamical state of this cluster was initially classified as undisturbed, due to an elongated and elliptical morphology \citep{Govoni2009,Giacintucci2017}. More recent \textit{Chandra} and XMM-Newton observations noted the absence of a sharp temperature decline in the core, which is uncharacteristic of a cool core system \cite{Botteon2018,Lusetti2024}. This borderline relaxed state has been interpreted as evidence for a weak cool core system, potentially stabilising after a past merger. The current consensus suggests A1413 exhibits neither a fully relaxed nor a highly disturbed morphology \citep{Riseley2023, Trehaeven2023, Lusetti2024}.
 
-Diffuse minihalo emission was reported by \citet{Govoni2009} using 1.4 GHz VLA observations. \citep{Savini2019} confirmed this detection with 144 MHz LOFAR observations and measured a size of $\sim\!210$ kpc and total flux density of $40\pm7$ mJy. Following observations with LOFAR and MeerKAT found a much larger halo $\sim\!500$ kpc \citep{Riseley2022, Trehaeven2023}. Several sources are embedded within the central minihalo, including the BCG, an eastern radio galaxy, and a third galaxy to the southwest. 
+Diffuse minihalo emission was reported by \citet{Govoni2009} using 1.4 GHz VLA observations. They measured a total flux density of $1.9\pm0.7$ mJy over a spatial scale of $\sim\!220$ kpc. \citet{Savini2019} confirmed this detection with 144 MHz LOFAR observations and reported a size of $\sim\!210$ kpc, total flux density of $40\pm7$ mJy, and spectral index of $\alpha\approx1.3$. A similar spatial extent was found by \citet{Trehaeven2023} using 1.3 GHz MeerKAT observations, who found a total flux density of $2.05\pm0.27$ mJy. They also measured an in-band spectral index of $\alpha=1.5\pm0.46$.
+
+Deeper observations with 144 MHz LOFAR and 1.3 GHz MeerKAT discovered a much larger halo $\sim\!500$ kpc \citep{Riseley2022}. The total flux densities at 144 MHz and 1.3 GHz over the larger extent were measured as $29.5\pm3.4$ mJy and $3.23\pm0.17$ mJy, respectively. The spectral index over the larger halo had a median value of $\langle\alpha\rangle=1.18\pm0.11$. Tentative evidence of steepening towards the edges of the minihalo was reported, with $\langle\alpha\rangle_{outer}=1.12\pm0.13$ compared to $\langle\alpha\rangle_{inner}=0.97\pm0.07$. 
+
+Several sources were identified within the central minihalo, including the BCG, an eastern head-tail radio galaxy, and a third galaxy to the southwest. The spectral index of the BCG was measured as $\alpha = 1.13\pm0.07$ \citep{Riseley2023}. They suggested that this steep AGN spectrum was due to radio emission being dominated by lobes rather than the core.
+
+\subsection{10 GHz observations}
+The sources observed during self-calibration did not exhibit significant variability. After several rounds of self-calibration, the solutions did not fully converge, remaining within -10\textdegree{} and 10\textdegree{}. The prominent sources in the image are the central BCG (S3), its companion head-tail galaxy (S2), two nearby radio galaxies to the southwest (S1, S4), and a more distant head-tail galaxy to the west (S5). These are imaged using $\texttt{robust}=0.5$ and shown in Figure \ref{fig:a1413_image}. The minihalo is difficult to discern due to the prominence of the embedded sources. Sources S1--S4 were subtracted using the model from a 12 k$\lambda$ uv cut image. 
+
+The subtracted datasets were imaged using $\texttt{robust}=1$ and multiscales $[0, 4, 8, 16, 32]$, followed by primary beam correction (Figure \ref{fig:a1413_sub_image}). Residual emission from S2 and S4 remains, complicating the estimation of minihalo flux. This is complicated by the large synthesised beam, likely due to the lack of remaining C-configuration data compared to the other clusters. Further work is required to robustly disentangle the complex source emission from that of the diffuse minihalo, in order to produce a minihalo flux estimation. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1413.pdf}
+    \caption{A1413. Non-subtracted 10 GHz image with a restoring beam of $6.35"\times5.97"$ at a position angle of -49.9\textdegree{} and an rms noise of $2.60$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 6$\sigma$, while negative contours at $-3\sigma$ are shown in black. The $+3\sigma$ contour has been omitted for visual clarity in highlighting the compact sources.}
+    \label{fig:a1413_image}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1413_sub.pdf}
+    \caption{A1413. Point source subtracted 10 GHz image with a restoring beam $8.32"\times7.85"$ at a position angle of -52.6\textdegree{} and an rms noise of $2.27$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, with negative contours at $-3\sigma$ shown as white dotted lines. The green cross marks the locations of the subtracted sources.}
+    \label{fig:a413_sub_image}
+\end{figure}
+
 \section{ACTJ0022-0036}
+ACTJ0022-0036 is a galaxy cluster ($M_{500}=5.5\times10^{14}$ \Msun{}, $R_{500}=0.92$ Mpc \citep{Hasselfield2013})\footnote{Derived using a Universal Pressure Profile and SZ measurements.} at redshift $z=0.805$ \citep{Menanteau2013}. It is the most distant cluster known to host a minihalo. Only limited information is available regarding the clusters dynamical state, as no dedicated studies have been conducted. \citet{Knowles2019} fitted temperature models to \textit{Chandra} X-ray data, with the best-fitting model having a temperature drop towards the core and a central temperature $T = 3.2^{+1.7}_{-0.7}$ keV. Although this is an indication of a cool core, this was only significant at the $2\sigma$ level, lending tentative evidence. 
+
+Diffuse emission surrounding the BCG was reported by \citet{Knowles2019} using 610 MHz GMRT observations and subsequently categorised as a minihalo. To disentangle the diffuse component from the BCG emission, they fitted a two-component model to the radio surface brightness. This modelled the BCG as a 2D Gaussian source and the minihalo as a 2D exponential. Their best-fitting model revealed a strong preference for the minihalo component. They estimated the radius from the model as $\sim\!125$ kpc and integrated the model surface brightness within this radius to derive a total flux density of $6.4\pm1.8$ mJy. The corresponding model for the BCG resulted in a flux density of $46.9\pm0.2$ mJy at 610 MHz. This was combined with a FIRST measurement of $19.02\pm0.93$ mJy at 1.4 GHz, yielding the BCG spectral index as $\alpha = 0.9\pm0.1$.
+
+\subsection{10 GHz observation}
+The self-calibration indicated four sources of minimal time-variability. These include the BCG (S1), a bright source to the east (S2), a compact source to the west (S3), and a bright source to the north (S4). The observations were imaged with $\texttt{robust}=0.5$ and shown in Figure \ref{fig:actj0022_image}. \citet{Knowles2019} identified S3 as a cluster member. S2 and S4 were not identified in their analysis, potentially due to their location beyond $R_{500}$. In both the 610 MHz GMRT and the 10 GHz observation, S4 exhibited mild extension. In the higher angular resolution VLA images, there is some evidence of a protrusion to the southeast and to the north from a compact core. To image the minihalo, S1 was individually subtracted from each dataset using the model from a 12 k$\lambda$ uv cut image. After subtraction, the datasets were imaged using $\texttt{robust}=1$ and scales $[0, 2, 4, 8, 16]$, followed by primary beam correction. The resulting image is shown in Figure \ref{fig:actj0022_sub_image}.
+
+The subtracted image has clear evidence of over-subtraction of the AGN, with negative residuals at the centre. However, the $+3\sigma$ contours in the surrounding region are potential indicators of diffuse emission. With more careful modelling and subtraction of the BCG, the minihalo emission may be recovered at 10 GHz. The subtracted model likely contains the BCG and minihalo flux, with the measured BCG flux density in the image used to generate the model as $3.89\pm0.04$ mJy. Extrapolating from the prior estimate of the spectral index, the expected flux density for the BCG is $S_p = 2.25\pm0.37$ mJy. This is significantly lower than the measured value, providing further evidence for the contamination of minihalo emission in the BCG model. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/actj0022.pdf}
+    \caption{ACTJ0022-0036. Non-subtracted 10 GHz image with a restoring beam of $2.47"\times2.10"$ at a position angle of -13.2\textdegree{} and an rms noise of $2.10$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 6$\sigma$, while negative contours at $-3\sigma$ are shown in black. The $+3\sigma$ contour has been omitted for visual clarity in highlighting the compact sources.}
+    \label{fig:actj0022_image}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1413_sub.pdf}
+    \caption{ACTJ0022-0036. Point source subtracted 10 GHz image with a restoring beam $2.90"\times2.36"$ at a position angle of -10.7\textdegree{} and an rms noise of $1.94$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, with negative contours at $-3\sigma$ shown as white dotted lines. The green cross marks the location of the subtracted source.}
+    \label{fig:actj0022_sub_image}
+\end{figure}
 
 \section{Z3146}
+Z3146 (also known as ZwCl 1021+0426) is a cool core cluster ($M_{500}=6.53\times10^{14}$ \Msun{}, $R_{500}=1.2$ Mpc \citep{Planck2016}) at redshift $z=0.289$. \textit{Chandra} X-ray observations identified three cold fronts, two located $\sim\!13$ and $\sim\!35$ kpc north of the core, and a third front lying $\sim\!150$ kpc to the southeast \citep{Forman2002}. XMM-Newton observations report a core temperature of $\sim\!5.5$ keV, rising to $\sim\!7$ keV at a radius of $\sim\!150$ kpc \citep{Romero2020}. X-ray surface brightness fluctuations detected by XMM-Newton depict variations in the density and pressure, reflecting sloshing gas in the core \citep{Romero2023}.
+
+VLA observations at 4.9 GHz and 8.5 GHz revealed a minihalo with a radius of 90 kpc \citep{Giacintucci2014}. Two point sources corresponding to the BCG and a background galaxy at $z=0.34$ are embedded in the diffuse emission. These have spectral indices of $\alpha=0.66\pm0.14$ and $\alpha=-0.33\pm0.16$, respectively, in this frequency range. After subtraction of these sources, \citet{Giacintucci2014} reported a minihalo flux density of $1.7\pm0.2$ mJy at 4.9 GHz. As the minihalo was not reliably detected at 8.5 GHz, the spectral indices of S1 and S2 were used to extrapolate flux densities at 1.4 GHz. These were then subtracted from a 1.4 GHz NVSS measurement to yield an estimated minihalo flux of $\sim\!5.2$ mJy. This corresponds to a spectral index $\alpha\approx1$ for the minihalo. \citet{Kale2015} image the minihalo using 610 MHz GMRT observations. They report a largest linear extent of 190 kpc, similar to that found at 4.9 GHz. They measured a total flux density of 11.5 mJy, with no stated uncertainty, which is consistent with $\alpha\approx1$ over 610 MHz to 4.9 GHz.
+
+\subsection{10 GHz observation}
+Several prominent sources were identified during self-calibration. These include the BCG (S1), the background galaxy (S2), an eastern two-component system (S3, S4), a southern double-lobe galaxy (S5), and a second double-lobe source to the northeast (S6). The sources S3 and S4 are the brightest objects in the image and exhibit significant variability between the observations. These sources were modelled independently for each dataset to aid self-calibration. However, negative point fluxes were continually present in the models of these sources. This caused severe positive and negative sidelobes across the image. Several robusts between -1 and 1 were trialled alongside various scales, but a satisfactory clean model was not obtained. Figure \ref{fig:z3146_image} shows these observations imaged with $\texttt{robust}=1$ and scales of $[0, 2, 4]$. A sidelobe artefact passes directly across the minihalo emission visible around S1, contamination the flux values. As such, no estimate for the total minihalo flux can be derived. Further work is required to sufficiently model and subtract the contaminating effects from the minihalo emission. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/z3146.pdf}
+    \caption{Z3146. Non-subtracted 10 GHz image with a restoring beam of $3.56"\times2.62"$ at a position angle of -35.0\textdegree{} and an rms noise of $3.19$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 6$\sigma$, while negative contours at $-3\sigma$ are shown in black. The $+3\sigma$ contour has been omitted for visual clarity in highlighting the compact sources and imaging aretfacts.}
+    \label{fig:z3146_image}
+\end{figure}
 
 \section{A1795}
 

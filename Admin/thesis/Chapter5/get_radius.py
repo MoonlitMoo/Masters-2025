@@ -124,6 +124,18 @@ def a1413():
     r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
     print(f'A1413: R500 = {r:1.2f} Mpc')
 
+def actj0022():
+    mass = 5.5e14  # Msun
+    z = 0.81
+    r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
+    print(f'ACTJ0022-0036: R500 = {r:1.2f} Mpc')
+
+def z3146():
+    mass = 6.53e14  # Msun
+    z = 0.289
+    r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
+    print(f'Z3146: R500 = {r:1.2f} Mpc')
+
 twoA0335()
 rxcj1115()
 rxj1720()
@@ -132,3 +144,5 @@ rxj2129()
 a2206()
 ms1455()
 a1413()
+actj0022()
+z3146()
