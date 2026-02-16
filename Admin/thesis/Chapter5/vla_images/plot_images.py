@@ -592,7 +592,7 @@ def rxj1720():
         fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.758, length=200)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.775, length=200)
     annotate_arrow_label_pixel(ax, 1158, 1158, "S1", text_offset_pix=(50, 50))
     annotate_arrow_label_pixel(ax, 1055, 1270, "S2")
     annotate_arrow_label_pixel(ax, 1400, 1045, "S3")
@@ -615,7 +615,7 @@ def rxj1720():
     plot_mask_contour(ax, wcs, "rxj1720_masks/centre_mask.npy", colors="red")
     plot_mask_contour(ax, wcs, "rxj1720_masks/tail_mask.npy", colors="red", linestyles="--")
     # Annotate the scale + BCG + subtracted points.
-    annotate_scale_bar(ax, (0.65, 0.1), kpc_scale=2.758, length=100)
+    annotate_scale_bar(ax, (0.65, 0.1), kpc_scale=2.775, length=100)
     annotate_cross(ax, "17h20m10.03s", "26d37m31.9s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
@@ -633,12 +633,11 @@ def a2204():
     sigma = 6.04e-06  # get_threshold(full_img)
     fig, ax, wcs = plot_fits(  # 2.02x1.69 arcsec, -58.0
         fits_file, rms=sigma, zoom=5, scale="mjy", colour_scale="asinh", alpha=0.01, 
-        contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
+        contour_levels=[-3, 6, 12, 24, 48, 96], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.643, length=50)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.646, length=50)
     annotate_arrow_label_pixel(ax, 455, 445, "S1", text_offset_pix=(20, 0))
     annotate_arrow_label_pixel(ax, 455, 462, "S2", text_offset_pix=(20, 0))
-    annotate_arrow_label_pixel(ax, 485, 489, "S3", text_offset_pix=(15, -15))
     plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
     
     # Make subtracted image
@@ -650,9 +649,9 @@ def a2204():
         fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=8, beam_detail="flat")
     # Annotate mask
     # export_fits(mask_img, mask_file)
-    annotate_mask_contour(ax, wcs, mask_file)
+    # annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.643, length=75)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.646, length=75)
     annotate_cross(ax, "16h32m46.94s", "5d34m40.7s")
     annotate_cross(ax, "16h32m46.94s", "5d34m32.5s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
@@ -672,7 +671,7 @@ def ms1455():
         fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.990, length=200)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.007, length=200)
     annotate_arrow_label_pixel(ax, 1160, 1160, "S1", text_offset_pix=(30, 30))
     annotate_arrow_label_pixel(ax, 1278, 943, "S2", text_offset_pix=(30, 30))
     annotate_arrow_label_pixel(ax, 1330, 1120, "S3", text_offset_pix=(-40, 40))
@@ -685,8 +684,9 @@ def ms1455():
     fig, ax, wcs = plot_fits(  # 3.02x2.80 arcsec, -25.1 
         fits_file, rms=sigma, scale="mjy", colour_scale="asinh", alpha=0.1, zoom=4.5, beam_detail="flat")
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.1, 0.2), kpc_scale=3.990, length=100)
+    annotate_scale_bar(ax, (0.1, 0.2), kpc_scale=4.007, length=100)
     annotate_cross(ax, "14h57m15.11s", "22d20m34s")
+    annotate_cross(ax, "14h57m10.80s", "22d18m44.71s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
 # Z3146
@@ -703,7 +703,7 @@ def z3146():
         fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.329, length=200)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.347, length=200)
     annotate_arrow_label_pixel(ax, 1160, 1160, "S1", text_offset_pix=(30, 40))
     annotate_arrow_label_pixel(ax, 1185, 1145, "S2", text_offset_pix=(30, 20))
     annotate_arrow_label_pixel(ax, 1000, 1075, "S3", text_offset_pix=(0, -50))
@@ -729,7 +729,7 @@ def rxcj1115():
         fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.940, length=300)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.856, length=300)
     annotate_arrow_label_pixel(ax, 1160, 1140, "S1", text_offset_pix=(0, -70))
     annotate_arrow_label_pixel(ax, 1475, 1000, "S2", text_offset_pix=(-80, -10))
     annotate_arrow_label_pixel(ax, 830, 955, "S3", text_offset_pix=(60, -10))
@@ -747,7 +747,7 @@ def rxcj1115():
     # export_fits(mask_image, mask_file)
     annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.940, length=100)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.856, length=100)
     annotate_cross(ax, "11h15m51.93s", "1d29m55.1s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
@@ -766,7 +766,7 @@ def a1413():
         fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.482, length=150)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.455, length=150)
     annotate_arrow_label_pixel(ax, 1248, 1117, "S1", text_offset_pix=(40, -10))
     annotate_arrow_label_pixel(ax, 1136, 1170, "S2", text_offset_pix=(0, 40))
     annotate_arrow_label_pixel(ax, 1160, 1160, "S3", text_offset_pix=(30, 40))
@@ -783,7 +783,7 @@ def a1413():
     fig, ax, wcs = plot_fits(  # 8.32x7.85 arcsec, -52.6
         fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=6, beam_detail="flat")
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.482, length=50)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=2.455, length=50)
     annotate_cross(ax, "11h55m18.0s", "23d24m17.3s")
     annotate_cross(ax, "11h55m18.6s", "23d24m22.6s")
     annotate_cross(ax, "11h55m17.1s", "23d23m53.4s")
@@ -824,7 +824,7 @@ def actj0022():
     annotate_cross(ax, "0h22m13.02s", "-0d36m33.57s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
-# A2204
+# RXJ2129+0005
 def rxj2129():
     print("RXJ2129+0005:")
     c_name = "rxj2129"
@@ -840,7 +840,7 @@ def rxj2129():
         fits_file, rms=sigma, zoom=7, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.722, length=150)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.727, length=150)
     annotate_arrow_label_pixel(ax, 1134, 1143, "S1", text_offset_pix=(-40, -20))
     annotate_arrow_label_pixel(ax, 1181, 1130, "S2", text_offset_pix=(20, -10))
     # annotate_arrow_label_pixel(ax, 973, 1230, "S3", text_offset_pix=(20, -10))
@@ -854,12 +854,12 @@ def rxj2129():
     # export_fits(sub_img, fits_file)
     sigma = 2.03e-06  # get_threshold(sub_img)
     fig, ax, wcs = plot_fits(  # 3.67x2.79 arcsec, -32.4
-        fits_file, rms=sigma, colour_scale="asinh", alpha=0.5, zoom=9, beam_detail="flat")
+        fits_file, rms=sigma, colour_scale="asinh", alpha=0.9, zoom=9, beam_detail="flat")
     # Annotate mask
     # export_fits(mask_img, mask_file)
     annotate_mask_contour(ax, wcs, mask_file)
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.722, length=75)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.727, length=75)
     annotate_cross(ax, "21h29m39.97s", "0d05m21.05s")
     annotate_cross(ax, "21h29m39.97s", "0d05m21.05s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
@@ -869,11 +869,11 @@ def rxj2129():
 # a478()
 # rxj1720()
 # a2204()
-# ms1455()
+ms1455()
 # z3146()
 # rxcj1115()
 # a1413()
 # A1795
 # A2626
 # actj0022()
-rxj2129()
+# rxj2129()

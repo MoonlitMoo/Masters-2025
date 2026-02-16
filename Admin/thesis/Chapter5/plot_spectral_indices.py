@@ -301,10 +301,10 @@ def plot_a478_seds(
     # axA.set_title("Total flux of minihalo and BCG")
     axA.set_xlim(1, 20)
     axA.set_ylim(0.2, 1000)
-    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
-    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
-    axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
-    axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.18, 0.18, "minihalo", transform=axA.transAxes)
+    axA.text(0.18, 0.12, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.55, 0.70, "BCG", transform=axA.transAxes)
+    axA.text(0.53, 0.64, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
 
     # ---------- Panel (b): Subbands ----------
     fit_sb = fit_powerlaw(*subband)
@@ -320,7 +320,7 @@ def plot_a478_seds(
     axB.plot(x_points, f_mh[0]*s_mh[0] * x_points ** -1, c='r')
 
     # Values
-    axB.text(0.25, 0.50, "sub-band", transform=axB.transAxes)
+    axB.text(0.25, 0.50, "sub-band minihalo", transform=axB.transAxes)
     axB.text(0.23, 0.44, _alpha_text(fit_sb.alpha, fit_sb.sigma_alpha), transform=axB.transAxes)
     axB.text(0.65, 0.75, "sub-band BCG", transform=axB.transAxes)
     axB.text(0.63, 0.69, _alpha_text(fit_sb_agn.alpha, fit_sb_agn.sigma_alpha), transform=axB.transAxes)
@@ -410,10 +410,10 @@ def plot_rxj2129_seds(
     # axA.set_title("Total flux of minihalo and BCG")
     axA.set_xlim(0.1, 20)
     axA.set_ylim(0.1, 1000)
-    axA.text(0.55, 0.70, "minihalo", transform=axA.transAxes)
-    axA.text(0.53, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
-    axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
-    axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.18, 0.18, "minihalo", transform=axA.transAxes)
+    axA.text(0.18, 0.12, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
+    axA.text(0.55, 0.70, "BCG", transform=axA.transAxes)
+    axA.text(0.53, 0.64, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
     
     # Cosmetics
     axA.minorticks_on()
@@ -426,7 +426,7 @@ def plot_rxj2129_seds(
 
 def rxj2129():
     mh_freq = np.array([0.235, 0.610, 1.3, 1.4, 10])
-    mh_flux = np.array([21, 8, 2.5, 2.4, 0.360])
+    mh_flux = np.array([21, 8, 2.5, 2.4, 0.410])
     mh_err  = np.array([1.6, 0.7, 0.2, 0.2, 0.1])
 
     bcg_freq = np.array([0.235, 0.610, 1.3, 1.4, 4.86, 8.46, 10])
@@ -441,4 +441,4 @@ def rxj2129():
 
 # rxj1720()
 # a478()
-rxj2129()
+# rxj2129()

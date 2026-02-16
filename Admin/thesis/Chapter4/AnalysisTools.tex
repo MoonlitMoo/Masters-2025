@@ -6,12 +6,12 @@ The primary goal of this thesis is to extract reliable flux density measurements
 \section{Removal of contaminating sources}
 Contamination of the minihalo emission can occur in several ways, such as AGN embedded within the spatial region of the minihalo and positive or negative radial artefacts from the convolution of the PSF with poorly modelled sources. These bias the total minihalo flux, necessitating the removal of contaminating sources. This was achieved by forming a sky model of the emission and using the Fourier transformed model to subtract from the observed visibilities. The resulting source-subtracted images then depict the minihalo emission without contamination. Unstable sources were primarily attributed to time-variability between observation dates, resulting in an unphysical model and imaging artefacts. Independent models of the source were created for each dataset and subtracted individually, so that the joint image no longer contained the variable source. An accurate model of the source is necessary for subtraction, since if the model contains minihalo emission, the resulting image will feature a negative bowl where it was removed. Conversely, if the model underestimates the flux, the minihalo flux will be artificially peaked and the total flux density will be boosted. 
 
-To ensure that the subtraction model does not include diffuse emission, it is desirable to remove flux corresponding to large-scale emission. Since baseline length corresponds to spatial scale in the image, removing short baselines will cause the large scale minihalo emission to be strongly suppressed in the image. This was achieved by specifying a \texttt{uvrange} in \texttt{tclean}, which allows specification of a baseline cutoff. To determine an optimal uv value to perform the cutoff, testing was performed on the observations of RXJ1720+2368. The spatial region of this minihalo is contaminated with the bright BCG, while a variable AGN to the south west caused negative radial spikes that in proximity to the minihalo emission (see Figure \ref{fig:contaminating_emission}). 
+To ensure that the subtraction model does not include diffuse emission, it is desirable to remove flux corresponding to large-scale emission. Since baseline length corresponds to spatial scale in the image, removing short baselines will cause the large scale minihalo emission to be strongly suppressed in the image. This was achieved by specifying a \texttt{uvrange} in \texttt{tclean}, which allows specification of a baseline cutoff. To determine an optimal uv value to perform the cutoff, testing was performed on the observations of RXJ1720+2638. The spatial region of this minihalo is contaminated with the bright BCG, while a variable AGN to the south west caused negative radial spikes that in proximity to the minihalo emission (see Figure \ref{fig:contaminating_emission}). 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.85\textwidth]{Chapter4/contaminating_emission.pdf}
-    \caption{Calibrated image of RXJ1720+2368, showing minihalo contamination from the central unresolved BCG and radial PSF artefacts from a variable AGN (S1). The image has a restoring beam of 2.79"$\times$2.51" at a position angle of -25.6\textdegree{} (shown in grey at bottom left). The noise rms is $3.49$ $\mu$Jy beam$^{-1}$ and the image was cleaned to a threshold of 3$\sigma$.}
+    \caption{Calibrated image of RXJ1720+2638, showing minihalo contamination from the central unresolved BCG and radial PSF artefacts from a variable AGN (S1). The image has a restoring beam of 2.79"$\times$2.51" at a position angle of -25.6\textdegree{} (shown in grey at bottom left). The noise rms is $3.49$ $\mu$Jy beam$^{-1}$ and the image was cleaned to a threshold of 3$\sigma$.}
     \label{fig:contaminating_emission}
 \end{figure}
 
@@ -51,7 +51,7 @@ The error from the subtraction of AGN can be attributed to errors in the imaging
 The image noise from the spatial sum over the minihalo region is calculated as the residual rms per beam of the minihalo image, weighted by the beams in spatial region. The number of beams is given by $N_{beam} = A_{MH} / A_{beam}$, where $A_{MH}$ is the area of the minihalo  and $A_{beam}$ is the restoring beam area. This gives the total image noise as $\sigma_{noise}^2 = (\sigma_{rms}\sqrt{N_beam})^2$.
 
 \section{Sample completion}
-The completeness of analysis for the observed clusters is provided in \ref{tab:completeness}. All calibration has been completed, alongside the majority of self calibration. Estimates of the minihalo flux are obtained for X clusters. The corresponding results are presented in the following chapter, with a seperate section describing the status of clusters where self calibration was not achieved. Incompleteness is primarily attributed to time constraints and challenges in the modelling of more complex cluster morphology. \stickynote{Update after results} 
+The completeness of analysis for the observed clusters is provided in \ref{tab:completeness}. All calibration has been completed, alongside the majority of self calibration. Estimates of the minihalo flux are obtained for X clusters. The corresponding results are presented in the following chapter, with a seperate section describing the status of clusters where self calibration was not achieved. Incompleteness is primarily attributed to time constraints and challenges in the modelling of more complex cluster morphology.
 
 \begin{table}
     \centering
@@ -61,18 +61,18 @@ The completeness of analysis for the observed clusters is provided in \ref{tab:c
             \toprule
             Cluster & Calibration & Self-calibration & Minihalo flux \\
             \midrule
-            2A0335+096      & Done & Partial & No \\
-            A1413           & Done & Done    & Pending \\
+            2A0335+096      & Done & Done    & No \\
+            A1413           & Done & Done    & No \\
             A1795           & Done & No      & No \\
-            A2204           & Done & Done    & Pending \\
+            A2204           & Done & Done    & No \\
             A2626           & Done & No      & No \\
             A478            & Done & Done    & Done \\
-            ACTJ0022-0036   & Done & Done    & Pending \\
-            MS1455+2232     & Done & Done    & Pending \\
-            RXCJ1115+0129   & Done & Done    & Pending \\
+            ACTJ0022-0036   & Done & Done    & No \\
+            MS1455+2232     & Done & Done    & No \\
+            RXCJ1115+0129   & Done & Done    & Done \\
             RXJ1720+2638    & Done & Done    & Done \\
-            RXJ2129+0005    & Done & Pending & Pending \\
-            Z3146           & Done & Pending & Pending \\
+            RXJ2129+0005    & Done & Done & Done \\
+            Z3146           & Done & No & No \\
             \bottomrule
         \end{tabular}
         \caption{Processing completeness for each cluster, showing the status of calibration, self-calibration, and final minihalo flux measurement.}
