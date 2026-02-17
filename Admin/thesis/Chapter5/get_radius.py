@@ -136,6 +136,18 @@ def z3146():
     r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
     print(f'Z3146: R500 = {r:1.2f} Mpc')
 
+def a1795():
+    mass = 4.57e14  # Msun
+    z = 0.062
+    r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
+    print(f'A1795: R500 = {r:1.2f} Mpc')
+
+def a2626():
+    mass = 1.84e14  # Msun
+    z = 0.062
+    r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
+    print(f'A2626: R500 = {r:1.2f} Mpc')
+
 twoA0335()
 rxcj1115()
 rxj1720()
@@ -146,3 +158,5 @@ ms1455()
 a1413()
 actj0022()
 z3146()
+a1795()
+a2626()

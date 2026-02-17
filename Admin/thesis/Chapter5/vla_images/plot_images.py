@@ -671,7 +671,7 @@ def ms1455():
         fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
-    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.007, length=200)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.007, length=300)
     annotate_arrow_label_pixel(ax, 1160, 1160, "S1", text_offset_pix=(30, 30))
     annotate_arrow_label_pixel(ax, 1278, 943, "S2", text_offset_pix=(30, 30))
     annotate_arrow_label_pixel(ax, 1330, 1120, "S3", text_offset_pix=(-40, 40))
@@ -682,9 +682,9 @@ def ms1455():
     # export_fits(sub_img, fits_file)
     sigma = 2.85e-06  # get_threshold(sub_img)
     fig, ax, wcs = plot_fits(  # 3.02x2.80 arcsec, -25.1 
-        fits_file, rms=sigma, scale="mjy", colour_scale="asinh", alpha=0.1, zoom=4.5, beam_detail="flat")
+        fits_file, rms=sigma, scale="mjy", colour_scale="asinh", alpha=0.2, zoom=4.5, beam_detail="flat")
     # Annotate the scale + bcg
-    annotate_scale_bar(ax, (0.1, 0.2), kpc_scale=4.007, length=100)
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.007, length=200)
     annotate_cross(ax, "14h57m15.11s", "22d20m34s")
     annotate_cross(ax, "14h57m10.80s", "22d18m44.71s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
@@ -864,12 +864,59 @@ def rxj2129():
     annotate_cross(ax, "21h29m39.97s", "0d05m21.05s")
     plt.savefig(f"{c_name}_sub.pdf", dpi=300, bbox_inches='tight')
 
+# A1795
+def a1795():
+    print("A1795:")
+    c_name = "a1795"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/A1795/full_image/image-final.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 3.54e-6  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.37x2.17 arcsec, -68.8
+        fits_file, rms=sigma, zoom=4, scale="mjy", colour_scale="asinh", alpha=0.001, 
+        neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.196, length=70)
+    annotate_arrow_label_pixel(ax, 1140, 1150, "S1", text_offset_pix=(-60, -25))
+    annotate_arrow_label_pixel(ax, 1353, 1135, "S2", text_offset_pix=(30, -10))
+    annotate_arrow_label_pixel(ax, 966, 926, "S3", text_offset_pix=(-60, 30))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+
+    fig, ax, wcs = plot_fits(  # 2.37x2.17 arcsec, -68.8
+        fits_file, rms=sigma, zoom=12, scale="mjy", colour_scale="asinh", alpha=0.001, 
+        neg_contour_color="black", beam_detail="flat")
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.196, length=20)
+    plt.savefig(f"{c_name}_zoom.pdf", dpi=300, bbox_inches='tight')
+
+
+# A2626
+def a2626():
+    print("A2626:")
+    c_name = "a2626"
+    full_img = f"{BASE_MASTERS_DIR}/Image-Processing/A2626/full_image/image-final.image.tt0"
+    
+    # Make the full image
+    fits_file = f"FITS/{c_name}.fits"
+    # export_fits(full_img, fits_file)
+    sigma = 3.04e-6  # get_threshold(full_img)
+    fig, ax, wcs = plot_fits(  # 2.15x2.11 arcsec, -48.4
+        fits_file, rms=sigma, zoom=5, scale="mjy", colour_scale="asinh", alpha=0.001, 
+        neg_contour_color="black", beam_detail="flat")
+    # Annotate the scale + points.
+    annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.087 , length=50)
+    annotate_arrow_label_pixel(ax, 1140, 1150, "S1", text_offset_pix=(-60, -15))
+    annotate_arrow_label_pixel(ax, 1310, 1180, "S2", text_offset_pix=(30, -10))
+    # annotate_arrow_label_pixel(ax, 966, 926, "S3", text_offset_pix=(-60, 30))
+    plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
+
 
 # twoA0335()
 # a478()
 # rxj1720()
 # a2204()
-# ms1455()
+ms1455()
 # z3146()
 # rxcj1115()
 # a1413()
@@ -877,3 +924,5 @@ def rxj2129():
 # A2626
 # actj0022()
 # rxj2129()
+# a1795()
+# a2626()

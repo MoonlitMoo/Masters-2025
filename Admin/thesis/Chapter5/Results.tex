@@ -266,7 +266,7 @@ The subtracted datasets were imaged using $\texttt{robust}=1$ and multiscales $[
     \centering
     \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1413_sub.pdf}
     \caption{A1413. Point source subtracted 10 GHz image with a restoring beam $8.32"\times7.85"$ at a position angle of -52.6\textdegree{} and an rms noise of $2.27$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, with negative contours at $-3\sigma$ shown as white dotted lines. The green cross marks the locations of the subtracted sources.}
-    \label{fig:a413_sub_image}
+    \label{fig:a1413_sub_image}
 \end{figure}
 
 \section{ACTJ0022-0036}
@@ -288,7 +288,7 @@ The subtracted image has clear evidence of over-subtraction of the AGN, with neg
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1413_sub.pdf}
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/actj0022_sub.pdf}
     \caption{ACTJ0022-0036. Point source subtracted 10 GHz image with a restoring beam $2.90"\times2.36"$ at a position angle of -10.7\textdegree{} and an rms noise of $1.94$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, with negative contours at $-3\sigma$ shown as white dotted lines. The green cross marks the location of the subtracted source.}
     \label{fig:actj0022_sub_image}
 \end{figure}
@@ -309,11 +309,43 @@ Several prominent sources were identified during self-calibration. These include
 \end{figure}
 
 \section{A1795}
+A1795 is a cool core cluster ($M_{500}=4.47\times10^{14}$ \Msun{}, $R_{500}=1.15$ Mpc \citep{Planck2016}) at redshift $z=0.062$ \citep{Sanders2011}. \textit{Chandra} X-ray observations yield a central temperature of $3.36\pm0.12$ keV, rising to $6.49\pm0.43$ keV at a radius of $160$ kpc \citep{Ettori2002}. The morphology beyond the cool core is reported to be relaxed, with a slight elongation to the north. A cold front was also detected $\sim\!78$ kpc to the south, suggesting gas sloshing in the core \citep{Markevitch2001}. 
+
+VLA observations at 1.4 GHz revealed a minihalo surrounding an extremely bright central BCG \citep{Giacintucci2014}. Arcsecond resolution imaging of the BCG exhibited two prominent lobes extending to the north and south, before bending to the east and west, respectively. The length of the lobes is $\sim\!10$ kpc. The flux density of the BCG was measured as $917\pm46$ mJy from a FIRST image at 1.4 GHz. A second source is located to the west of the BCG, and was associated with a background galaxy at $z=0.57$ \citep{Giacintucci2014}. The radius of the minihalo was estimated at $\sim\!100$ kpc, and the total flux density at 1.4 GHz was reported as $85\pm5$ mJy. \citet{Kale2015} attempted to image the minihalo using GMRT observations at 1.3 GHz. However, strong artefacts centred on the BCG prevented usable image quality and the cluster was excluded from further analysis.
+
+\subsection{10 GHz observation}
+Self-calibration was complicated by the presence of the bent lobes of the BCG (S1). Modelling tended towards overestimating the lobe flux and subsequently compensating by inserting significant ($\geq50$ $\mu$Jy) negative point model. These resulted in severe sidelobe artefacts across the image. Small scales aided in modelling at high thresholds ($>20\sigma$). However, deeper clean thresholds($\leq20\sigma$) reintroduced the negative model points. As such, a self-calibrated image was not obtained. Two other prominent sources are present in the image, the aforementioned background galaxy S2, and a head-tail galaxy to the southeast. Flux values are not provided for these sources due to uncertainty in the self-calibration. A joint image using $\texttt{robust}=0.5$ and scales $[0, 2, 4]$ is shown in Figure \ref{fig:a1795_image} to illustrate these artefacts. Figure \ref{fig:a1795_zoom} depicts a closer view of the BCG, showing the lobe structure.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1795.pdf}
+    \caption{A1795. Non-subtracted 10 GHz image with a restoring beam of $2.37"\times2.17"$ at a position angle of -35.0\textdegree{} and an rms noise of $3.54$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, while negative contours at $-3\sigma$ are shown in black.}
+    \label{fig:a1795_image}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a1795_zoom.pdf}
+    \caption{A1795. Zoom of the image shown in Figure \ref{fig:a1795_image}, to illustrate the lobe structure of the central BCG. Details of the image are given in the full image caption.}
+    \label{fig:a1795_zoom}
+\end{figure}
 
 \section{A2626}
+A2626 is a nearby low-mass galaxy cluster ($M_{500}=1.84\times10^{14}$ \Msun{}, $R_{500}=0.85$ Mpc \citep{Planck2016}) at redshift $z=0.056$ \citep{Wen2015}. XMM-Newton X-ray observations revealed temperature variations of only $\sim\!1$ keV out to a radius of 600 kpc \citep{Wong2008}. The central temperature was measured as $\sim\!2.5$ keV, rising to $\sim\!3.5$ keV at a radius of 230 kpc, before declining at larger radii. Two extended X-ray regions were identified $\sim\!450$ kpc to the northeast and southwest from the centre, attributed to smaller merging subclusters \citep{Mohr1996, Wong2008}. The cluster morphology is therefore complex, but not highly disturbed.
 
-\section{Summary}
-\begin{threeparttable}
+Several unusual arc-like radio sources have been detected in the core of A2626. Four arcs were observed in a symmetric diamond pattern around the central BCG, convex with respect to the centre \citep{Gitti2013,Ignesti2017,Kale2017}. The arcs were detected by VLA observations at 1.4 GHz, but not at 5 GHz, implying a steep spectrum \citep{Gitti2013}. GMRT observations at 610 MHz confirmed a steep spectrum with a reported spectral indices in the range 3.2--3.6 \citep{Kale2017}. They also measured the linear arc extents in the range 79--152 kpc. Within the region defined by the arcs, \citet{Gitti2004,Gitti2013} report diffuse emission proposed to be a minihalo with an extent of 60 kpc.  \citet{Ignesti2017} measured the spectral index of the inner diffuse emission separately from the arcs using VLA observations at 3 and 5 GHz  They found a relatively constant average spectral index of $\alpha=0.7\pm0.1$ in this region, significantly different from the arcs. This minihalo candidate remains to be confirmed as the smaller scale may allow it to be a result of AGN activity.
+
+\subsection{10 GHz observation}
+Self-calibration was unable to cleanly model the central BCG. Significant negative point models were introduced at even high thresholds ($\geq\sigma20$). These introduced radial sidelobe artefacts across the full image. Robusts were trialled between -2 and 1, alongside various scales, without success. A self-calibrated image was not obtained for this cluster. An image using $\texttt{robust}=0.5$ and scales $[0, 2, 4, 8]$ is presented in Figure \ref{fig:a2626_image}. The central BCG (S1) is visible, alongside a double-lobe compact source (S2) to the west. The lobes protrude north and south for $\sim\!10$ kpc and slightly bend towards the west. No flux densities are estimated for these sources due to uncertainty in image quality.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.85\textwidth]{Chapter5/vla_images/a2626.pdf}
+    \caption{A2626. Non-subtracted 10 GHz image with a restoring beam of $2.15"\times2.11"$ at a position angle of -48.4\textdegree{} and an rms noise of $3.04$ $\mu$Jy beam$^{-1}$ (shown in grey, bottom left). White contours are spaced by factors of two, starting from 3$\sigma$, while negative contours at $-3\sigma$ are shown in black.}
+    \label{fig:a2626_image}
+\end{figure}
+
+\begin{threeparttable}[h]
     \centering
     \begin{tabular}{lcccccc}
         \toprule
@@ -321,7 +353,7 @@ Several prominent sources were identified during self-calibration. These include
                         & (mJy)                      &               \\ 
         \midrule
         RXJ1720+2638    & $8.61\pm0.56$              & $1.10\pm0.05$ \\
-        A478            & $0.31\pm0.03$              & $2.02\pm0.10$\tnote{a} \\
+        A478            & $0.31\pm0.03$              & $2.02\pm0.10$ \\
         RXCJ1115+0129   & $0.96\pm0.15$              &               \\
         RXJ2129+0005    & $0.15\pm0.01$              &               \\
         \bottomrule
@@ -329,10 +361,9 @@ Several prominent sources were identified during self-calibration. These include
     \caption{Flux densities of minihalos.}
     \label{tab:mh_flux_densities}
     \begin{tablenotes}[flushleft]
-            \footnotesize
-            \item \textit{Notes.} Minihalo fluxes are derived from primary beam-corrected images. 
-            \item[a] Combined with measurement from \citet{Giacintucci2014}. 
-        \end{tablenotes}
+        \footnotesize
+        \item \textit{Notes.} Minihalo fluxes are derived from primary beam-corrected images.
+    \end{tablenotes}
 \end{threeparttable}
 
 \begin{threeparttable}
@@ -376,14 +407,13 @@ Several prominent sources were identified during self-calibration. These include
                         & S4            & 00 22 13.7        & -00 34 58.5           & $0.21\pm0.02$              &  & \\
         RXJ2129+0005    & S1            & 21 29 40.0        & +00 05 21.1           & $5.36\pm0.25$              & $0.78\pm0.02$ & BCG \\
                         & S2            & 21 29 39.2        & +00 05 09.5           & --                         &  & \\
-        A1795           & S1            & 13 48 52.5        & +26 35 34.2           & --              &  & BCG \\
         \bottomrule
     \end{tabular}
     \caption{Flux densities of discrete radio sources.}
     \label{tab:source_flux_densities}
     \begin{tablenotes}[flushleft]
             \footnotesize
-            \item \textit{Notes.} Spectral index is given for BCG sources where available. The notes column denotes which sources correspond to a cluster BCG and subtracted sources. Source fluxes are derived from non-primary beam corrected images. 
+            \item \textit{Notes.} Spectral index is given for BCG sources where available. The notes column denotes which sources correspond to a cluster BCG and subtracted sources. Source fluxes are derived from non-primary beam corrected images. Flux values are not reported for A1794 or A2626.
             \item This source has a two-component power-law. The stated spectral index is accurate at 10 GHz.
         \end{tablenotes}
 \end{threeparttable}
