@@ -47,6 +47,8 @@ def plot_seds(
     axA.text(0.18, 0.18, "BCG", transform=axA.transAxes)
     axA.text(0.18, 0.12, _alpha_text(fit_bcg.alpha, fit_bcg.sigma_alpha), transform=axA.transAxes)
     
+    _scatter_with_errors(axA, np.array([9.95]), np.array([0.151]), np.array([0.01]), facecolor="b", edgecolor="k")
+    
     # Cosmetics
     axA.minorticks_on()
     axA.grid(False)
