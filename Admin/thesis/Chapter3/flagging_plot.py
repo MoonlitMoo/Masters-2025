@@ -77,7 +77,7 @@ def plot_heatmap_with_teff(config_label: str):
 
     mat = agg.pivot_table(index="cluster", columns="freq_GHz", values="retained_frac", aggfunc="mean")
     # Reindex to desired cluster order (drop missing, redshift order)
-    clusters = [c for c in CLUSTER_ORDER if c in mat.index]
+    clusters = [c for c in CLUSTER_ORDER2 if c in mat.index]
     mat = mat.reindex(clusters)
     Z = mat.to_numpy()
 
