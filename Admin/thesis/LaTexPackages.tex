@@ -53,15 +53,18 @@
     style=authoryear,
     giveninits=true,
     uniquename=false,
-    maxcitenames=1,
+    uniquelist=false,
+    maxcitenames=2,
+    mincitenames=1,
     doi=true,
     url=false,
     isbn=false,
     date=long,
     maxbibnames=99,
     natbib=true,
-    eprint=false,
+    eprint=false
 ]{biblatex}
+\ExecuteBibliographyOptions{maxcitenames=1,mincitenames=1}
 \addbibresource{References/Bibliography.bib}
 
 \usetikzlibrary{shapes.geometric, arrows}
