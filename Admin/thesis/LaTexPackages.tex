@@ -7,7 +7,6 @@
 %There are essential packages that are contained within the uqthesis.cls which are integral to the template - These must not be deleted.  A list of these packages can be found in the README.tet file
 
 %The packages below are optional, please add or alter as required.
-\usepackage[authoryear, round]{natbib}
 \usepackage{pdfpages}			 %Allows you to include full-page pdfs.
 \usepackage{wrapfig}			 %Lets you wrap text around figures.
 \usepackage{bm} 				 %Bolded maths characters.
@@ -18,7 +17,6 @@
 \usepackage{framed}			     %For boxed text.
 \usepackage{microtype}			 %pdfLaTeX will fix your kerning.
 \usepackage{marvosym}			 %Include symbols (like the Euro symbol, etc.).
-\usepackage{color}				 %Nice for scalable pdf graphics using InkScape.
 \usepackage{transparent}	     %Nice for scalable pdf graphics using InkScape.
 \usepackage{placeins}			 %Lets you put in a \FloatBarrier to stop figures floating past this command.
 \usepackage{mdframed,mdwlist}    %Use these for nice lists (less white space).
@@ -42,12 +40,26 @@
 \usepackage{tikz}                %To create graphic elements.
 \usepackage[figuresright]{rotating}	%Allows large tables to be rotated to landscape.
 \usepackage{marginnote}
-\usepackage{fancyhdr}
 \usepackage{newtxmath}   % Times-like, nicer \propto
 \usepackage{threeparttable}
 \usepackage{multirow}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{subcaption}
+
+% \usepackage[authoryear, round]{natbib}
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    giveninits=false,
+    doi=true,
+    url=false,
+    isbn=false,
+    date=long,
+    maxbibnames=99,
+    natbib=true,
+    eprint=false,
+]{biblatex}
+\addbibresource{References/Bibliography.bib}
 
 \usetikzlibrary{shapes.geometric, arrows}

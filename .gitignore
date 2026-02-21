@@ -73,3 +73,5 @@
 /Admin/thesis/Chapter4/fluxboot_secondary_fits/
 /Image-Processing/RXJ1720+2638/Lband/
 **/*.pbcor.workdirectory/
+*.bcf
+*.run.xml
