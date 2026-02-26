@@ -9,7 +9,7 @@ from astropy.visualization import MinMaxInterval, AsinhStretch, ImageNormalize
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as pe
 from matplotlib.colors import FuncNorm
-from matplotlib.ticker import MaxNLocator, AutoMinorLocator
+from matplotlib.ticker import MaxNLocator
 from matplotlib.patches import Ellipse, Circle
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
@@ -460,7 +460,8 @@ def plot_fits(
     cbar.set_label(cbar_label, rotation=90, labelpad=10)
     if cticks is not None:
         cbar.set_ticks(cticks)
-    
+    else:
+        cbar.locator = MaxNLocator(6)
     # Restoring beam (from FITS header)
     if all(k in hdr for k in ("BMAJ", "BMIN", "BPA", "CDELT1")):
         plot_restoring_beam(ax, hdr, beam_loc, beam_detail)
@@ -726,7 +727,7 @@ def rxcj1115():
     # export_fits(full_img, fits_file)
     sigma = 2.66e-06  # get_threshold(full_img)
     fig, ax, wcs = plot_fits(  # 2.89x2.20 arcsec, -31.9
-        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.01, 
+        fits_file, rms=sigma, zoom=3, scale="mjy", colour_scale="asinh", alpha=0.02, 
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=4.856, length=300)
@@ -841,7 +842,7 @@ def rxj2129():
         contour_levels=[-3, 6, 12, 24, 48], neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=3.727, length=150)
-    annotate_arrow_label_pixel(ax, 1134, 1143, "S1", text_offset_pix=(-40, -20))
+    annotate_arrow_label_pixel(ax, 1136, 1150, "S1", text_offset_pix=(-40, -10))
     annotate_arrow_label_pixel(ax, 1181, 1130, "S2", text_offset_pix=(20, -10))
     # annotate_arrow_label_pixel(ax, 973, 1230, "S3", text_offset_pix=(20, -10))
     # annotate_arrow_label_pixel(ax, 455, 462, "S2", text_offset_pix=(20, 0))
@@ -906,13 +907,13 @@ def a2626():
         neg_contour_color="black", beam_detail="flat")
     # Annotate the scale + points.
     annotate_scale_bar(ax, (0.85, 0.1), kpc_scale=1.087 , length=50)
-    annotate_arrow_label_pixel(ax, 1140, 1150, "S1", text_offset_pix=(-60, -15))
+    annotate_arrow_label_pixel(ax, 1142, 1150, "S1", text_offset_pix=(-60, -15))
     annotate_arrow_label_pixel(ax, 1310, 1180, "S2", text_offset_pix=(30, -10))
     # annotate_arrow_label_pixel(ax, 966, 926, "S3", text_offset_pix=(-60, 30))
     plt.savefig(f"{c_name}.pdf", dpi=300, bbox_inches='tight')
 
 
-twoA0335()
+# twoA0335()
 # a478()
 # rxj1720()
 # a2204()
@@ -920,9 +921,7 @@ twoA0335()
 # z3146()
 # rxcj1115()
 # a1413()
-# A1795
-# A2626
 # actj0022()
-# rxj2129()
+rxj2129()
 # a1795()
 # a2626()

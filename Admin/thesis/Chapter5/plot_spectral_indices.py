@@ -1,8 +1,12 @@
+import os
 import math
 from typing import Callable, Tuple, Optional
 
+import scipy
+import pickle
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FixedLocator, NullLocator, ScalarFormatter
 from dataclasses import dataclass
@@ -194,7 +198,7 @@ def plot_rxj1720_seds(
     axA.set_xlabel("Frequency (GHz)")
     axA.set_ylabel("Flux (mJy)")
     # axA.set_title("Total flux of minihalo and BCG")
-    axA.set_xlim(0.01, 100)
+    axA.set_xlim(0.1, 30)
     axA.set_ylim(0.3, 5000)
     axA.text(0.65, 0.70, "minihalo", transform=axA.transAxes)
     axA.text(0.63, 0.64, _alpha_text(fit_mh.alpha, fit_mh.sigma_alpha), transform=axA.transAxes)
@@ -221,13 +225,51 @@ def plot_rxj1720_seds(
     axB.set_xlabel("Frequency (GHz)")
     axB.tick_params(axis="y", labelleft=True)
     # axB.set_title("Total flux of minihalo centre and tail")
-    axB.set_xlim(0.01, 100)
+    axB.set_xlim(0.1, 30)
     axB.set_ylim(0.3, 1000)
     axB.text(0.58, 0.70, "central part", transform=axB.transAxes)
     axB.text(0.58, 0.64, _alpha_text(fit_c.alpha, fit_c.sigma_alpha), transform=axB.transAxes)
     axB.text(0.18, 0.28, "tail", transform=axB.transAxes)
     axB.text(0.18, 0.22, _alpha_text(fit_t.alpha, fit_t.sigma_alpha), transform=axB.transAxes)
 
+    # Add in Yvette 15.5 constraints at 15.5 GHz
+    # Extract data to save so as not to redo
+    def truncate_cmap(cmap, minval=0.35, maxval=0.9, n=256):
+        return mpl.colors.LinearSegmentedColormap.from_list(
+            "trunc_blues", cmap(np.linspace(minval, maxval, n))
+        )
+
+    blues_trunc = truncate_cmap(plt.cm.Blues, 0.35, 0.9)
+    if os.path.exists('MH_spec_pmf.pkl'):
+        with open('MH_spec_pmf.pkl', 'rb') as pkl_file:
+            loaded_dict = pickle.load(pkl_file)
+            y = loaded_dict['y']
+            pmf = loaded_dict['pmf']
+    nu=np.linspace(13., 18, 8)        
+    sigma = np.sqrt(2) * scipy.special.erfinv(1 - pmf)
+    fineness = 0.5
+    contour_line_levels = [1, 2, 3]
+    default_color_levels = np.arange(0, contour_line_levels[-1] + fineness / 2, fineness)
+    contour_color_levels = default_color_levels
+    cs = axB.contourf(
+        nu, y, sigma,
+        cmap=blues_trunc,
+        levels=contour_color_levels,
+        alpha=0.85
+    )
+    cs.set_rasterized(True)
+    cs.set_edgecolor("face")
+    # axB.contour(
+    #     nu, y, sigma,
+    #     colors="#0072B2",
+    #     levels=contour_line_levels,
+    #     linewidths=0.9,
+    #     alpha=0.9
+    # )
+    cbar = plt.colorbar(cs)
+    cbar.set_ticks([0, 1, 2, 3])
+    cbar.set_ticklabels(["0", r"1$\sigma$", r"2$\sigma$", r"3$\sigma$"])
+    
     for ax in (axA, axB):
         ax.minorticks_on()
         ax.grid(True)
@@ -439,6 +481,6 @@ def rxj2129():
     savepath="rxj2129_seds.pdf",
 )
 
-# rxj1720()
+rxj1720()
 # a478()
 # rxj2129()

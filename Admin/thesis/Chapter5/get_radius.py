@@ -79,7 +79,7 @@ def overdensity_radius(M_delta,
 def rxcj1115():
     mass = 6.86e14  # Msun
     z = 0.350
-    r = overdensity_radius(mass, z, H0=70, Omega_m=0.27)
+    r = overdensity_radius(mass, z, H0=70, Omega_m=0.3)
     print(f'RXCJ1115+0129: R500 = {r:1.2f} Mpc')
 
 def twoA0335():
