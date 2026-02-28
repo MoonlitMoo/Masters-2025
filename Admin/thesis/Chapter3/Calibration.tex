@@ -155,6 +155,13 @@ Based on the NRAO description of RFI in the X-band, the script was configured to
 
 This process was incorporated into a copy of the VLA Pipeline version 6.6.1 as a custom step \texttt{hifv\_aoflagger} with three arguments: the source target to be flagged \texttt{flag\_target}, the Lua script \texttt{aoflagger\_file}, and the data to operate over (raw or residuals). If the residual data column is selected, this first subtracts the model from the corrected data to estimate the residual spectrum. Given an accurate source model, these residuals are expected to be closer to a Gaussian noise distribution, improving rms-based RFI detection. This provides flexibility per observed source with customisable parameters per source and region of RFI. The implementation of this custom pipeline step is available in a separate repository.\footnote{\url{https://github.com/MoonlitMoo/casa-pipeline/tree/main/hifv}}
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapter3/flagging_comparison.pdf}
+    \caption{Frequency versus amplitude of the raw primary calibrator visibilities before (left) and after (right) \textit{a priori} and \texttt{AOFLAGGER} flagging. Note the different y-axis scales between panels. Known high-RFI regions are shaded in grey. Data is shown for all baselines.}
+    \label{fig:flagging_comp}
+\end{figure}
+
 \section{Calibration pipeline}
 \label{sec:calibration_steps}
 
@@ -234,11 +241,27 @@ Similarly to the primary calibrators, the secondary calibrators are flagged prio
 \subsection{Delay and Bandpass calibrations}
 Errors in antenna position and time measurements cause systematic errors in the measured delay between antennas, which produces errors in the correlated phase. These effects are antenna-dependent and can be corrected using observations of a strong calibrator. By assuming one antenna as a reference with zero delay, the relative delays of all other antennas can be calibrated. This provides one solution per antenna, per spectral window, and per parallel correlation (LL, RR). Following the delay calibration, residual frequency-dependent errors in the phase and gain remain. This is correlated with the spectral window sub-bands and the basebands, resulting in a total bandpass response. These errors are also corrected using observations of a strong calibrator. These calibrations are iteratively constructed over the \texttt{hifv\_testBPdcals}, \texttt{hifv\_semiFinalBPdcals}, and \texttt{hifv\_finalcals} stages.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapter3/bandpass_vs_freq.pdf}
+    \caption{Example bandpass calibration. Amplitude (top) and phase (bottom) time-independent solutions are shown for the parallel-hand (LL, RR) correlations of a single antenna. Spectral windows are indicated by alternating grey shaded regions to highlight discontinuities at their boundaries. The pronounced discontinuity in the RR correlation at 10 GHz marks the baseband transition between 8--10 and 10--12 GHz.}
+    \label{fig:bandpass}
+\end{figure}
+
 \subsection{Secondary calibrator flux scale}
 The absolute flux density scale must be transferred from the primary calibrator to the secondary calibrator. This is performed by fitting and scaling a polynomial model to the delay and bandpass-corrected secondary calibrator with the \texttt{hifv\_fluxboot} task. To accurate transfer the known flux scale to the unknown source flux, this model must be well-constrained. Therefore, to reduce time-variable noise contributing to the model, a short time interval complex gain solution is also used. This is defined by a minimal timescale found by \texttt{hifv\_solint} task. The minimum possible interval is the integration timescale, however, a high flagging fraction may make this infeasible. Outliers from these solutions are then excluded from fitting the polynomial model. This scaled model then represents the predicted true spectrum of the secondary calibrator and added to the dataset. It is important to note that any missing spectral windows or antennas in the primary calibrator solutions are propagated to the secondary calibrator and subsequent calibrations. 
 
 \subsection{Final calibration}
-With flux density models established for the calibrators and flagging performed on the corrected visibilities, the final calibrations are fitted using the \texttt{hifv\_finalcals} task. This step first refits the delay and bandpass calibrations using the primary calibrator. An average phase solution is then computed over all scans to normalise the time-dependent phase errors. The short-timescale phase corrections are then computed for all calibrators and used to derive the final complex gain and phase solutions. The final calibration list then consists of the prior, delay, bandpass, average phase, complex gain, and phase calibrations. These calibrations are applied to the raw visibilities to obtain the final corrected data. This includes applying the calibrations from the secondary calibrators to the science targets. These solutions contain the pointing-dependent corrections to the scaling derived from the primary calibration. Once again, any missing spectral windows or antennas in the secondary calibrator solutions are propagated to the science targets to maintain consistency. 
+With flux density models established for the calibrators and flagging performed on the corrected visibilities, the final calibrations are fitted using the \texttt{hifv\_finalcals} task. This step first refits the delay and bandpass calibrations using the primary calibrator. An average phase solution is then computed over all scans to normalise the time-dependent phase errors. The short-timescale phase corrections are then computed for all calibrators and used to derive the final complex gain and phase solutions. An example of these time-dependent solutions are shown in Figure \ref{fig:complex_gain}. 
+
+The final calibration list then consists of the prior, delay, bandpass, average phase, complex gain, and phase calibrations. These calibrations are applied to the raw visibilities to obtain the final corrected data. This includes applying the calibrations from the secondary calibrators to the science targets. These solutions contain the pointing-dependent corrections to the scaling derived from the primary calibration. Once again, any missing spectral windows or antennas in the secondary calibrator solutions are propagated to the science targets to maintain consistency. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapter3/gain_amp_phase.pdf}
+    \caption{Example complex gain calibration. Amplitude (left) and phase (right) solutions for a single polarisation and spectral window are shown for three representative antennas over the course of an observation. Red shaded regions mark secondary calibrator scans, interleaved science target scans shown in.}
+    \label{fig:complex_gain}
+\end{figure}
 
 \subsection{Science target processing}
 The science targets then undergo a single flagging run performed on the residual visibilities. Ideally, this would occur without the model subtraction, but this was not implemented in the pipeline step at the time. The default model column of a Measurement Set is a 1 Jy point source located at the phase centre. Subtracting this is equivalent to offsetting the visibilities by a constant, to which rms-based detection is insensitive to. As the science targets are primarily comprised of faint and diffuse emission, the visibilities are visually similar to noise, and fluctuations can be attributed to RFI. The benefits gained in using the residual data, rather than the raw visibilities, for flagging were considered to outweigh the risk of erroneous flagging. 
@@ -265,6 +288,13 @@ These metrics are based on the C-configuration data. The D-configuration observa
 
 \section{Calibration exceptions}
 Two observing runs, ID \texttt{25A-157.sb47856643.eb48084985.60734.6548690162} and \\\texttt{25A-157.sb47896788.eb48078564.60733.06076180555}, required manual intervention during calibration. In both datasets this was due to a secondary calibrator exhibiting noisy and inconsistent amplitude and phase solutions that affected spectral windows 22--31. Following the final calibration, this appeared as an antenna-dependent spread of amplitudes and phases over these spectral windows. This was caused by the pipeline selecting a long solution interval despite the presence of short-timescale phase variations, likely due to high RFI in these spectral windows inflating the minimum timescale estimated during \texttt{hifv\_solint}. To resolve this, a short-timescale phase calibration was fitted while excluding spectral windows contaminated with RFI to produce a single time-dependent solution per antenna and correlation. Due to the lack of frequency dependence, a residual phase and amplitude gradient across the spectral windows remained following this correction. This was solved by iteratively fitting a linear bandpass solution to this gradient, excluding outlying points until convergence. These phase and bandpass solutions were then applied in place of the final complex gain and phase solutions to the affected secondary calibrator and science field. This solution was sufficient to correct the phase issues in both datasets. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapter3/customfit_ea7scan29.pdf}
+    \caption{Example of a custom linear bandpass fit to the residual gain errors. Amplitude (top) and phase (bottom) solutions are found for the parallel-hand (LL, RR) correlations of a single antenna and scan. The fitted solutions remain stable despite increased RFI contamination at the highest frequencies.}
+    \label{fig:custom_bandpass}
+\end{figure}
 
 The observation \texttt{25A-157.sb47856643.eb48084985.60734.6548690162} also contained a mislabelled secondary calibrator scan. This scan was initially labelled with the intent for bandpass calibration. As such, it was handled alongside the primary calibrator data during the pipeline, significantly skewing the resulting bandpass calibration. This was fixed using the CASA \texttt{defintent} task to set the intent to the correct values.
 
