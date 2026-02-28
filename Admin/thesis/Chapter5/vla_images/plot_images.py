@@ -11,7 +11,6 @@ import matplotlib.patheffects as pe
 from matplotlib.colors import FuncNorm
 from matplotlib.ticker import MaxNLocator
 from matplotlib.patches import Ellipse, Circle
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 f_scale = 1.0

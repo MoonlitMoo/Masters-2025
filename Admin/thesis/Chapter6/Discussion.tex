@@ -28,7 +28,34 @@ The clusters RXJ1720+2638, RXCJ1115+0129, and RXJ2129+0005 exhibit total 10 GHz 
 
 Given this evidence, the findings suggest that both mechanisms may contribute to the overall minihalo emission and are dependent on the local cluster environment. This is reinforced by the presence of steepening along the tail of RXJ1720+2638. Evidence indicates the outer region is where turbulent acceleration begins to dominate the emission spectrum, outside of a hadronically dominated core. Both mechanisms being active within the minihalo at different scales is consistent with the discussions of previous studies (e.g. \citealp{Perrott2021,Riseley2024}). 
 
-Alternatively, one could suggest that turbulent acceleration is the dominant mechanism with energetic AGNs offsetting the steepening. Following this theory, A478 would lack the energetic AGN component that would be present in the other clusters. Based upon the observations of the BCG within A478, it has a steep spectral index of $\alpha=0.88$. Since is consistent with other BCGs containing active radio galaxies in this sample, there is not considerable evidence for this case. 
+Alternatively, turbulent acceleration could be the dominant mechanism in all clusters, with ongoing AGN activity offsetting the intrinsic spectral steepening. Under this interpretation, A478 would represent a cluster where the AGN-driven injections is comparatively weak or absent. 
+
+AGN activity can be approximated using the rest-frame 1.4 GHz radio luminosity of the BCG, $L_{1.4\>\mathrm{GHz}}$. This can be calculated from the redshift $z$,\footnote{The cluster redshift is adopted as a proxy for the BCG redshift, which is sufficient for this comparative estimate.} the luminosity distance of the AGN $D_L$ (which is based on the redshift and cosmology), the spectral index $\alpha$, and measured flux density $S_\nu$ at the observing frequency $\nu$ via,
+\begin{equation}
+    L_{\nu_{\mathrm{rest}}} = \frac{4\pi D_L^2}{(1+z)^{1-\alpha}}\left(\frac{\nu_{\mathrm{rest}}}{\nu}\right)^{-\alpha}S_\nu
+\end{equation}
+The derived luminosity powers for the four clusters with minihalo flux measurements are presented in Table \ref{tab:agn_power}. The BCG of A478 exhibits radio power comparable to that of RXJ1720+2638, which hosts sub-parsec jets \citep{Perrott2023}. This suggests that the activity of this BCG is unlikely to be significantly less than systems where this steepening is not observed. Consequently, the lack of strong AGN activity cannot easily explain the apparent spectral steepening in A478. Further work in optical identifiers or high-resolution radio imaging would be required to investigate the level of AGN activity more definitively.
+
+\begin{table}[h]
+    \centering
+    \begin{threeparttable}
+
+        \begin{tabular}{lccc}
+            \toprule
+            Cluster & L$_{1.4\,\mathrm{GHz}}$ (this thesis) & L$_{1.4\,\mathrm{GHz}}$ (Lit.) & Reference \\
+             & ($\times10^{24}$ W Hz$^{-1}$) & ($\times10^{24}$ W Hz$^{-1}$) & \\
+            \midrule
+            RXJ1720+2638  & $0.47 \pm 0.18$ & $0.50\pm0.02$ & \citet{Giacintucci2014a} \\
+            A478          & $0.58 \pm 0.21$ & $0.60\pm0.03$ & \citet{Giacintucci2014} \\
+            RXCJ1115+0129 & $3.0 \pm 1.8$ & $3.2\pm0.4$ & \citet{Trehaeven2023} \\
+            RXJ2129+0005  & $3.9 \pm 1.2$ & $3.1\pm0.2$ & \citet{Kale2015} \\
+            \bottomrule
+        \end{tabular}
+        
+        \caption{Radio luminosity for the BCG at 1.4 GHz. Estimates from this thesis are presented in comparison to literature value derived at from lower-frequency measurements.}
+        \label{tab:agn_power}
+    \end{threeparttable}
+\end{table}
 
 \section{Measurement Limitations}
 There are several fundamental observational limitations affecting the detectability of minihalos in this study. The primary constraints arise from the maximum recoverable scale, surface brightness sensitivity, and angular resolution of the interferometer configuration. Effects arising from these limitations are discussed here.

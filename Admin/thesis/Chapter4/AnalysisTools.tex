@@ -18,7 +18,7 @@ To ensure that the subtraction model does not include the minihalo, it is desira
     \label{fig:contaminating_emission}
 \end{figure}
 
-To evaluate an appropriate cutoff, the lower \textit{uv}-bound was varied and the BCG was fitted as a Gaussian point source using the \texttt{imfit} task for each dataset. As this region contains the sum of the minihalo and BCG fluxes, there exists a cutoff value for which the BCG emission alone remains, and the peak flux will converge to a constant value. The peak flux was used instead of the integrated flux as the BCG represents an unresolved point source, though these values will also converge as extended emission is removed. Figure \ref{fig:uvrange_cutoff} shows the results of the testing, with convergence at baselines $>10$ k$\lambda$. The peak values for the D-configuration datasets are inconsistent at low cutoffs due to the greater minihalo contamination (from higher extended brightness sensitivity). This caused the fitted Gaussian to exhibit a low peak and wide spread, boosting the integrated flux over the extended region and suppressing the peak flux. A minimum cutoff was chosen at 12 k$\lambda$ to ensure no minihalo emission remained, while minimising the effect on the signal-to-noise ratio. 
+To evaluate an appropriate cutoff, the lower \textit{uv}-bound was varied and the BCG was fitted as a Gaussian point source using the \texttt{imfit} task for each dataset. As this region contains the sum of the minihalo and BCG fluxes, there exists a cutoff value for which the BCG emission alone remains, and the peak flux will converge to a constant value. The peak flux was used instead of the integrated flux as the BCG represents an unresolved point source, though these values will also converge as extended emission is removed. Figure \ref{fig:uvrange_cutoff} shows the results of the testing, with convergence at baselines $>10$ k$\lambda$. Associated images at a selection of these \textit{uv}-cutoffs are shown in Figure \ref{fig:uvrange_images} to illustrate the removal of the diffuse emission. The peak values for the D-configuration datasets are inconsistent at low cutoffs due to the greater minihalo contamination (from higher extended brightness sensitivity). This caused the fitted Gaussian to exhibit a low peak and wide spread, boosting the integrated flux over the extended region and suppressing the peak flux. A minimum cutoff was chosen at 12 k$\lambda$ to ensure no minihalo emission remained, while minimising the effect on the signal-to-noise ratio. 
 
 A clear difference of approximately 10\% in the measured AGN flux exists between the D-configuration observations. This may be due to calibration error or true variability. This important distinction is discussed in more detail in Section \ref{sec:calibration_error}. The models for AGN subtraction used a 12 k$\lambda$ minimum \textit{uv}-cut, and all models were subtracted on an individual dataset basis to prevent under- or over-subtraction due to time variability. 
 
@@ -27,6 +27,13 @@ A clear difference of approximately 10\% in the measured AGN flux exists between
     \includegraphics[width=0.85\textwidth]{Chapter4/uvrange_vs_flux.pdf}
     \caption{Flux density fit for RXJ1720+2638 BCG as a function of minimum \textit{uv}-range used during imaging. The black vertical line indicates the adopted minimum \textit{uv}-cut. \textit{Left Panel:} Absolute peak flux with $1\sigma$ error for each dataset. \textit{Right Panel:} Relative peak flux density of D-configuration to C-configuration.}
     \label{fig:uvrange_cutoff}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Chapter4/uvrange_image.pdf}
+    \caption{Imaging of the central BCG of RXJ1720+2638 with progressively increasing minimum uv-cut. The top-left panel shows no minimum cutoff, while subsequent panels apply thresholds of 5, 10, and 15 k$\lambda$. Top-left image is zoom in of Figure \ref{fig:contaminating_emission}. The remaining images have beam sizes of approximately $1.85"\times1.75"$ arcsec at position angles $\approx$-7.5\textdegree{} (shown in grey, bottom left) and rms $\approx$6.5 $\mu$Jy. White contours are spaced by factors of two, starting from 20 $\mu$Jy, with negative contours at -20 $\mu$Jy shown as white dotted lines.}
+    \label{fig:uvrange_images}
 \end{figure}
 
 \section{Minihalo spatial extent}
