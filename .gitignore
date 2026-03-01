@@ -63,7 +63,6 @@
 **/*.aux
 **/*.blg
 **/*.fdb_latexmk
-**/*.bbl
 **/*.fls
 **/*.out
 **/*.synctex.gz
