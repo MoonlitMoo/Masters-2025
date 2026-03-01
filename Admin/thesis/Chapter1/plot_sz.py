@@ -49,5 +49,5 @@ plt.ylabel(r"$\Delta I$ (MJy sr$^{-1}$)")
 
 plt.grid()
 plt.xlim(1, 800)
-plt.legend()
+plt.legend([r"$y=1\times10^{-5}$", r"$y=2\times10^{-5}$", r"$y=5\times10^{-5}$", r"$y=1\times10^{-4}$"])
 plt.savefig("sz_ampl.pdf", dpi=300, bbox_inches='tight')
