@@ -1560,7 +1560,7 @@
       \field{journaltitle}{International Journal of Modern Physics D}
       \field{month}{3}
       \field{number}{04}
-      \field{title}{Cosmic rays in galaxy clusters and nonthermal emission}
+      \field{title}{COSMIC RAYS IN GALAXY CLUSTERS AND THEIR NONTHERMAL EMISSION}
       \field{volume}{23}
       \field{year}{2014}
       \field{pages}{1430007}
@@ -1649,7 +1649,7 @@
       \field{journaltitle}{\aap}
       \field{month}{9}
       \field{number}{3}
-      \field{title}{{An efficient implementation of the algorithm `CLEAN'}}
+      \field{title}{{An efficient implementation of the algorithm 'CLEAN'}}
       \field{volume}{89}
       \field{year}{1980}
       \field{pages}{377}
@@ -3759,7 +3759,7 @@
       \field{journaltitle}{The Astrophysical Journal}
       \field{month}{9}
       \field{number}{1}
-      \field{title}{Using radios halos and minihalos to measure the distributions of magnetic fields and cosmic rays in galaxy clusters}
+      \field{title}{USING RADIO HALOS AND MINIHALOS TO MEASURE THE DISTRIBUTIONS OF MAGNETIC FIELDS AND COSMIC RAYS IN GALAXY CLUSTERS}
       \field{volume}{722}
       \field{year}{2010}
       \field{pages}{737}
@@ -4544,7 +4544,7 @@
       \field{journaltitle}{The Astrophysical Journal}
       \field{month}{10}
       \field{number}{1}
-      \field{title}{A Chandra Study of the Complex Structure in the Core of 2A 0335+096}
+      \field{title}{AChandraStudy of the Complex Structure in the Core of 2A 0335+096}
       \field{volume}{596}
       \field{year}{2003}
       \field{pages}{190\bibrangedash 203}
@@ -7090,7 +7090,7 @@
       \field{journaltitle}{\mnras}
       \field{month}{10}
       \field{number}{4}
-      \field{title}{{A MeerKAT-meets-LOFAR study of Abell 1413: a moderately disturbed non-cool-core cluster hosting a 500 kpc `mini'-halo}}
+      \field{title}{{A MeerKAT-meets-LOFAR study of Abell 1413: a moderately disturbed non-cool-core cluster hosting a 500 kpc 'mini'-halo}}
       \field{volume}{524}
       \field{year}{2023}
       \field{pages}{6052\bibrangedash 6070}
@@ -7264,7 +7264,7 @@
       \field{journaltitle}{\mnras}
       \field{month}{5}
       \field{number}{3}
-      \field{title}{{A MeerKAT-meets-LOFAR study of MS 1455.0 + 2232: a 590 kiloparsec `mini'-halo in a sloshing cool-core cluster}}
+      \field{title}{{A MeerKAT-meets-LOFAR study of MS 1455.0 + 2232: a 590 kiloparsec 'mini'-halo in a sloshing cool-core cluster}}
       \field{volume}{512}
       \field{year}{2022}
       \field{pages}{4210\bibrangedash 4230}

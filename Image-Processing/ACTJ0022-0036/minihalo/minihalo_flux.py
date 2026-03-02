@@ -52,7 +52,7 @@ def plot_seds(
 
 # --- Data ---
 bcg_freq = np.array([0.610, 1.4, 10])
-bcg_flux = np.array([46.9, 19.02, 3.89])
+bcg_flux = np.array([46.8, 19.02, 3.89])
 bcg_err  = np.array([0.2, 0.93, 0.04])
 
 plot_seds(bcg=(bcg_freq, bcg_flux, bcg_err))
