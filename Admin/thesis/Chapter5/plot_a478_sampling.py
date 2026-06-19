@@ -103,9 +103,9 @@ def main():
     
     n_spw = len(spw_dirs)
     
-    # cmap = plt.cm.get_cmap("tab10", n_spw)
     labels = ["8-9 GHz", "9-10 GHz", "10-11 GHz", "11-12 GHz"]
-    for i, (bl, label, npts) in enumerate(zip(bl_per_spw, labels, total_points)):
+    colours = plt.cm.viridis(np.linspace(0, 1, len(labels)))
+    for i, (bl, label, npts, c) in enumerate(zip(bl_per_spw, labels, total_points, colours)):
         if bl.size == 0:
             ax.set_title(f"{label} (no data)")
             ax.axis("off")
@@ -116,7 +116,8 @@ def main():
             bins=bin_edges,
             histtype="step",
             linewidth=2,
-            label=label
+            label=label,
+            color=c
         )
         ax.grid(True, linestyle=":", linewidth=1, alpha=0.7)
     

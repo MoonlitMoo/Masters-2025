@@ -91,9 +91,9 @@ With this understanding of the spectrum of CRe, we now consider the methods that
 
 This process takes a pre-existing lower energy CRe population of $\gamma\sim100$ and boosts it to the factors observed $\gamma\gtrsim1000$. This occurs via interactions with plasma waves and shocks within the ICM which can be caused by several factors, such as violent cluster mergers and gas sloshing within the core \citep{Brunetti2001, Fujita2004, Mazotta2008}. 
 
-Shocks within the ICM can cause first order Fermi acceleration (Fermi-I), also known as diffuse shock acceleration (DSA). As particles cross back and forth over the shock front, they can be reflected by magnetic instabilities upstream and downstream from the shock. Each crossing of the front increases the particle energy, raising trapped particles to relativistic levels before they escape. The energy $E$ gained via Fermi-I acceleration from a shock with velocity $v_{\mathrm{wave}}$ scales compared to the speed of light $c$ as,
+Shocks within the ICM can cause first order Fermi acceleration (Fermi-I), also known as diffuse shock acceleration (DSA). As particles cross back and forth over the shock front, they can be reflected by magnetic instabilities upstream and downstream from the shock. Each crossing of the front increases the particle energy, raising trapped particles to relativistic levels before they escape. The energy $E$ gained via Fermi-I acceleration from a shock with velocity $\mathrm{v_{wave}}$ scales compared to the speed of light $c$ as,
 \begin{equation}
-    \Delta E \propto \frac{v_{\mathrm{wave}}}{c}E
+    \Delta E \propto \frac{\mathrm{v_{wave}}}{c}E
     \label{eq:fermi1}
 \end{equation}
 Shocks are generally created due to merger activity in disturbed clusters and, therefore, are not observed in relaxed clusters where minihalos are found. As such, it is not considered a major mechanism at play in the context of minihalos.
@@ -101,15 +101,15 @@ Shocks are generally created due to merger activity in disturbed clusters and, t
 Gas sloshing within the cool core of relaxed clusters has been shown as a natural consequence of the larger motions of the ICM \citep{Fujita2004}. This turbulent environment naturally allows for low relativistic `seed' electrons to undergo second order Fermi (Fermi-II) acceleration. This type of acceleration is stochastic as particles are scattered by the magnetic instabilities from the randomly moving plasma waves. Particles meeting these waves head-on are reflected with an increased energy, while particles in a head-tail collision are reflected with a lower energy. The chance for a head-on collision is higher than that of a head-tail collision allowing for a net gain. The mean energy gained is dependent on the speed of the waves and energy of the seed particle,
 
 \begin{equation}
-    \Delta E \propto \left(\frac{v_{\mathrm{wave}}}{c}\right)^2E
+    \Delta E \propto \left(\frac{\mathrm{v_{wave}}}{c}\right)^2E
     \label{eq:fermi2}
 \end{equation}
 
-The random nature of Fermi-II acceleration makes for an inefficient process compared to the aligned shock fronts of Fermi-I. Since $v_{\mathrm{wave}} \ll c$, Fermi-II scales far more slowly than Fermi-I $(v_{\mathrm{wave}}/c)^2 \ll v_{\mathrm{wave}}/c$.
+The random nature of Fermi-II acceleration makes for an inefficient process compared to the aligned shock fronts of Fermi-I. Since $\mathrm{v_{wave}} \ll c$, Fermi-II scales far more slowly than Fermi-I $(\mathrm{v_{wave}}/c)^2 \ll \mathrm{v_{wave}}/c$.
 
 \citet{Brunetti2007} showed that the reacceleration of relativistic particles moving through magnetohydrodynamic (MHD) turbulence is primarily achieved by two Fermi-II type mechanisms. 
 
-The first mechanism is the damping of fast magnetosonic waves due to resonant transit time damping (TTD). The compressible and low-frequency plasma waves can resonate with the naturally gyrating particles at the zeroth order, $\omega = v_\parallel k_\parallel$, where $\omega$ is the frequency of the wave, $k_\parallel$ is the wavenumber, and $v_\parallel$ is the speed of the particle along the axis of the magnetic field. The random acceleration is then captured as a random walk in momentum space, giving rise to a momentum-diffusion coefficient $D_{pp,\mathrm{TTD}}$. \citet{ZuHone2013} simulated this process numerically in the case of minihalos and simplified this diffusion coefficient to be proportional to the average wavenumber $\langle k\rangle$, the turbulent velocity of the particle $v_t$,\footnote{This is essentially the instantaneous velocity of the particle due to turbulence.} and fraction of turbulent energy in compressible motion $R_c$.
+The first mechanism is the damping of fast magnetosonic waves due to resonant transit time damping (TTD). The compressible and low-frequency plasma waves can resonate with the naturally gyrating particles at the zeroth order, $\omega = \mathrm v_\parallel k_\parallel$, where $\omega$ is the frequency of the wave, $k_\parallel$ is the wavenumber, and $\mathrm v_\parallel$ is the speed of the particle along the axis of the magnetic field. The random acceleration is then captured as a random walk in momentum space, giving rise to a momentum-diffusion coefficient $D_{pp,\mathrm{TTD}}$. \citet{ZuHone2013} simulated this process numerically in the case of minihalos and simplified this diffusion coefficient to be proportional to the average wavenumber $\langle k\rangle$, the turbulent velocity of the particle $v_t$,\footnote{This is essentially the instantaneous velocity of the particle due to turbulence.} and fraction of turbulent energy in compressible motion $R_c$.
 \begin{equation}
     D_{pp, \mathrm{TTD}} \propto \langle k \rangle v_t^2 R_c p^2
 \end{equation}

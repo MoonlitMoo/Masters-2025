@@ -104,7 +104,7 @@ def plot_heatmap_with_teff(config_label: str):
         Z,
         aspect="auto",
         interpolation="nearest",
-        cmap="RdYlGn",   # low=red, high=green
+        cmap="viridis",   # low=red, high=green
         vmin=0.0,
         vmax=1.0,
     )

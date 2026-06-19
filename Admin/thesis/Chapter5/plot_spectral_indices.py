@@ -143,7 +143,7 @@ def _scatter_with_errors(ax, f, s, e, *, label=None, do_star=True, facecolor="k"
         ax.errorbar(
             f, s, yerr=e,
             fmt=marker, mec=edgecolor, mfc=facecolor,
-            ecolor=edgecolor, elinewidth=1.0, ms=4.5, lw=0.0, capsize=3,
+            ecolor='k', elinewidth=1.0, ms=4.5, lw=0.0, capsize=3,
             label=label  # keep the legend on the bulk points
         )
 
@@ -351,8 +351,8 @@ def plot_a478_seds(
     # ---------- Panel (b): Subbands ----------
     fit_sb = fit_powerlaw(*subband)
     fit_sb_agn = fit_powerlaw(*subband_agn)
-    _scatter_with_errors(axB, *subband, facecolor="k", edgecolor="k", do_star=False)
-    _scatter_with_errors(axB, *subband_agn, facecolor="w", edgecolor="k", do_star=False)
+    _scatter_with_errors(axB, *subband, facecolor="r", edgecolor="r", do_star=False)
+    _scatter_with_errors(axB, *subband_agn, facecolor="w", edgecolor="r", do_star=False)
     
     # Fits
     _fit_with_band(axB, fit_mh, fmin_a, fmax_a, ls="--")
@@ -481,6 +481,6 @@ def rxj2129():
     savepath="rxj2129_seds.pdf",
 )
 
-rxj1720()
-# a478()
+# rxj1720()
+a478()
 # rxj2129()
