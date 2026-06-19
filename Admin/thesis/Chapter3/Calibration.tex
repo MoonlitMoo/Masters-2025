@@ -157,47 +157,15 @@ This process was incorporated into a copy of the VLA Pipeline version 6.6.1 as a
 \section{Calibration pipeline}
 \label{sec:calibration_steps}
 
-All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. An example pipeline script is given in Listing \ref{lst:pipescript}. The outcome of this calibration process are visibilities with correctly scaled amplitudes and phases to the true sky. The raw measurements contain several frequency and time dependencies, effects that can arise from the atmosphere or instrument for example. The visibilities also require an absolute amplitude scale describing the instrumental response to true sky brightness.
+All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. The general calibration process is shown in Figure \ref{fig:calibration_flowchart}, and an example pipeline script is given in Appendix \ref{app:pipescript}. The outcome of this calibration process are visibilities with correctly scaled amplitudes and phases to the true sky. The raw measurements contain several frequency and time dependencies, effects that can arise from the atmosphere or instrument for example. The visibilities also require an absolute amplitude scale describing the instrumental response to true sky brightness.
+
+\input{./Chapter3/flowchart.tex}
 
 The absolute visibility scale is set by comparison to a compact source called a primary calibrator. These sources are well-studied, have a stable brightness over long time periods, and are extremely bright. Scaling the visibilities to match the source model allows the raw visibility amplitudes to be measured in physical units. 
 
 The following calibrations take varying forms, but the primary ones are the bandpass and gain calibrations. The bandpass calibration is a frequency-dependent but time-averaged solution, while the gain solutions are frequency-averaged and time-dependent. Each calibration has an amplitude and phase component, and when combined, correct the visibilities for both frequency-varying and time-varying distortions.
 
 The following subsections detail the calibration steps in more detail and are written with reference to the Pipeline Tasks Reference Manual and CASA docuumentation.\footnote{\url{https://almascience.eso.org/processing/documents-and-tools/cycle12/reference-manual-2025}}\footnote{\url{https://casadocs.readthedocs.io/en/stable/index.html}}.
-
-\begin{lstlisting}[
-    language=Python,
-    caption={Example CASA pipeline script.}, 
-    label={lst:pipescript}
-]
-hifv_importdata(vis=["DATASET"])
-hifv_flagdata(
-    hm_tbuff='1.5int', fracspw=0.01, intents='*POINTING*,
-    *FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, 
-    *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*')
-hifv_vlasetjy()
-hifv_priorcals(show_tec_maps=False)
-hifv_aoflagger(
-    flag_target='PRIMARY', aoflagger_file='PRIMARY.lua')
-hifv_testBPdcals()
-hifv_semiFinalBPdcals()
-hifv_aoflagger(
-    flag_target='SECONDARY', aoflagger_file='SECONDARY.lua')
-hifv_solint()
-hifv_fluxboot()
-hifv_aoflagger(
-    flag_target='CALIBRATORS', aoflagger_file='CALIBRATORS.lua', 
-    use_corrected=True)
-hifv_finalcals()
-hifv_applycals()
-hifv_aoflagger(
-    flag_target='SCIENCE_TARGET', aoflagger_file='SCIENCE.lua', 
-    use_corrected=True)
-hifv_statwt()
-hifv_plotsummary()
-hifv_exportdata()
-h_save()
-\end{lstlisting}
 
 \subsection{Apriori Flagging}
 Some flagging is able to be determined prior to the analysis and arise from the observing configuration and instrument. These deterministic (apriori) flags are applied with the \texttt{hifv\_flagdata} task. An overview of these categories are:

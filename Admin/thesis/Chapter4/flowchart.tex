@@ -1,0 +1,61 @@
+\begin{figure}[!ht]
+    \centering
+    \footnotesize
+    \begin{tikzpicture}[
+        line/.style={draw, thick, -latex'},
+        box/.style={
+            rectangle,
+            rounded corners=2pt,
+            draw=black,
+            align=center,
+            text width=11.5cm,
+            minimum height=1.0cm,
+            inner sep=6pt
+        },
+        stage/.style={
+            align=right,
+            font=\scriptsize,
+            text=black!55,
+            text width=2.0cm
+        },
+        setup/.style={box, fill=blue!8},
+        branch/.style={setup, text width=5.2cm},
+        measurement/.style={box, fill=green!10},
+        output/.style={box, fill=orange!12}
+    ]
+        \node[stage] at (-8.15,-2.7) {Source\\removal};
+        \node[stage] at (-8.15,-8.0) {Minihalo\\measurement};
+        \node[stage] at (-8.15,-12.0) {Uncertainty\\budget};
+
+        \node[setup] (input) at (0,0) {\textbf{Start from calibrated and self-calibrated datasets}};
+        \node[branch] (joint) at (-3.2,-2.35) {\textbf{Adopt the joint compact-source model}\\{\scriptsize\texttt{tclean}, \texttt{imfit}}};
+        \node[branch] (individual) at (3.2,-2.35) {\textbf{Merge individual source models with the joint model}\\{\scriptsize\texttt{tclean}, \texttt{imfit}}};
+        \node[setup] (subtract) at (0,-5.0) {\textbf{Subtract compact sources and create the minihalo image}};
+
+        \node[measurement] (mask) at (0,-6.9) {\textbf{Define the minihalo mask and isolate the minihalo region}};
+        \node[measurement] (sum) at (0,-8.8) {\textbf{Measure the integrated minihalo flux density}};
+
+        \node[output] (budget) at (0,-10.7) {\textbf{Estimate the uncertainty budget}\\{\scriptsize image noise, source subtraction, and calibration}};
+        \node[output] (final) at (0,-12.6) {\textbf{Combine uncertainties in quadrature to obtain the final minihalo flux density}};
+
+        \draw[black!18, line width=0.8pt] (-6.65,0.65) -- (-6.65,-5.65);
+        \draw[black!18, line width=0.8pt] (-6.65,-6.25) -- (-6.65,-9.45);
+        \draw[black!18, line width=0.8pt] (-6.65,-10.05) -- (-6.65,-13.25);
+
+        \coordinate (fork) at (0,-1.2);
+        \coordinate (join) at (0,-4.05);
+
+        \draw[line] (input.south) -- (fork);
+        \draw[line] (fork) -| node[pos=0.35, above left, font=\scriptsize, text=black!60] {Low source variability} (joint.north);
+        \draw[line] (fork) -| node[pos=0.35, above right, font=\scriptsize, text=black!60] {High source variability} (individual.north);
+        \draw[line] (joint.south) |- (join);
+        \draw[line] (individual.south) |- (join);
+        \draw[line] (join) -- (subtract.north);
+        \draw[line] (subtract.south) -- (mask.north);
+        \draw[line] (mask.south) -- (sum.north);
+        \draw[line] (sum.south) -- (budget.north);
+        \draw[line] (budget.south) -- (final.north);
+    \end{tikzpicture}
+    \caption{Overview of the minihalo analysis pipeline.}
+    \label{fig:analysis_flowchart}
+\end{figure}

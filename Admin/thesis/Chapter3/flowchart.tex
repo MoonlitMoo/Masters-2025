@@ -1,0 +1,56 @@
+\begin{figure}[p]
+    \centering
+    \footnotesize
+    \begin{tikzpicture}[
+        line/.style={draw, thick, -latex'},
+        box/.style={
+            rectangle,
+            rounded corners=2pt,
+            draw=black,
+            align=center,
+            text width=11.5cm,
+            minimum height=1.0cm,
+            inner sep=6pt
+        },
+        stage/.style={
+            align=right,
+            font=\scriptsize,
+            text=black!55,
+            text width=2.0cm
+        },
+        setup/.style={box, fill=blue!8},
+        calibrator/.style={box, fill=green!10},
+        output/.style={box, fill=orange!12}
+    ]
+        \node[stage] at (-8.15,-1.9) {Setup};
+        \node[stage] at (-8.15,-8.55) {Calibrator\\solutions};
+        \node[stage] at (-8.15,-15.2) {Science\\dataset};
+
+        \node[setup] (import) at (0,0) {\textbf{Import data}\\{\scriptsize\texttt{hifv\_importdata}}};
+        \node[setup] (apriori) at (0,-1.9) {\textbf{Apriori flagging}\\{\scriptsize\texttt{hifv\_flagdata}}};
+        \node[setup] (prior) at (0,-3.8) {\textbf{Set flux model and prior calibrations}\\{\scriptsize\texttt{hifv\_vlasetjy}, \texttt{hifv\_priorcals}}};
+        \node[calibrator] (primary) at (0,-5.7) {\textbf{Primary-calibrator flagging and initial bandpass solutions}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_testBPdcals}, \texttt{hifv\_semiFinalBPdcals}}};
+        \node[calibrator] (secondary) at (0,-7.6) {\textbf{Secondary-calibrator flagging and flux bootstrapping}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_solint}, \texttt{hifv\_fluxboot}}};
+        \node[calibrator] (reflag) at (0,-9.5) {\textbf{Residual-based reflagging of calibrators}\\{\scriptsize\texttt{hifv\_aoflagger}}};
+        \node[calibrator] (finalcals) at (0,-11.4) {\textbf{Fit final calibration solutions}\\{\scriptsize\texttt{hifv\_finalcals}}};
+        \node[output] (apply) at (0,-13.3) {\textbf{Apply calibrations to all fields}\\{\scriptsize\texttt{hifv\_applycals}}};
+        \node[output] (science) at (0,-15.2) {\textbf{Flag and reweight science visibilities}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_statwt}}};
+        \node[output] (export) at (0,-17.1) {\textbf{Export calibrated imaging data}\\{\scriptsize\texttt{hifv\_exportdata}, \texttt{h\_save}}};
+
+        \draw[black!18, line width=0.8pt] (-6.65,0.65) -- (-6.65,-4.45);
+        \draw[black!18, line width=0.8pt] (-6.65,-5.05) -- (-6.65,-12.05);
+        \draw[black!18, line width=0.8pt] (-6.65,-12.65) -- (-6.65,-17.75);
+
+        \draw[line] (import.south) -- (apriori.north);
+        \draw[line] (apriori.south) -- (prior.north);
+        \draw[line] (prior.south) -- (primary.north);
+        \draw[line] (primary.south) -- (secondary.north);
+        \draw[line] (secondary.south) -- (reflag.north);
+        \draw[line] (reflag.south) -- (finalcals.north);
+        \draw[line] (finalcals.south) -- (apply.north);
+        \draw[line] (apply.south) -- (science.north);
+        \draw[line] (science.south) -- (export.north);
+    \end{tikzpicture}
+    \caption{Overview of the modified CASA calibration pipeline. Each step includes the related CASA functions.}
+    \label{fig:calibration_flowchart}
+\end{figure}
