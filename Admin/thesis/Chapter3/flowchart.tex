@@ -1,56 +1,62 @@
-\begin{figure}[p]
+\begin{figure}[!ht]
     \centering
     \footnotesize
+    \resizebox{\textwidth}{!}{%
     \begin{tikzpicture}[
         line/.style={draw, thick, -latex'},
+        loop/.style={draw, thick, -latex', rounded corners=6pt},
         box/.style={
             rectangle,
             rounded corners=2pt,
             draw=black,
             align=center,
-            text width=11.5cm,
+            text width=11.3cm,
             minimum height=1.0cm,
             inner sep=6pt
         },
         stage/.style={
-            align=right,
+            align=center,
             font=\scriptsize,
             text=black!55,
-            text width=2.0cm
+            text width=2.8cm
         },
-        setup/.style={box, fill=blue!8},
-        calibrator/.style={box, fill=green!10},
-        output/.style={box, fill=orange!12}
+        calibration/.style={box, fill=blue!8},
+        post/.style={box, fill=green!10},
+        imaging/.style={box, fill=orange!12}
     ]
-        \node[stage] at (-8.15,-1.9) {Setup};
-        \node[stage] at (-8.15,-8.55) {Calibrator\\solutions};
-        \node[stage] at (-8.15,-15.2) {Science\\dataset};
+        \node[stage] at (-8.2,-2.85) {Calibration\\pipeline};
+        \node[stage] at (-8.2,-8.85) {Post-processing};
+        \node[stage] at (-8.2,-14.75) {Self-calibration\\and imaging};
 
-        \node[setup] (import) at (0,0) {\textbf{Import data}\\{\scriptsize\texttt{hifv\_importdata}}};
-        \node[setup] (apriori) at (0,-1.9) {\textbf{Apriori flagging}\\{\scriptsize\texttt{hifv\_flagdata}}};
-        \node[setup] (prior) at (0,-3.8) {\textbf{Set flux model and prior calibrations}\\{\scriptsize\texttt{hifv\_vlasetjy}, \texttt{hifv\_priorcals}}};
-        \node[calibrator] (primary) at (0,-5.7) {\textbf{Primary-calibrator flagging and initial bandpass solutions}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_testBPdcals}, \texttt{hifv\_semiFinalBPdcals}}};
-        \node[calibrator] (secondary) at (0,-7.6) {\textbf{Secondary-calibrator flagging and flux bootstrapping}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_solint}, \texttt{hifv\_fluxboot}}};
-        \node[calibrator] (reflag) at (0,-9.5) {\textbf{Residual-based reflagging of calibrators}\\{\scriptsize\texttt{hifv\_aoflagger}}};
-        \node[calibrator] (finalcals) at (0,-11.4) {\textbf{Fit final calibration solutions}\\{\scriptsize\texttt{hifv\_finalcals}}};
-        \node[output] (apply) at (0,-13.3) {\textbf{Apply calibrations to all fields}\\{\scriptsize\texttt{hifv\_applycals}}};
-        \node[output] (science) at (0,-15.2) {\textbf{Flag and reweight science visibilities}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_statwt}}};
-        \node[output] (export) at (0,-17.1) {\textbf{Export calibrated imaging data}\\{\scriptsize\texttt{hifv\_exportdata}, \texttt{h\_save}}};
+        \node[calibration] (setup) at (0,0) {\textbf{Import data, apply apriori flags, and set prior calibrations}\\{\scriptsize\texttt{hifv\_importdata}, \texttt{hifv\_flagdata}, \texttt{hifv\_vlasetjy}, \texttt{hifv\_priorcals}}};
+        \node[calibration] (initialcals) at (0,-1.95) {\textbf{Flag calibrators and derive initial delay/bandpass solutions}\\{\scriptsize\texttt{hifv\_aoflagger}, \texttt{hifv\_testBPdcals}, \texttt{hifv\_semiFinalBPdcals}}};
+        \node[calibration] (finalcals) at (0,-3.9) {\textbf{Bootstrap the secondary flux scale, reflag residuals, and fit final calibrations}\\{\scriptsize\texttt{hifv\_solint}, \texttt{hifv\_fluxboot}, \texttt{hifv\_finalcals}}};
+        \node[calibration] (science) at (0,-5.85) {\textbf{Apply calibrations to the science fields, flag residual RFI, and reweight visibilities}\\{\scriptsize\texttt{hifv\_applycals}, \texttt{hifv\_aoflagger}, \texttt{hifv\_statwt}}};
 
-        \draw[black!18, line width=0.8pt] (-6.65,0.65) -- (-6.65,-4.45);
-        \draw[black!18, line width=0.8pt] (-6.65,-5.05) -- (-6.65,-12.05);
-        \draw[black!18, line width=0.8pt] (-6.65,-12.65) -- (-6.65,-17.75);
+        \node[post] (split) at (0,-7.95) {\textbf{Split calibrated science fields and average in frequency and time}\\{\scriptsize\texttt{split}, \texttt{mstransform}}};
+        \node[post] (collate) at (0,-9.9) {\textbf{Collate the C- and D-configuration datasets for each cluster}\\{\scriptsize\texttt{concat}}};
 
-        \draw[line] (import.south) -- (apriori.north);
-        \draw[line] (apriori.south) -- (prior.north);
-        \draw[line] (prior.south) -- (primary.north);
-        \draw[line] (primary.south) -- (secondary.north);
-        \draw[line] (secondary.south) -- (reflag.north);
-        \draw[line] (reflag.south) -- (finalcals.north);
-        \draw[line] (finalcals.south) -- (apply.north);
-        \draw[line] (apply.south) -- (science.north);
-        \draw[line] (science.south) -- (export.north);
+        \node[imaging] (model) at (0,-12.0) {\textbf{Build initial CLEAN models of the compact and diffuse emission}\\{\scriptsize\texttt{tclean}}};
+        \node[imaging] (selfcal) at (0,-13.95) {\textbf{Fit phase-only self-calibration solutions and apply them}\\{\scriptsize\texttt{gaincal}, \texttt{applycal}}};
+        \node[imaging] (assess) at (0,-15.9) {\textbf{Assess convergence, residual RFI, and poorly constrained spectral windows}\\{\scriptsize selective flagging, clipping, and manual QA}};
+        \node[imaging] (final) at (0,-17.85) {\textbf{Produce the final self-calibrated science images}\\{\scriptsize\texttt{tclean}}};
+
+        \draw[black!18, line width=0.8pt] (-6.75,0.65) -- (-6.75,-6.5);
+        \draw[black!18, line width=0.8pt] (-6.75,-7.1) -- (-6.75,-10.55);
+        \draw[black!18, line width=0.8pt] (-6.75,-11.15) -- (-6.75,-18.5);
+
+        \draw[line] (setup.south) -- (initialcals.north);
+        \draw[line] (initialcals.south) -- (finalcals.north);
+        \draw[line] (finalcals.south) -- (science.north);
+        \draw[line] (science.south) -- (split.north);
+        \draw[line] (split.south) -- (collate.north);
+        \draw[line] (collate.south) -- (model.north);
+        \draw[line] (model.south) -- (selfcal.north);
+        \draw[line] (selfcal.south) -- (assess.north);
+        \draw[line] (assess.south) -- (final.north);
+        \draw[loop] (assess.east) -- ++(0.75,0) |- node[midway, right, font=\scriptsize, text=black!60] {repeat as needed} (model.east);
     \end{tikzpicture}
-    \caption{Overview of the modified CASA calibration pipeline. Each step includes the related CASA functions.}
+    }
+    \caption{Overview of the full calibration and imaging workflow used in this chapter, from the modified VLA pipeline to the final self-calibrated science images.}
     \label{fig:calibration_flowchart}
 \end{figure}

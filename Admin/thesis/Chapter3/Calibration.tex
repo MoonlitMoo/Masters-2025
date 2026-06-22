@@ -43,6 +43,10 @@ The frequency range for X-band spans 7.977--12.025 GHz, with a total bandwidth o
 
 The \textit{Common Astronomy Software Applications} (CASA)\footnote{\url{https://casa.nrao.edu/index.shtml}} was used to calibrate and image these observations. This software has been developed by an international collaboration of scientists and software developers and provides Python-based tools for the processing, analysis, and manipulation of observations from the VLA and the Atacama Large Millimeter/submillimeter Array (ALMA). Part of this software suite is the VLA pipeline, which is able to perform calibration and automated flagging of raw observations. The pipeline allows a streamlined process with reduced manual intervention, while producing a final weblog detailing the applied steps for reproducibility. Flagging of data refers to the exclusion of problematic points, often due to the presence of radio frequency interference (RFI). For these observations, pipeline flagging did not sufficiently mitigate the RFI for accurate calibration, necessitating the development of a modified version. A description of the calibration process and pipeline steps is provided in Section \ref{sec:calibration_steps}. The following section details the RFI present in the data and the measures taken to mitigate it.
 
+A concise overview of the full reduction and imaging workflow used throughout this chapter is shown in Figure \ref{fig:calibration_flowchart}.
+
+\input{./Chapter3/flowchart.tex}
+
 \begin{table}[p]
     \centering
     \begingroup
@@ -157,8 +161,6 @@ This process was incorporated into a copy of the VLA Pipeline version 6.6.1 as a
 \section{Calibration pipeline}
 \label{sec:calibration_steps}
 
-
-\input{./Chapter3/flowchart.tex}
 All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. An example pipeline script is given in Appendix \ref{app:pipescript}. The outcome of this calibration process are visibilities with correctly scaled amplitudes and phases to the true sky. The raw measurements contain several frequency and time dependencies, effects that can arise from the atmosphere or instrument for example. The visibilities also require an absolute amplitude scale describing the instrumental response to true sky brightness.
 
 The absolute visibility scale is set by comparison to a compact source called a primary calibrator. These sources are well-studied, have a stable brightness over long time periods, and are extremely bright. Scaling the visibilities to match the source model allows the raw visibility amplitudes to be measured in physical units. 
