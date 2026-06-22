@@ -969,6 +969,150 @@
       \endverb
       \keyw{Astrophysics}
     \endentry
+    \entry{Biava2021}{article}{}{}
+      \name{author}{20}{}{%
+        {{hash=61120161c69f11b1a050db9b8b28a7f3}{%
+           family={Biava},
+           familyi={B\bibinitperiod},
+           given={N},
+           giveni={N\bibinitperiod}}}%
+        {{hash=de22dd19a8e291e40cfdd8ebc47c575f}{%
+           family={Gasperin},
+           familyi={G\bibinitperiod},
+           given={F},
+           giveni={F\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=63fe4bc786c94889008b5eff51a8c077}{%
+           family={Bonafede},
+           familyi={B\bibinitperiod},
+           given={A},
+           giveni={A\bibinitperiod}}}%
+        {{hash=968e003b65208440d70a4b803eb01668}{%
+           family={Edler},
+           familyi={E\bibinitperiod},
+           given={H\bibnamedelima W},
+           giveni={H\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=3a5bf54ac888ca8c5cccff137f35998a}{%
+           family={Giacintucci},
+           familyi={G\bibinitperiod},
+           given={S},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6742f580d74bb111ac14d061e498b3a0}{%
+           family={Mazzotta},
+           familyi={M\bibinitperiod},
+           given={P},
+           giveni={P\bibinitperiod}}}%
+        {{hash=3be776aafec802f07f00948a5e9ba149}{%
+           family={Brunetti},
+           familyi={B\bibinitperiod},
+           given={G},
+           giveni={G\bibinitperiod}}}%
+        {{hash=cc923f1fac0689ab359d31a343ce4c84}{%
+           family={Botteon},
+           familyi={B\bibinitperiod},
+           given={A},
+           giveni={A\bibinitperiod}}}%
+        {{hash=d5d2b512e4458d5ff84c279fe5f3fcef}{%
+           family={Brüggen},
+           familyi={B\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=858e13ed667d11f616bf3c18eb0677b6}{%
+           family={Cassano},
+           familyi={C\bibinitperiod},
+           given={R},
+           giveni={R\bibinitperiod}}}%
+        {{hash=2dba7961c0614e35ef1c187189bad6c6}{%
+           family={Drabent},
+           familyi={D\bibinitperiod},
+           given={A},
+           giveni={A\bibinitperiod}}}%
+        {{hash=fccae8fc0dc1189532032f404af45d6a}{%
+           family={Edge},
+           familyi={E\bibinitperiod},
+           given={A\bibnamedelima C},
+           giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=21eb6e0f44f24db124714d24f8a8b193}{%
+           family={Enßlin},
+           familyi={E\bibinitperiod},
+           given={T},
+           giveni={T\bibinitperiod}}}%
+        {{hash=87c361a86ce361d1598ec797308794c2}{%
+           family={Gastaldello},
+           familyi={G\bibinitperiod},
+           given={F},
+           giveni={F\bibinitperiod}}}%
+        {{hash=2314fc0b9c6af70f0db24c70d3f6e07f}{%
+           family={Riseley},
+           familyi={R\bibinitperiod},
+           given={C\bibnamedelima J},
+           giveni={C\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=21dd3345596e2146960751dcb3f4b1d4}{%
+           family={Rossetti},
+           familyi={R\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=a8231803a46aecb8ea224e18b2737797}{%
+           family={Rottgering},
+           familyi={R\bibinitperiod},
+           given={H\bibnamedelima J\bibnamedelima A},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=21ce8ef316c698ac15667b16aff3c640}{%
+           family={Shimwell},
+           familyi={S\bibinitperiod},
+           given={T\bibnamedelima W},
+           giveni={T\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=a8c9bc9e49697fa9468f293e783f4ab2}{%
+           family={Tasse},
+           familyi={T\bibinitperiod},
+           given={C},
+           giveni={C\bibinitperiod}}}%
+        {{hash=160ca61020817eda11b802bbb4143109}{%
+           family={Weeren},
+           familyi={W\bibinitperiod},
+           given={R\bibnamedelima J},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+      }
+      \strng{namehash}{5071ffd523e317d7e582d0e090a18794}
+      \strng{fullhash}{2ef73c659b616645f9631c7c628ae9b3}
+      \strng{fullhashraw}{2ef73c659b616645f9631c7c628ae9b3}
+      \strng{bibnamehash}{2ef73c659b616645f9631c7c628ae9b3}
+      \strng{authorbibnamehash}{2ef73c659b616645f9631c7c628ae9b3}
+      \strng{authornamehash}{5071ffd523e317d7e582d0e090a18794}
+      \strng{authorfullhash}{2ef73c659b616645f9631c7c628ae9b3}
+      \strng{authorfullhashraw}{2ef73c659b616645f9631c7c628ae9b3}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Diffuse radio emission at the centre of galaxy clusters has been observed both in merging clusters on scales of Mpc, called giant radio haloes, and in relaxed systems with a cool-core on smaller scales, named mini haloes. Giant radio haloes and mini haloes are thought to be distinct classes of sources. However, recent observations have revealed the presence of diffuse radio emission on Mpc scales in clusters that do not show strong dynamical activity. RX J1720.1+2638 is a cool-core cluster, presenting both a bright central mini halo and a fainter diffuse, steep-spectrum emission extending beyond the cluster core that resembles giant radio halo emission. In this paper, we present new observations performed with the LOw Frequency ARray Low Band Antennas (LBA) at 54 MHz. These observations, combined with data at higher frequencies, allow us to constrain the spectral properties of the radio emission. The large-scale emission presents an ultrasteep spectrum with \$\\alpha \_\{54\}^\{144\}\\sim 3.2\$. The radio emission inside and outside the cluster core have strictly different properties, as there is a net change in spectral index and they follow different radio-X-ray surface brightness correlations. We argue that the large-scale diffuse emission is generated by particles re-acceleration after a minor merger. While for the central mini halo, we suggest that it could be generated by secondary electrons and positrons from hadronic interactions of relativistic nuclei with the dense cool-core gas, as an alternative to re-acceleration models.}
+      \field{issn}{0035-8711}
+      \field{journaltitle}{Monthly Notices of the Royal Astronomical Society}
+      \field{month}{12}
+      \field{number}{3}
+      \field{title}{The ultra-steep diffuse radio emission observed in the cool-core cluster RX J1720.1+2638 with LOFAR at 54 MHz}
+      \field{volume}{508}
+      \field{year}{2021}
+      \field{pages}{3995\bibrangedash 4007}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1093/mnras/stab2840
+      \endverb
+      \verb{eprint}
+      \verb https://academic.oup.com/mnras/article-pdf/508/3/3995/40811751/stab2840.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1093/mnras/stab2840
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1093/mnras/stab2840
+      \endverb
+    \endentry
     \entry{Birzan2020}{article}{}{}
       \name{author}{10}{}{%
         {{hash=07aa2cd129006e0da9f5e48e5ed7b376}{%
