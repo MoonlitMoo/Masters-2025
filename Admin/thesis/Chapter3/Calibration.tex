@@ -3,7 +3,7 @@
 
 The observations to be calibrated are VLA X-band (8--12 GHz) data, taken in C- and D-configuration, of 12 galaxy clusters hosting minihalos. VLA antennas may be arranged in four standard configurations, termed A through D. A-configuration has the longest baselines and best angular resolution, at the expense of lower brightness sensitivity to extended emission. Baseline length decreases towards D-configuration, which has the poorest angular resolution, but greatest brightness sensitivity to extended emission. D-configuration was chosen to maximise the extended brightness sensitivity to detect the faint and extended minihalo emission. C-configuration observations were added to allow accurate imaging of compact AGN sources embedded within the minihalos.
 
-The C-configuration observations were performed between January and February 2024, under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken the following year during February and March 2025 under project code 25A-157 (PI: Yvette Perrott). 
+The C-configuration observations were performed between January and February 2024, under project code 24A-411 (PI: Yvette Perrott). The D-configuration observations were taken the following year during February and March 2025, under project code 25A-157 (PI: Yvette Perrott). 
 
 The frequency range for X-band spans 7.977--12.025 GHz, with a total bandwidth of 4.048 GHz. This is split into 32 spectral windows with individual bandwidths of 128 MHz. Each spectral window has a spectral resolution of 2 MHz, resulting in a total of 64 channels per window. The baselines for C-configuration cover approximately 1--135 k$\lambda$, while the more compact D-configuration has the range 1--34 k$\lambda$.\footnote{As $\vec u = \vec b / \lambda$, baseline lengths are often expressed in units of the observing wavelength.} For reference, an overview of the targeted clusters is given in Table \ref{tab:cluster_list}, while details of the radio observations of each cluster are given in Table \ref{tab:observations}.
 
@@ -157,15 +157,15 @@ This process was incorporated into a copy of the VLA Pipeline version 6.6.1 as a
 \section{Calibration pipeline}
 \label{sec:calibration_steps}
 
-All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. The general calibration process is shown in Figure \ref{fig:calibration_flowchart}, and an example pipeline script is given in Appendix \ref{app:pipescript}. The outcome of this calibration process are visibilities with correctly scaled amplitudes and phases to the true sky. The raw measurements contain several frequency and time dependencies, effects that can arise from the atmosphere or instrument for example. The visibilities also require an absolute amplitude scale describing the instrumental response to true sky brightness.
 
 \input{./Chapter3/flowchart.tex}
+All observations were calibrated using a single Python file, \texttt{casa\_pipescript.py}. An example pipeline script is given in Appendix \ref{app:pipescript}. The outcome of this calibration process are visibilities with correctly scaled amplitudes and phases to the true sky. The raw measurements contain several frequency and time dependencies, effects that can arise from the atmosphere or instrument for example. The visibilities also require an absolute amplitude scale describing the instrumental response to true sky brightness.
 
 The absolute visibility scale is set by comparison to a compact source called a primary calibrator. These sources are well-studied, have a stable brightness over long time periods, and are extremely bright. Scaling the visibilities to match the source model allows the raw visibility amplitudes to be measured in physical units. 
 
 The following calibrations take varying forms, but the primary ones are the bandpass and gain calibrations. The bandpass calibration is a frequency-dependent but time-averaged solution, while the gain solutions are frequency-averaged and time-dependent. Each calibration has an amplitude and phase component, and when combined, correct the visibilities for both frequency-varying and time-varying distortions.
 
-The following subsections detail the calibration steps in more detail and are written with reference to the Pipeline Tasks Reference Manual and CASA docuumentation.\footnote{\url{https://almascience.eso.org/processing/documents-and-tools/cycle12/reference-manual-2025}}\footnote{\url{https://casadocs.readthedocs.io/en/stable/index.html}}.
+The following subsections detail the calibration steps in more detail and are written with reference to the Pipeline Tasks Reference Manual and CASA documentation.\footnote{\url{https://almascience.eso.org/processing/documents-and-tools/cycle12/reference-manual-2025}}\footnote{\url{https://casadocs.readthedocs.io/en/stable/index.html}}.
 
 \subsection{Apriori Flagging}
 Some flagging is able to be determined prior to the analysis and arise from the observing configuration and instrument. These deterministic (apriori) flags are applied with the \texttt{hifv\_flagdata} task. An overview of these categories are:
@@ -176,7 +176,7 @@ Some flagging is able to be determined prior to the analysis and arise from the 
     \item Edge channel flagging removes the first and last channel of each spectral window, as the interferometer is least sensitive at these boundaries.
     \item Clipping removes any visibility amplitudes equal to zero, likely arising from an instrument fault.
     \item `Quacking' flags a short period at the start and end of each scan. Since the antenna physically moves (slews) between scans, this eliminates data measured while the antennas may still be settling.
-    \item Baseband flagging removes ten channels at the start and end of each baseband, analagous to the spectral window flagging. For these observations, there are two basebands covering 8--10 GHz and 10--12 GHz. 
+    \item Baseband flagging removes ten channels at the start and end of each baseband, analogous to the spectral window flagging. For these observations, there are two basebands covering 8--10 GHz and 10--12 GHz. 
 \end{itemize}
 
 \subsection{Prior calibrations}
@@ -323,7 +323,7 @@ Time variability of AGN was noticed during calibration of several clusters. Due 
 
 In the first approach, each dataset was imaged independently to obtain sky models unaffected by variability. These were then merged with the joint model by replacing a small region around each variable source with the corresponding region from the individual model. The resulting modified joint models were applied to their corresponding datasets for continued self-calibration. This preserved the advantages of joint imaging across the majority of the image while correcting the variable components. This approach was most effective for localised sources where the splice boundaries did not introduce spatial discontinuities in the model.
 
-For variable sources embedded within larger scale emission, such as the minihalo, flux scaling was used instead. Here, the individual models for each dataset were used to fit the peak brightness of the variable source. These values were then used to scale the joint image model flux within the small region surrounding the source. This approach mitigated large discontinuities while preserving the underlying extended emission, although existing negative pixels remained. The use of these methods is noted in the Results chapter where it was required. \stickynote{Self-cal improves image}
+For variable sources embedded within larger scale emission, such as the minihalo, flux scaling was used instead. Here, the individual models for each dataset were used to fit the peak brightness of the variable source. These values were then used to scale the joint image model flux within the small region surrounding the source. This approach mitigated large discontinuities while preserving the underlying extended emission, although existing negative pixels remained. The use of these methods is noted in the Results chapter where it was required.
 
 \section{Final imaging datasets} 
 \label{sec:final_dataset_summary}
@@ -335,7 +335,7 @@ The effective exposure time $T_{\mathrm{eff}}$ is calculated as the sum of expos
     T_{\mathrm{eff}} = \frac1{N_b}\left(\sum_iT_i\sum_j\left[\frac{f_{i,j}}{n_i}\right]\right)
 \end{equation}   
 
-The single C-configuration observation of A1413 is a notable outlier, with the majority of spectral windows completely flagged. This occurred during self-calibration, rather than the pipeline, and may represent the removal of residual RFI. This observation was taken in the same block as A1795, Z3146, and RXCJ1115+0129, which do not exhibit the same level of flagging. The lack of C-configuration data for A1413 means that point source estimates and source subtraction should be interpreted with caution, as this likely results in a worse signal-to-noise and uncertainty. Furthermore, the effective frequency of the image is skewed towards a lower value as the majority of thehighest frequencies are completely flagged.
+The single C-configuration observation of A1413 is a notable outlier, with the majority of spectral windows completely flagged. This occurred during self-calibration, rather than the pipeline, and may represent the removal of residual RFI. This observation was taken in the same block as A1795, Z3146, and RXCJ1115+0129, which do not exhibit the same level of flagging. The lack of C-configuration data for A1413 means that point source estimates and source subtraction should be interpreted with caution, as this likely results in a worse signal-to-noise and uncertainty. Furthermore, the effective frequency of the image is skewed towards a lower value as the majority of the highest frequencies are completely flagged.
 
 \begin{figure}[htbp]
     \centering
