@@ -1,7 +1,7 @@
 \chapter[Analysis Tools]{Analysis Methods}
 \label{Chap:Analysis}
 
-The primary goal of this thesis is to extract reliable flux density measurements of the minihalo emisssion. These values are then able to be compared with previous works to estimate the spectral index of the emission. With the calibrated datasets, several further steps in the image domain are necessary to isolate the diffuse emission from point sources, define the spatial region of the emission, and estimate the associated uncertainties. This process is summarised in Figure \ref{fig:analysis_flowchart}. This chapter details the methods used to reach a total flux measurement for the minihalo, with the following chapter presenting the results per cluster. 
+The primary goal of this thesis is to extract reliable flux density measurements of the minihalo emission. These values are then able to be compared with previous works to estimate the spectral index of the emission. With the calibrated datasets, several further steps in the image domain are necessary to isolate the diffuse emission from point sources, define the spatial region of the emission, and estimate the associated uncertainties. This process is summarised in Figure \ref{fig:analysis_flowchart}. This chapter details the methods used to reach a total flux measurement for the minihalo, with the following chapter presenting the results per cluster. 
 
 \input{./Chapter4/flowchart.tex}
 
@@ -39,7 +39,7 @@ A clear difference of approximately 10\% in the measured AGN flux exists between
 \end{figure}
 
 \section{Minihalo spatial extent}
-To estimate the total minihalo flux density, the individual fluxes within the spatial extent of the minihalo must be integrated. For valid comparisons with previous studies, the ideal approach would use an identical spatial mask. However, these masks are often not available or lack detailed information. For these clusters, the spatial extent is instead estimated as from pixels with flux $>3\sigma$, where the noise $\sigma$ was determined from the rms per beam across the residual image. The initial binary selection mask was segmented into separate emission structures. The minihalo region was identified and confirmed to be isolated from other discrete sources prior to final summation. The choice of mask is noted where relevant within the results.
+To estimate the total minihalo flux density, the individual fluxes within the spatial extent of the minihalo must be integrated. For valid comparisons with previous studies, the ideal approach would use an identical spatial mask. However, these masks are often not available or lack detailed information. For these clusters, the spatial extent is instead estimated from pixels with flux $>3\sigma$, where the noise $\sigma$ was determined from the rms per beam across the residual image. The initial binary selection mask was segmented into separate emission structures. The minihalo region was identified and confirmed to be isolated from other discrete sources prior to final summation. The choice of mask is noted where relevant within the results.
 
 \section{Flux density uncertainty}
 \label{sec:calibration_error}
@@ -47,9 +47,9 @@ There are three primary sources of error for estimations in the total flux densi
     \sigma = \sqrt{\sigma_{AGN}^2 + \sigma_{noise}^2 + \sigma_{cal}^2} 
 \end{equation}
 
-The image noise from the spatial sum over the minihalo region is calculated as the residual rms per beam of the minihalo image, weighted by the beams in spatial region. The number of beams is given by $N_{beam} = A_{MH} / A_{beam}$, where $A_{MH}$ is the area of the minihalo  and $A_{beam}$ is the restoring beam area. This gives the total image noise as $\sigma_{noise}^2 = (\sigma_{rms}\sqrt{N_{beam}})^2$.
+The image noise from the spatial sum over the minihalo region is calculated as the residual rms per beam of the minihalo image, weighted by the beams in the spatial region. The number of beams is given by $N_{beam} = A_{MH} / A_{beam}$, where $A_{MH}$ is the area of the minihalo  and $A_{beam}$ is the restoring beam area. This gives the total image noise as $\sigma_{noise}^2 = (\sigma_{rms}\sqrt{N_{beam}})^2$.
 
-To estimate the subtraction error, the methodology is adopted identical to previous studies. \citet{Giacintucci2014a} defined this error as,
+To estimate the subtraction error, the identical methodology is adopted as to previous studies. \citet{Giacintucci2014a} defined this error as,
 \begin{equation}
     \sigma_{sub}^2 = \left(I_{MH,s} \times A_{s}\right)^2
 \end{equation}
