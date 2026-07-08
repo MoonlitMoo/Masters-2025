@@ -44,7 +44,7 @@ To estimate the total minihalo flux density, the individual fluxes within the sp
 \section{Flux density uncertainty}
 \label{sec:calibration_error}
 There are three primary sources of error for estimations in the total flux density of the minihalo emission: the spatial image noise $\sigma_{noise}$, the source subtraction $\sigma_{sub}$, and the calibration error $\sigma_{cal}$. The final uncertainty is then the total of these components added in quadrature,\begin{equation}
-    \sigma = \sqrt{\sigma_{AGN}^2 + \sigma_{noise}^2 + \sigma_{cal}^2} 
+    \sigma = \sqrt{\sigma_{sub}^2 + \sigma_{noise}^2 + \sigma_{cal}^2} 
 \end{equation}
 
 The image noise from the spatial sum over the minihalo region is calculated as the residual rms per beam of the minihalo image, weighted by the beams in the spatial region. The number of beams is given by $N_{beam} = A_{MH} / A_{beam}$, where $A_{MH}$ is the area of the minihalo  and $A_{beam}$ is the restoring beam area. This gives the total image noise as $\sigma_{noise}^2 = (\sigma_{rms}\sqrt{N_{beam}})^2$.
