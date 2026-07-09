@@ -1,0 +1,182 @@
+% pasguide.tex
+% v1.0, released 24 Mar 2021
+% Copyright 2021 Cambridge University Press
+
+\documentclass{pas}
+
+\usepackage{aas-macros}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\definecolor{dodgerblue}{RGB}{30, 144, 255}
+% \hypersetup{colorlinks,citecolor=dodgerblue,linkcolor=blue,urlcolor=magenta}
+\interfootnotelinepenalty=10000
+
+\newcommand{\Msun}{M$_\odot$}
+
+\begin{document}
+
+\lefttitle{Publications of the Astronomical Society of Australia}
+\righttitle{Cambridge Author}
+
+\jnlPage{1}{4}
+\jnlDoiYr{2021}
+\doival{10.1017/pasa.xxxx.xx}
+
+\articletitt{Research Paper}
+
+\title{A Great and Engaging Title about RXJ1720+2638}
+
+\author{\sn{Wellington} \gn{Author1}$^{1}$ and \sn{Wellington} \gn{Author2}$^{2}$}
+
+\affil{$^1$School of Chemical and Physical Sciences, Victoria University of Wellington, PO Box 600, Wellington 6140, New Zealand}
+
+\corresp{A. Cambridge, Email: ACambridge@student.unimelb.edu.au}
+
+\citeauth{Author1 C and Author2 C, an open-source python tool for simulations of source recovery and completeness in galaxy surveys. {\it Publications of the Astronomical Society of Australia} {\bf 00}, 1--12. https://doi.org/10.1017/pasa.xxxx.xx}
+
+\history{(Received xx xx xxxx; revised xx xx xxxx; accepted xx xx xxxx)}
+
+\begin{abstract}
+\begin{itemize}
+  \item Radio minihalos are pretty neat things.
+  \item Present new 8--12 and archival 1--2 GHz VLA images of RXJ1720+2638.
+  \item We find that the spectral power follows a single power-law to high-frequency. Splitting into central and tail regions, we find that the tail is brighter than expected. 
+  \item Our results are in line with previous papers, offer the first observational evidence at high frequencies. 
+  \item Empirical evidence towards spectral steepening along the tail, though more effort required here. 
+  \item The single power-law favours the hadronic scenario.   
+\end{itemize}
+  
+
+\end{abstract}
+
+\begin{keywords}
+Key1, Key2, Key3, Key4
+\end{keywords}
+
+\maketitle
+
+Galaxy clusters are the largest gravitationally bound objects we have observed within the universe, and are host to a rich variety of astronomical phenomena. With total masses typically of order $M_{500}\sim10^{14}$--$10^{15}$ \Msun{}, a dominant $\sim85$\% of a clusters mass is attributed to dark matter. Approximately 3\% comes from the baryonic matter of the galaxies themselves. The remaining $\sim12$\% of the mass budget comes from the intracluster medium (ICM), a hot diffuse plasma ($T\sim10^7$--$10^8$ K, $n_e\sim10^{3}$ $m^{-3}$) spread throughout the cluster. Clusters typically grow from the accretion of matter from the cosmic web, or via mergers with other clusters (e.g. \citealt{2012ARA&A..50..353K}). 
+
+Merger shocks and turbulence introduce massive amounts of energy into the ICM, causing a acceleration and heating of the particles and, subsequently, cooling via X-ray bremsstrahlung radiation. Particles may also be accelerated to the relativistic level, becoming cosmic ray electrons (CRe). These move within the large scale magnetic fields induced by the ionisation of the ICM, generating synchrotron emission at radio frequencies (e.g \citealt{2012A&ARv..20...54F}). Interactions with low energy ICM photons are also expected to produce inverse Compton radiation as hard X-rays (e.g. \citealt{2004IJMPD..13.1549G}). However, these are more difficult to detect due to the dominance of ICM thermal emission at lower energies, and lacking spatial resolution at the upper X-ray range. The distribution of radio synchrotron radiation can provide great insight into the particle acceleration mechanisms operating within a cluster. 
+
+Diffuse radio synchrotron radiation has long been observed at the cluster scale, up to and beyond 1 Mpc at the largest extents. At these scales, radio emission is generally categorised into radio relics and giant radio halos. Radio relics trace shocks, while radio halos are likely to trace the merger-induced turbulence within the cluster (e.g. \citealt{2014IJMPD..2330007B}). Given the prerequisite for cluster-scale disturbances, these phenomena are generally limited to disturbed clusters undergoing active mergers, or having recently merged. 
+
+However, diffuse radio emission has been detected at smaller scales in typically relaxed cool-core clusters (e.g \citealt{2014ApJ...781....9G}). This ``minihalo'' emission is typically localised within the cool core, with typical radii from 50 kpc to 0.2$R_{200}$ (a standard metric for determining the boundary between the core and the outer ICM). \citet{2017ApJ...841...71G} found that these structures are not uncommon in the high mass subset of relaxed cluster, with 80\% containing radio minihalos. 
+
+---
+Relaxed clusters can have gas sloshing in the core causing turbulence in the ICm. An increasing number of these relaxed clusters have had  radio minihalos detected within them. 
+
+Radio minihalos are diffuse faint synchrotron sources, stretching across $0.2R_{500}$ to hundreds of kpc. The size of these sources is well beyond the scale expected from the lifetime of particles created from a singular source, with these CRe instead created in situ. There are two main theories behind the local production of the highly relativistic electrons, hadronic and turbulent re-acceleration. Hadronic production occurs due to interactions between thermal cluster protons (from the CMB) and cosmic-ray protons, causing a cascade of byproducts including a highly relativistic electon. In contrast, the reacceleration method supposes that stochastic acceleration is applied to a lower energy population of CRe, reaccelerating them to the ultra-relativistic levels found in minihalos. These secondary particles nmay be sourced from AGN, hadronic, etc and have a longer lifetime and therefore length-scale. 
+
+There is some evidence towards bounding of the minihalo emission with the cool core of a galaxy cluster. This boundary is often characterised by a `cold front', where the denser cool gas of the core interacts with the hotter diffuse outer ICM. This implies a connection between the properties of the core plasma and the minihalo emission. Recent works have blurred this understanding, with much larger extents outside the cool core observed. This could be evidence towards a multi-component system with different mechanisms at play across the scales of the minihalo. 
+
+RXJ1720 is a neat cluster. it's got a whole bunch of papers and is one of the originally detected clusters. The majority of the observational work has occured < 8 GHz, though the robustness of the 8 GHz measurement has been called into question. These studies found that the minihalo exhibits a central component and a tail, with spectral steepening along the length. The 8 GHz measurement appears to show spectral steepening at high-frequency. 
+
+Here we present new 8--12 GHz data, highest frequency observational data for this cluster. Few similar examples at this frequency. This paper is part of a 10 GHz survey, to explore the usage of this data for more deeply understanding the likelihood of each production mechanism. We also take a look at some archival L-band data at 1.5 GHz, since it doesn't look like it has been published yet.
+
+We like LambdaCDM with rounded parameters because its close enough. These are the parameters for 1" = a few kpc. We also like J2000 coordinates, since they are closer than B1959 or whatever. 
+
+\begin{itemize}
+  \item Introduction to the galaxy cluster RXJ1720+2638 and its general properties, ala Yvette's paper
+  \item Introduction to the minihalo, what is a minihalo.
+  \item What are the proposed methods to cause said emission, with references to the simulations.
+  \item What is this paper focussed on: 8-12 GHz observation of the minihalo. What parts of the paper correspond to what thing.
+  \item Mention G14 so that we can mention non-weirdly? during analysis.
+  \item Coordinates + cosmological settings assumed etc
+\end{itemize}
+
+\section{Observations}
+We present new VLA images at 10 GHz, allowing us to image the minihalo with greater sensitivity than the 8 GHz observation analysed by 
+\begin{itemize}
+  \item The primary 8-12 GHz dataset info (VLA, configuration, dates, observation proposals, etc)
+  \item What primary and secondary calibrators were used.
+  \item The L-band observation
+\end{itemize}
+
+\section{Data reduction}
+
+\begin{itemize}
+  \item Description of the data reduction steps.
+  \item Using CASA pipeline to calibrate the data, with a modified flagging step using AOFLAGGER instead of the CASA version.
+  \item Mention broadly the steps taken in the pipeline.
+  \item Reasoning for above is better quality flagging for the microwave emission in bands, due to Elon Musk or something.
+  \item Note where interference takes place, alongside how much data was removed from each observation. 
+  \item Imaging done via tclean with broad nterms / weighting parameter. Leave the subtraction and stuff for analysis. 
+  \item Separate items for L-band and X-band
+\end{itemize}
+
+\section{Analysis}
+
+\subsection{Subtraction of AGN}
+\begin{itemize}
+  \item Checking the difference in measured flux for the point sources since measurements C \& D are a year apart.
+  \item Some statistics on variablity
+  \item Uvrange for cutting out diffuse emission + point source modelling.
+  \item Show results, compare results of secondary calibrator. 
+  \item Conclude its probably fine.
+  \item Since variablity exists, each dataset AGN was modelled independently then subtracted.
+\end{itemize}
+\textbf{Image of point sources, labelled AGN, head-tail, right (better name)}
+
+\subsection{Subtracting the right galaxy thingy}
+\begin{itemize}
+  \item Difficulty in getting a clean image due to a noisy point source to the right of the minihalo $\sim$ beam size
+  \item Also subtracted this using the same process above.
+  \item Little information about the source, just mention brightness, size, location.
+\end{itemize}
+
+\subsection{Calculating minihalo flux}
+
+\begin{itemize}
+  \item With clean image can now calculate the minihalo flux.
+  \item In order for comparable results, estimated mask from G14 to use for analysis.
+  \item Computed total flux within the regions, then the error. 
+  \item Show derivation of the error, justify differences in error calc to G14.
+  \item Might as well show stability to robust settings [1, 2] if we have space.
+  \item Show possible re-energisation, but below 3x sigma. 
+\end{itemize}
+\textbf{Image of minihalo with mask contours overlaid}
+
+\subsection{Comparison to other frequencies}
+\begin{itemize}
+  \item Compare the points above to the G14 data collected + things from Y21.
+  \item Show agreement in the full, centre, tail, AGN. Plus comparisons between them.
+  \item Lack of steepening.
+\end{itemize}
+\textbf{Recreation of plot from G14, with additional information}
+
+\subsection{SZ effects}
+\begin{itemize}
+  \item Look the contribution is negligible.
+  \item This is how we worked it out: Little thing is littler than the little thing we are measuring.
+\end{itemize}
+
+\subsection{L-band data}
+\begin{itemize}
+  \item Not entirely sure what to do here.
+  \item Also don't have a perfect image yet.
+  \item Point at the possible gentle re-energisation also present here.
+\end{itemize}
+\textbf{Image of L-band minihalo}
+
+\section{Discussion}
+\begin{itemize}
+  \item Discuss in detail the difference between the hadronic and re-acceleration scenarios.
+  \item Talk about the conclusions taken from G14, plus the new data collected since then, in particular the presence of sub-kpc jets Y22 and Y21 results.
+  \item More discussion about differences between the tail and centre. 
+  \item Actually do some reading.
+\end{itemize}
+
+\section{Conclusion}
+I like the bullet point style of the main points of the paper, so might as well do that.
+\begin{itemize}
+  \item Clean imaging of 8-12 GHz VLA observation for RXJ1720+2638 minihalo to measure minihalo flux.
+  \item Calculated flux density of the minihalo, tail, centre.
+  \item More things from the discussion
+\end{itemize}
+
+% bbl-only workflow: keep the checked-in bibliography and disable BibTeX in latexmk.
+\bibliography{rxj1720_10ghz}
+
+\end{document}

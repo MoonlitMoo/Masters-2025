@@ -1,0 +1,62 @@
+
+\begin{thebibliography}{}
+\makeatletter
+\relax
+\def\mn@urlcharsother{\let\do\@makeother \do\$\do\&\do\#\do\^\do\_\do\%\do\~}
+\definecolor{darkblue}{RGB}{30, 144, 255}
+\def\mndoi{\begingroup\mn@urlcharsother \@ifnextchar [ {\mndoi@} {\mndoi@[]}}
+\def\mndoi@[#1]#2{\def\@tempa{#1}\ifx\@tempa\@empty \href
+  {http://dx.doi.org/#2} {\textcolor{darkblue}{doi:#2}}\else \href
+  {http://dx.doi.org/#2} {\textcolor{darkblue}{#1}}\fi \endgroup}
+\def\mn@eprint#1#2{\mn@eprint@#1:#2::\@nil}
+\def\mn@eprint@arXiv#1{\href {http://arxiv.org/abs/#1} {{\tt arXiv:#1}}}
+\def\mn@eprint@dblp#1{\href {http://dblp.uni-trier.de/rec/bibtex/#1.xml}
+  {dblp:#1}}
+\def\mn@eprint@#1:#2:#3:#4\@nil{\def\@tempa {#1}\def\@tempb {#2}\def\@tempc
+  {#3}\ifx \@tempc \@empty \let \@tempc \@tempb \let \@tempb \@tempa \fi \ifx
+  \@tempb \@empty \def\@tempb {arXiv}\fi \@ifundefined
+  {mn@eprint@\@tempb}{\@tempb:\@tempc}{\expandafter \expandafter \csname
+  mn@eprint@\@tempb\endcsname \expandafter{\@tempc}}}
+
+\makeatother
+
+\bibitem[\protect\citeauthoryear{{Kravtsov} \& {Borgani}}{{Kravtsov}
+  \& {Borgani}}{2012}]{2012ARA&A..50..353K}
+{Kravtsov} A.~V., {Borgani} S., 2012, \mndoi [\araa]
+  {10.1146/annurev-astro-081811-125502}, \href
+  {https://ui.adsabs.harvard.edu/abs/2012ARA&A..50..353K} {50, 353}
+
+\bibitem[\protect\citeauthoryear{{Feretti} et~al.}{{Feretti}
+  et~al.}{2012}]{2012A&ARv..20...54F}
+{Feretti} L., {Giovannini} G., {Govoni} F., {Murgia} M., 2012,
+  \mndoi [\aapr] {10.1007/s00159-012-0054-z}, \href
+  {https://ui.adsabs.harvard.edu/abs/2012A&ARv..20...54F} {20, 54}
+
+\bibitem[\protect\citeauthoryear{{Govoni} \& {Feretti}}{{Govoni}
+  \& {Feretti}}{2004}]{2004IJMPD..13.1549G}
+{Govoni} F., {Feretti} L., 2004, \mndoi [\ijmpd]
+  {10.1142/S0218271804005080}, \href
+  {https://ui.adsabs.harvard.edu/abs/2004IJMPD..13.1549G} {13, 1549}
+
+\bibitem[\protect\citeauthoryear{{Giacintucci} et~al.}{{Giacintucci}
+  et~al.}{2014}]{2014ApJ...781....9G}
+{Giacintucci} S., {Markevitch} M., {Venturi} T., {Clarke} T.~E.,
+  {Cassano} R., {Mazzotta} P., 2014, \mndoi [\apj]
+  {10.1088/0004-637X/781/1/9}, \href
+  {https://ui.adsabs.harvard.edu/abs/2014ApJ...781....9G} {781, 9}
+
+\bibitem[\protect\citeauthoryear{{Giacintucci} et~al.}{{Giacintucci}
+  et~al.}{2017}]{2017ApJ...841...71G}
+{Giacintucci} S., {Markevitch} M., {Cassano} R., {Venturi} T.,
+  {Clarke} T.~E., {Brunetti} G., 2017, \mndoi [\apj]
+  {10.3847/1538-4357/aa7069}, \href
+  {https://ui.adsabs.harvard.edu/abs/2017ApJ...841...71G} {841, 71}
+
+\bibitem[\protect\citeauthoryear{{Brunetti} \& {Jones}}{{Brunetti}
+  \& {Jones}}{2014}]{2014IJMPD..2330007B}
+{Brunetti} G., {Jones} T.~W., 2014, \mndoi [\ijmpd]
+  {10.1142/S0218271814300079}, \href
+  {https://ui.adsabs.harvard.edu/abs/2014IJMPD..2330007B} {23, 1430007}
+
+\end{thebibliography}
+
