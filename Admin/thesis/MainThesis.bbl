@@ -1704,7 +1704,7 @@
       \field{journaltitle}{International Journal of Modern Physics D}
       \field{month}{3}
       \field{number}{04}
-      \field{title}{COSMIC RAYS IN GALAXY CLUSTERS AND THEIR NONTHERMAL EMISSION}
+      \field{title}{Cosmic rays in galaxy clusters and their nonthermal emission}
       \field{volume}{23}
       \field{year}{2014}
       \field{pages}{1430007}
@@ -2872,7 +2872,7 @@
       \field{journaltitle}{International Journal of Modern Physics D}
       \field{month}{9}
       \field{number}{08}
-      \field{title}{MAGNETIC FIELDS IN CLUSTERS OF GALAXIES}
+      \field{title}{Magnetic fields in clusters of galaxies}
       \field{volume}{13}
       \field{year}{2004}
       \field{pages}{1549\bibrangedash 1594}
@@ -3038,6 +3038,69 @@
       \endverb
       \verb{url}
       \verb http://www.aips.nrao.edu/cook.html
+      \endverb
+    \endentry
+    \entry{vanWeeren2024}{article}{}{}
+      \name{author}{10}{}{%
+        {{hash=dec714ca169d1c9462128676144592d9}{%
+           family={{Groeneveld, C.}},
+           familyi={G\bibinitperiod}}}%
+        {{hash=48a31337ce2c5f1d5814a9d3e4165c1c}{%
+           family={{van Weeren, R. J.}},
+           familyi={v\bibinitperiod}}}%
+        {{hash=5c8d3693166e626590f4c100ab55c24f}{%
+           family={{Gendron-Marsolais, M.-L.}},
+           familyi={G\bibinitperiod}}}%
+        {{hash=d474ee6bbd66b2d4455e0946339592ea}{%
+           family={{Osinga, E.}},
+           familyi={O\bibinitperiod}}}%
+        {{hash=74c6adb4be37ceb67ab7d423a6e0dd96}{%
+           family={{Botteon, A.}},
+           familyi={B\bibinitperiod}}}%
+        {{hash=4b84641c586fc0a8d8c020bd66ed1d5d}{%
+           family={{de Gasperin, F.}},
+           familyi={d\bibinitperiod}}}%
+        {{hash=fed2d20b934ea30de16c082781932056}{%
+           family={{Cianfaglione, M.}},
+           familyi={C\bibinitperiod}}}%
+        {{hash=5237d655b71eac96fdca95eca8d943b1}{%
+           family={{di Gennaro, G.}},
+           familyi={d\bibinitperiod}}}%
+        {{hash=68757a9c23ac0d0c64a7240027025f53}{%
+           family={{Brunetti, G.}},
+           familyi={B\bibinitperiod}}}%
+        {{hash=d7237bf86c429a9bb4da0823920768d0}{%
+           family={{Cassano, R.}},
+           familyi={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{c658ac3ba1ebc66b8f4f0369b2f7a093}
+      \strng{fullhash}{885b0258497abc21b0e834211b3d8836}
+      \strng{fullhashraw}{885b0258497abc21b0e834211b3d8836}
+      \strng{bibnamehash}{885b0258497abc21b0e834211b3d8836}
+      \strng{authorbibnamehash}{885b0258497abc21b0e834211b3d8836}
+      \strng{authornamehash}{c658ac3ba1ebc66b8f4f0369b2f7a093}
+      \strng{authorfullhash}{885b0258497abc21b0e834211b3d8836}
+      \strng{authorfullhashraw}{885b0258497abc21b0e834211b3d8836}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{\aap}
+      \field{title}{Investigating the radio emission in the Perseus cluster with LOFAR sub-80 MHz LBA observations}
+      \field{volume}{709}
+      \field{year}{2026}
+      \field{pages}{A64}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1051/0004-6361/202658999
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1051/0004-6361/202658999
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1051/0004-6361/202658999
       \endverb
     \endentry
     \entry{Hamaker1996}{article}{}{}
@@ -3910,6 +3973,77 @@
       \range{pages}{1}
       \verb{doi}
       \verb 10.1088/0004-637X/722/1/737
+      \endverb
+    \endentry
+    \entry{HyeongHan2025}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=3506ae40441c03fb4eb35ceee9d28e36}{%
+           family={{Kim}},
+           familyi={K\bibinitperiod},
+           given={HyeongHan},
+           giveni={H\bibinitperiod}}}%
+        {{hash=c9081c5d9a9ddfb3a91108a90026e379}{%
+           family={{Jee}},
+           familyi={J\bibinitperiod},
+           given={M.\bibnamedelimi James},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=6a171d22de2cc627707e373d923341c2}{%
+           family={{Lee}},
+           familyi={L\bibinitperiod},
+           given={Wonki},
+           giveni={W\bibinitperiod}}}%
+        {{hash=6e75d17333bbaabfa08f914cfbcca2cf}{%
+           family={{ZuHone}},
+           familyi={Z\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+        {{hash=7898377e48e15b7f9656f0435bca363f}{%
+           family={{Zhuravleva}},
+           familyi={Z\bibinitperiod},
+           given={Irina},
+           giveni={I\bibinitperiod}}}%
+        {{hash=a34e44b7cb3d4c77e722f88f5a6c541b}{%
+           family={{Kang}},
+           familyi={K\bibinitperiod},
+           given={Wooseok},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a301411d23a0dfe7a99a968061144f3d}{%
+           family={{Hwang}},
+           familyi={H\bibinitperiod},
+           given={Ho\bibnamedelima Seong},
+           giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{a5037143404aa69e225fde9bbf1f2688}
+      \strng{fullhash}{81d53e5a389fb71175a80361686b6860}
+      \strng{fullhashraw}{81d53e5a389fb71175a80361686b6860}
+      \strng{bibnamehash}{81d53e5a389fb71175a80361686b6860}
+      \strng{authorbibnamehash}{81d53e5a389fb71175a80361686b6860}
+      \strng{authornamehash}{a5037143404aa69e225fde9bbf1f2688}
+      \strng{authorfullhash}{81d53e5a389fb71175a80361686b6860}
+      \strng{authorfullhashraw}{81d53e5a389fb71175a80361686b6860}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2397-3366}
+      \field{journaltitle}{Nature Astronomy}
+      \field{month}{6}
+      \field{number}{6}
+      \field{title}{{Direct evidence of a major merger in the Perseus cluster}}
+      \field{volume}{9}
+      \field{year}{2025}
+      \field{pages}{925\bibrangedash 931}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1038/s41550-025-02530-w
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1038/s41550-025-02530-w
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1038/s41550-025-02530-w
       \endverb
     \endentry
     \entry{Knowles2019}{article}{}{}
@@ -7730,17 +7864,17 @@
     \entry{Sanders2009}{article}{}{}
       \name{author}{3}{}{%
         {{hash=137c589d77e26948069dbd397aefd7ad}{%
-           family={{Sanders}},
+           family={Sanders},
            familyi={S\bibinitperiod},
            given={J.\bibnamedelimi S.},
            giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
         {{hash=2b9be215732688abb02cf630aec54a82}{%
-           family={{Fabian}},
+           family={Fabian},
            familyi={F\bibinitperiod},
            given={A.\bibnamedelimi C.},
            giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
         {{hash=bea843ebf0aaae437c20fc236e4fbaee}{%
-           family={{Taylor}},
+           family={Taylor},
            familyi={T\bibinitperiod},
            given={G.\bibnamedelimi B.},
            giveni={G\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
@@ -7760,12 +7894,12 @@
       \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{eprintclass}{astro-ph}
-      \field{eprinttype}{arXiv}
-      \field{journaltitle}{\mnras}
-      \field{month}{2}
+      \field{abstract}{We present results from deep Chandra and XMM–Newton observations of the relaxed X-ray luminous galaxy cluster Abell 2204. We detect metallicity inhomogeneities in the intracluster medium on a variety of distance scales, from a ∼12 kpc enhancement containing a few times 107 M⊙ of iron in the centre to a region at 400 kpc radius with an excess of a few times 109 M⊙. Subtracting an average surface brightness profile from the X-ray image yields two surface brightness depressions to the north and south of the cluster. Their morphology is similar to the cavities observed in the cluster cores, but they have radii of 240 and 160 kpc and a total enthalpy of 2 × 1062 erg. If they are fossil radio bubbles, their buoyancy time-scales imply a total mechanical heating power of 5 × 1046 erg s−1, the largest such bubble heating power known. More likely, they result from the accumulation of many past bubbles. Energetically this is more feasible, as the enthalpy of these regions could combat X-ray cooling in this cluster to 500 kpc radius for around 2 Gyr. The core of the cluster also contains five to seven ∼4 kpc radius surface brightness depressions that are not associated with the observed radio emission. If they are bubbles generated by the nucleus, they are too small to balance cooling in the core by an order of magnitude. However, if the radio axis is close to the line of sight, projection effects may mask more normal bubbles. Using reflection grating spectrometer (RGS) spectra, we detect a Fe xvii line. Spectral fitting reveals temperatures down to ∼0.7 keV; the cluster, therefore, shows a range in X-ray temperature of at least a factor of 15. The quantity of low temperature gas is consistent with a mass deposition rate of 65 M⊙ yr−1.}
+      \field{issn}{0035-8711}
+      \field{journaltitle}{Monthly Notices of the Royal Astronomical Society}
+      \field{month}{02}
       \field{number}{1}
-      \field{title}{{Giant cavities, cooling and metallicity substructure in Abell 2204}}
+      \field{title}{Giant cavities, cooling and metallicity substructure in Abell 2204}
       \field{volume}{393}
       \field{year}{2009}
       \field{pages}{71\bibrangedash 82}
@@ -7774,9 +7908,14 @@
       \verb 10.1111/j.1365-2966.2008.14207.x
       \endverb
       \verb{eprint}
-      \verb 0811.0743
+      \verb https://academic.oup.com/mnras/article-pdf/393/1/71/3776758/mnras0393-0071.pdf
       \endverb
-      \keyw{galaxies: clusters: individual: Abell 2204,cooling flows,intergalactic medium,X-rays: galaxies,Astrophysics}
+      \verb{urlraw}
+      \verb https://doi.org/10.1111/j.1365-2966.2008.14207.x
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1111/j.1365-2966.2008.14207.x
+      \endverb
     \endentry
     \entry{Sarazin1999}{article}{}{}
       \name{author}{1}{}{%
