@@ -78,3 +78,5 @@
 /Admin/Pre-acceptance/
 /Admin/marsden-report/
 /Papers/
+**/%OUTDIR%/
+/cluster_names.txt
